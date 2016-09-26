@@ -1,7 +1,0 @@
-\contentsline {chapter}{\numberline {1}First Chapter.}{1}
-\contentsline {section}{\numberline {1.1}First Section.}{1}
-\contentsline {subsection}{\numberline {1.1.1}Alternative title for the Table of Contents}{1}
-\contentsline {subsubsection}{First Sub-subsection.}{1}
-\contentsline {section}{\numberline {1.2}Other thoughts.}{2}
-\contentsline {chapter}{\numberline {A}More to say}{3}
-\contentsline {section}{\numberline {A.1}A section within an appendix.}{3}
