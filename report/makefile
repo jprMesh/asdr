@@ -4,7 +4,7 @@ report:
 	# cd build
 	# bibtex masdr
 	# cd ..
-	# pdflatex -output-directory=build masdr
+	pdflatex -output-directory=build masdr
 	mv build/masdr.pdf .
 
 rebuild: clean report
