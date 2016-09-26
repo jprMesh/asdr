@@ -48,6 +48,7 @@
 %``\includegraphics''
 \usepackage{setspace}
 \usepackage{graphicx}
+\usepackage{cite}
 
 
 % leave 1.5in margin to the left and 1in margin to the other
@@ -205,198 +206,35 @@
 	the fact that I own a key to the building so I can work at four
 	in the morning whenever I feel like it. That is, all the time.
 	
-	% P.S. You don't have to add me to the acknowledgements for providing 
-	% this file :)
-	
 	\clearpage
 	
-	
-	% Now comes the Table of Contents, really easy in LaTeX. you never
-	% have to worried about it. (Think of all the hours you would
-	% have wasted in Word getting this thing updated without crashing
-	% the system) :).
-	
+	% Automagic
 	\tableofcontents
 	
-	% THAT'S IT. REALLY. Everything else is automatic. No formatting, no headline.
-	% All predefined.
-	
-	% Now - just as easy - the List of Figures.
 	% This will catch all objects enclosed in \begin{figure}\end{figure}
 	% statements.
 	\listoffigures
 	
-	% There is also a list of tables, if you have any.
 	% This will catch all objects enclosed in \begin{table}\end{table}
 	% statements.
 	\listoftables
 	
-	
 	% And we need a clear separation between preface and text, otherwise
 	% the numbering gets confused.
-	
 	\clearpage
-	
-	% And now - tataa - the text.
-	% This is the place to become really creative.
-	
-	% From here on, we need arabic numbering again and we need to start
-	% from 1.
-	
 	\pagenumbering{arabic}
 	\setcounter{page}{1}
 	
-	% 
-	% Since this is a ``report'', the topmost level of hierarchy is
-	% ``Chapter'', not section as you may be used to. Chapters are
-	% enumerated starting from 1, so Sections are 1.1, Subsections are
-	% 1.1.1, subsubsections don't get numbers. (You can change that, if
-	% you want them to be called 1.1.1.1)
-	%
-	\chapter{First Chapter.}
-	This should ideally contain some text.
-	\section{First Section.}
-	More Text.
-	\subsection[Alternative title for the Table of Contents]{First Subsection.}
-	Even more text, maybe a formula:
-	\begin{equation}
-	\sum_{i=1}^{n}i=\frac{n(n+1)}{2} % much easier than Microsoft Equation
-	% Editor :)
-	\end{equation}
-	\subsubsection{First Sub-subsection.}
-	This is really deep down in the hierarchy. Maybe you shouldn't even
-	use sub\-subsections. It goes further down (paragraphs), but I don't
-	think you'll need that\footnote{By the way: notice that, although we
-		have doublespacing here, the footnotes are singlespaced. This is
-		intended and good. If you want to change that, try, but this is really
-		how it should be.}.
+	\include{intro}
+	\include{background}
+
+	\include{appendix}
 	
-	\section{Other thoughts.}
-	Okay, what else?
-	Let me quickly put a figure here, maybe a piece of pseudo code.
-	That way, you can see how this is done. It's a little painful, but
-	looks really cool. We will call it Figure~\ref{fig:source_algo1}. The
-	numbering is automatic---don't worry about it.
-	
-	%First, we want to make our life easier and define a ``TAB'' command.
-	\newcommand{\T}{\hspace*{5mm}}
-	
-	% Start a figure
-	\begin{figure}[htb]
-		% We would like to have the whole thing in the center of the page
-		\begin{center}
-			% We want a frame. 
-			\fbox{
-				% The figure should autoformat to half the page width
-				\begin{minipage}{0.5\textwidth}
-					% Now comes the content.
-					% For source code, you have to leave an empty line after each line of
-					% code.
-					% Note that this is text-mode, that's why all formluae are typeset in
-					% math-mode (enclosed in dollar-signs $a+b$)
-					% Each line needs a font command a la \texttt{}, \textsc{}, textbf{}
-					% You could use \begin{verbatim}\end{verbatim} for source code, but then 
-					% you can't do any more formatting in you source file. May be appropriate
-					% sometimes. 
-					
-					\textsc{Bellman-Ford} $(G,w,s)$
-					
-					(1) \textsc{Initialize-Single-Source}$(G,s)$
-					
-					(2) \textbf{for} $i\leftarrow 1$ \textbf{to} $|V[G]|-1$ \textbf{do}
-					
-					(3) \T\textbf{for} each edge $(u,v)\in E[G]$
-					
-					\T\T\T\textbf{do} \textsc{Relax} $(u,v,w)$
-					
-					(4) \textbf{for} each edge $(u,v) \in E[G]$
-					
-					\T\T \textbf{do if} $d[v]>d[u]+w(u,v)$
-					
-					\T\T\T \textbf{then return} \textsc{false}
-					
-					(5) \textbf{return} \textsc{true}
-					
-					% End of content, closure of minipage, frame, and centering.
-				\end{minipage}
-			}
-		\end{center}
-		% Caption
-		\caption{This is a very simple algorithm in pseudocode.}
-		% A label to refer to the figure.
-		\label{fig:source_algo1}
-		% End of figure
-	\end{figure}
-	
-	\noindent
-	And so on, and so on.
-	
-	Please remember that you have to compile a document several times when
-	you did changes that affect figures, table of contents, bibliography,
-	etc. (This is always the case if you get the warning: ``LaTeX Warning:
-	Label(s) may have changed. Rerun to get cross-references right.'').
-	
-	The recommended sequence is :
-	
-	\texttt{latex foo.tex}
-	
-	\texttt{bibtex foo}
-	
-	\texttt{latex foo.tex}
-	
-	\texttt{latex foo.tex}
-	
-	% Let's assume this is the end of your thesis text.
-	
-	% Now come appendices, if you had any.
-	% Appendices are automatically numbered, just like everything else in
-	% LaTeX. But only after you gave this command
-	\appendix
-	
-	\chapter{More to say}
-	
-	\section{A section within an appendix.}
-	This is an appendix.
-	
-	
-	% Last and least (at least, that's what the library says) - the
-	% Bibliography.
-	
-	
-	% you can save some space by having the bibliography singlespaced, if you want
+	% Bibliography
 	\singlespacing
-	
-	%
-	% You should become familiar with the BibTeX program, which
-	% uses a *.bib-file to collect all citations that you have. It's a lot
-	% prettier than typing all the citations right into the document. The 
-	% reference to citations also works well that way, but the exact 
-	% explanation of that will be on the CS-GSO homepage, whenever I'll ever 
-	% have time for that.
-	%
-	%
-	% If you use BibTeX, the bibliography is very easy. You refer to
-	% citations in the text with \cite{tag}, where tag is the tag that you
-	% defined in the bib-file.
-	% Then, you run bibtex once in a while during compilation, and the
-	% rest is done in two lines:
-	
-	
-	\bibliographystyle{alpha}
-	\bibliography{foo}
-	
-	% which assumes a file foo.bib in your working directory.
-	% The word ``Bibliography'' will appear in your document as soon as
-	% you used ``bibtex'' on the command line.
-	%
-	% For reference on this, refer to the CS-GSO homepage.
-	
-	%============================
-	%That's all, folks. Have fun.
-	%
-	%                     Andreas
-	%============================
-	
+	\nocite{*}
+	\bibliographystyle{plain}
+	\bibliography{references}
 	
 \end{document}
 
