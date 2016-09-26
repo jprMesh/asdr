@@ -1,0 +1,410 @@
+% FIRST OF ALL:
+% If you are using X-based Emacs to read this file, please switch on
+% Syntax Highlighting by typing:
+%    ALT-X  font-lock-mode   (or META-X on X-Terminals)
+%
+% That should make these comments nice and red so they can be easily
+% distinguished from the actual code. 
+% =======================================================================
+
+% This is a template for  Masters' Theses at WPI.
+% It complies (more or less) to the standards given by the Library 
+% (as of February 1999)
+%
+% Feel free to use this file, but I give no guarantee for its compliance
+% to standards (meaning I won't pay for the paper if the library rejects it :))
+%
+%
+% The lengths (textheight, width etc.) are fine-tuned for ps1, ps2, and ps3, 
+% but seem to be somewhat dependent on the machine you are using to compile, 
+% the date, time, moon phase, the weather, and other quantum effects.
+% You may have to change \oddsidemargin a little, but it's about 98% correct.
+%
+% Also, the spacing is correct (doublespacing with footnotes correctly
+% singlespaced). Curiously, the font size is not specified in the
+% regulations. So feel free to change it, but the majority of theses
+% that I have seen is written in 12 point font.
+% 
+% As for the inclusion of graphics, I recommend the methods specified
+% in ``latexguide.ps'' off the CS-GSO Website. You can use other
+% methods including copy and paste with a photocopier, but I think
+% using the graphicx package is the easiest.
+%
+% Have fun and good luck with the thesis.
+%
+%
+%  Andreas Koeller (koeller@wpi.edu)
+%
+%
+%
+
+% The preamble
+%
+%
+% 12 point font, and your thesis is a ``report'' to LaTeX
+\documentclass[12pt]{report}
+
+% this enables correct linespacing and graphics inclusion via 
+%``\includegraphics''
+\usepackage{setspace}
+\usepackage{graphicx}
+
+
+% leave 1.5in margin to the left and 1in margin to the other
+% sides. Don't print page number in the margin (but rather above it)
+\setlength{\textheight}{8.63in}
+\setlength{\textwidth}{5.9in}
+\setlength{\topmargin}{-0.2in}
+\setlength{\oddsidemargin}{0.3in}
+\setlength{\evensidemargin}{0.3in}
+\setlength{\headsep}{0.0in}
+
+% Start to write
+\begin{document}
+	
+	% First things first: The Titlepage
+	% This is the recommended format by the library
+	%
+	
+	
+	% Define \brk as a command for leaving a little vertical space. Makes
+	% the titlepage easier to read - normally, this is NOT GOOD LATEX
+	% STYLE!!!
+	%
+	\newcommand{\brk}{\vspace*{0.18in}}
+	
+	% No page number on the title page
+	\thispagestyle{empty}
+	
+	% Center the whole title page
+	\begin{center}
+		
+		\brk
+		
+		% Large font and bold face for the headline. Try to keep it at one or
+		% two lines. Headlines over two lines will mess up the spacing, and you have to
+		% manually finetune it. Note that the line break in the SOURCE CODE
+		% does not affect the line breaking in the output file. If you want
+		% hardcoded line breaks, you have to mark them with a double backslash (\\)
+		
+		{\large 
+			\textbf{
+				Aerial Software Defined Radio
+			}
+		}
+		
+		
+		\brk
+		by
+		
+		\brk
+		% insert your name here. 
+		Jane Doe
+		
+		
+		% All this is constant:
+		\brk\brk
+		A Thesis
+		
+		\brk
+		Submitted to the Faculty
+		
+		\brk
+		of the 
+		
+		\brk
+		WORCESTER POLYTECHNIC INSTITUTE
+		
+		\brk
+		In partial fulfillment of the requirements for the
+		
+		\brk
+		Degree of Master of Science
+		
+		\brk
+		in
+		
+		\brk
+		Electrical and Computer Engineering
+		
+		\brk
+		by
+		
+		% This is how LaTeX draws lines :) It's where your signature goes.
+		\brk\brk
+		\rule{3in}{1.2pt}
+		
+		% Adjust this to your preferred month and year
+		\brk
+		May 2000
+		
+	\end{center}
+	
+	
+	\vfill
+	APPROVED:
+	
+	\vspace{0.5in}
+	\rule{3in}{0.8pt}
+	
+	% Change this to your favorite CS professor.
+	Professor John Doe, Major Thesis Advisor
+	
+	\vspace{0.5in}
+	\rule{3in}{0.8pt}
+	
+	% This is also constant :)
+	Professor Micha Hofri, Head of Department	
+	
+	
+	% end of titlepage
+	\newpage
+	
+	% This is the command for doublespacing when you use the setspace
+	% package
+	% Please do NOT use \baselinestretch, this will mess up everything,
+	% cause earthquakes, tornados and lots of questions for me...
+	% If you need a singlespaced paragraph (BAD STYLE!!!), use
+	% \singlespacing or \onehalfspacing and enclose it together with the
+	% paragraph in braces {\singlespacing This is my text... blah blah blah}
+	%
+	\doublespacing
+	
+	% Now you can start to be creative.
+	% First, you need an abstract.
+	% Fortunately, LaTeX has thought of that, so it's very easy:
+	%
+	\begin{abstract}
+		This paper is the most important paper I have ever written. Therefore,
+		everyone should read it, like it, and recommend it to all his friends.
+	\end{abstract}
+	
+	% From here on, we need Roman page numbers according to the library
+	% regulations. So let's assign those.
+	
+	\pagenumbering{roman} % or {Roman} if you like them capitalized
+	
+	% The next thing is the Preface (``Acknowledgements'').
+	% No standard environment for that, so we'll format it by hand.
+	%
+	\begin{center}
+		\textbf{Acknowledgements}
+	\end{center}
+	
+	I would like to express my gratitude to my advisor who made
+	sure the thesis has at least 120 pages, 200 pictures and lots
+	of formulae and thus made me master \LaTeX{} like my native
+	language.
+	
+	My thanks are also due to my reader... who has read the thesis
+	in the two days that I gave him since it wasn't done until two
+	days before due date.
+	
+	Thanks also to ... lots of friends, the fact that a week has
+	seven days instead of only five as I had always thought, and
+	the fact that I own a key to the building so I can work at four
+	in the morning whenever I feel like it. That is, all the time.
+	
+	% P.S. You don't have to add me to the acknowledgements for providing 
+	% this file :)
+	
+	\clearpage
+	
+	
+	% Now comes the Table of Contents, really easy in LaTeX. you never
+	% have to worried about it. (Think of all the hours you would
+	% have wasted in Word getting this thing updated without crashing
+	% the system) :).
+	
+	\tableofcontents
+	
+	% THAT'S IT. REALLY. Everything else is automatic. No formatting, no headline.
+	% All predefined.
+	
+	% Now - just as easy - the List of Figures.
+	% This will catch all objects enclosed in \begin{figure}\end{figure}
+	% statements.
+	\listoffigures
+	
+	% There is also a list of tables, if you have any.
+	% This will catch all objects enclosed in \begin{table}\end{table}
+	% statements.
+	\listoftables
+	
+	
+	% And we need a clear separation between preface and text, otherwise
+	% the numbering gets confused.
+	
+	\clearpage
+	
+	% And now - tataa - the text.
+	% This is the place to become really creative.
+	
+	% From here on, we need arabic numbering again and we need to start
+	% from 1.
+	
+	\pagenumbering{arabic}
+	\setcounter{page}{1}
+	
+	% 
+	% Since this is a ``report'', the topmost level of hierarchy is
+	% ``Chapter'', not section as you may be used to. Chapters are
+	% enumerated starting from 1, so Sections are 1.1, Subsections are
+	% 1.1.1, subsubsections don't get numbers. (You can change that, if
+	% you want them to be called 1.1.1.1)
+	%
+	\chapter{First Chapter.}
+	This should ideally contain some text.
+	\section{First Section.}
+	More Text.
+	\subsection[Alternative title for the Table of Contents]{First Subsection.}
+	Even more text, maybe a formula:
+	\begin{equation}
+	\sum_{i=1}^{n}i=\frac{n(n+1)}{2} % much easier than Microsoft Equation
+	% Editor :)
+	\end{equation}
+	\subsubsection{First Sub-subsection.}
+	This is really deep down in the hierarchy. Maybe you shouldn't even
+	use sub\-subsections. It goes further down (paragraphs), but I don't
+	think you'll need that\footnote{By the way: notice that, although we
+		have doublespacing here, the footnotes are singlespaced. This is
+		intended and good. If you want to change that, try, but this is really
+		how it should be.}.
+	
+	\section{Other thoughts.}
+	Okay, what else?
+	Let me quickly put a figure here, maybe a piece of pseudo code.
+	That way, you can see how this is done. It's a little painful, but
+	looks really cool. We will call it Figure~\ref{fig:source_algo1}. The
+	numbering is automatic---don't worry about it.
+	
+	%First, we want to make our life easier and define a ``TAB'' command.
+	\newcommand{\T}{\hspace*{5mm}}
+	
+	% Start a figure
+	\begin{figure}[htb]
+		% We would like to have the whole thing in the center of the page
+		\begin{center}
+			% We want a frame. 
+			\fbox{
+				% The figure should autoformat to half the page width
+				\begin{minipage}{0.5\textwidth}
+					% Now comes the content.
+					% For source code, you have to leave an empty line after each line of
+					% code.
+					% Note that this is text-mode, that's why all formluae are typeset in
+					% math-mode (enclosed in dollar-signs $a+b$)
+					% Each line needs a font command a la \texttt{}, \textsc{}, textbf{}
+					% You could use \begin{verbatim}\end{verbatim} for source code, but then 
+					% you can't do any more formatting in you source file. May be appropriate
+					% sometimes. 
+					
+					\textsc{Bellman-Ford} $(G,w,s)$
+					
+					(1) \textsc{Initialize-Single-Source}$(G,s)$
+					
+					(2) \textbf{for} $i\leftarrow 1$ \textbf{to} $|V[G]|-1$ \textbf{do}
+					
+					(3) \T\textbf{for} each edge $(u,v)\in E[G]$
+					
+					\T\T\T\textbf{do} \textsc{Relax} $(u,v,w)$
+					
+					(4) \textbf{for} each edge $(u,v) \in E[G]$
+					
+					\T\T \textbf{do if} $d[v]>d[u]+w(u,v)$
+					
+					\T\T\T \textbf{then return} \textsc{false}
+					
+					(5) \textbf{return} \textsc{true}
+					
+					% End of content, closure of minipage, frame, and centering.
+				\end{minipage}
+			}
+		\end{center}
+		% Caption
+		\caption{This is a very simple algorithm in pseudocode.}
+		% A label to refer to the figure.
+		\label{fig:source_algo1}
+		% End of figure
+	\end{figure}
+	
+	\noindent
+	And so on, and so on.
+	
+	Please remember that you have to compile a document several times when
+	you did changes that affect figures, table of contents, bibliography,
+	etc. (This is always the case if you get the warning: ``LaTeX Warning:
+	Label(s) may have changed. Rerun to get cross-references right.'').
+	
+	The recommended sequence is :
+	
+	\texttt{latex foo.tex}
+	
+	\texttt{bibtex foo}
+	
+	\texttt{latex foo.tex}
+	
+	\texttt{latex foo.tex}
+	
+	% Let's assume this is the end of your thesis text.
+	
+	% Now come appendices, if you had any.
+	% Appendices are automatically numbered, just like everything else in
+	% LaTeX. But only after you gave this command
+	\appendix
+	
+	\chapter{More to say}
+	
+	\section{A section within an appendix.}
+	This is an appendix.
+	
+	
+	% Last and least (at least, that's what the library says) - the
+	% Bibliography.
+	
+	
+	% you can save some space by having the bibliography singlespaced, if you want
+	\singlespacing
+	
+	%
+	% You should become familiar with the BibTeX program, which
+	% uses a *.bib-file to collect all citations that you have. It's a lot
+	% prettier than typing all the citations right into the document. The 
+	% reference to citations also works well that way, but the exact 
+	% explanation of that will be on the CS-GSO homepage, whenever I'll ever 
+	% have time for that.
+	%
+	%
+	% If you use BibTeX, the bibliography is very easy. You refer to
+	% citations in the text with \cite{tag}, where tag is the tag that you
+	% defined in the bib-file.
+	% Then, you run bibtex once in a while during compilation, and the
+	% rest is done in two lines:
+	
+	
+	\bibliographystyle{alpha}
+	\bibliography{foo}
+	
+	% which assumes a file foo.bib in your working directory.
+	% The word ``Bibliography'' will appear in your document as soon as
+	% you used ``bibtex'' on the command line.
+	%
+	% For reference on this, refer to the CS-GSO homepage.
+	
+	%============================
+	%That's all, folks. Have fun.
+	%
+	%                     Andreas
+	%============================
+	
+	
+\end{document}
+
+
+
+
+
+
+
+
+
