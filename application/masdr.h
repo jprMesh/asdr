@@ -8,6 +8,7 @@
 //          Narut Akadejdechapanich
 //          Scott Iwanicki
 // Advisor: Professor Alex Wyglinski
+// Sponsor: Gryphon Sensors
 
 
 /// Status of the software on the SBC.
@@ -81,6 +82,13 @@ private:
      * using the UHD library.
      */
     void initialize_uhd();
+
+    /**
+     * @brief Initialize any peripherals being used
+     * 
+     * This will be the GPS receiver and maybe an external memory device.
+     */
+    void initialize_peripherals();
 
     /**
      * @brief Gracefully stop the SDR.

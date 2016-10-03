@@ -8,11 +8,13 @@
 //          Narut Akadejdechapanich
 //          Scott Iwanicki
 // Advisor: Professor Alex Wyglinski
+// Sponsor: Gryphon Sensors
 
 #include "masdr.h"
 
 /******************************************************************************/
 Masdr::Masdr() {
+    initialize_peripherals();
     initialize_uhd();
     update_status();
 }
@@ -33,6 +35,11 @@ void Masdr::initialize_uhd() {
 }
 
 /******************************************************************************/
+void Masdr::initialize_peripherals() {
+
+}
+
+/******************************************************************************/
 void Masdr::begin_sampling() {
 
 }
@@ -49,7 +56,7 @@ void Masdr::begin_processing() {
 
 /******************************************************************************/
 int main(int argc, char const *argv[]) {
-    
+
     Masdr masdr;
 
     while(1) {
