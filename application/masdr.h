@@ -63,6 +63,13 @@ public:
      */
     void begin_processing();
 
+    /**
+     * @brief Transmit data to ground station
+     * 
+     * Transmit sampling location and directions for signals to ground station.
+     */
+    void transmit_to_ground();
+
     PhyStatus phy_status; ///< Physical status of the platform.
     SoftStatus soft_status; ///< The current stage of the software on the SBC.
     bool was_stationary; ///< Previous stationary state.
