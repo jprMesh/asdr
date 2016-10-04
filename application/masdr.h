@@ -29,6 +29,7 @@ typedef enum {
     SAMPLE,
     PROCESS,
     TRANSMIT,
+    IDLE,
 } SoftStatus;
 
 /**
@@ -83,39 +84,21 @@ public:
     ~Masdr();
 
     /**
-     * @brief Fork off a new process to start the SDR taking samples.
-     */
-    void begin_sampling();
-
-    /**
-     * @brief Command the SDR to stop taking samples.
-     */
-    void stop_sampling();
-
-    /**
-     * @brief Start processing the collected samples.
-     */
-    void begin_processing();
-
-    /**
-     * @brief Transmit data to ground station
-     * 
-     * Transmit sampling location and directions for signals to ground station.
-     */
-    void transmit_to_ground();
-
-    PhyStatus phy_status; ///< Physical status of the platform.
-    SoftStatus soft_status; ///< The current stage of the software on the SBC.
-    bool was_stationary; ///< Previous stationary state.
-
-private:
-    /**
      * @brief Update platform status
      * 
      * Updates the location, heading, and stationarity.
      */
     void update_status();
 
+    /**
+     * @brief Do actions based on the current status.
+     * 
+     * If the system is not currently idle, do not interrupt the current
+     * process. (This may need to change, but I don't see it being necessary)
+     */
+    void do_action();
+
+private:
     /**
      * @brief Initialize the UHD interface to the SDR
      * 
@@ -132,9 +115,44 @@ private:
     void initialize_peripherals();
 
     /**
+     * @brief Fork off a new process to start the SDR taking samples.
+     */
+    void begin_sampling();
+
+    /**
+     * @brief Command the SDR to stop taking samples.
+     */
+    void stop_sampling();
+
+    /**
+     * @brief Start processing the collected samples.
+     */
+    void begin_processing();
+
+    /**
+     * @brief General transmission method.
+     * 
+     * @param msg Pointer to packet to send.
+     * @param len Size of packet to be sent.
+     */
+    void transmit(const void *msg, int len);
+
+    /**
+     * @brief Transmit data to ground station
+     * 
+     * Transmit sampling location and directions for signals to ground station.
+     */
+    void transmit_data();
+
+    /**
      * @brief Gracefully stop the SDR.
      * 
      * Stop all SDR processing and close any connections to the USRP SDR.
      */
     void shutdown_uhd();
+
+    PhyStatus phy_status; ///< Physical status of the platform.
+    SoftStatus soft_status; ///< The current stage of the software on the SBC.
+    bool process_done; ///< Set when data processing has completed.
+    bool transmit_done; ///< Set when data transmission has completed.
 };
