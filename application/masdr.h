@@ -43,6 +43,27 @@ typedef struct {
 } PhyStatus;
 
 /**
+ * Structure for header message before data transmission.
+ * 
+ * Includes sampling location and number of hits, indicating how many TxHit
+ * messages will be following.
+ */
+typedef struct {
+    unsigned int tx_id; ///< Transmission ID number to link with data packets.
+    double location[3]; ///< Location of this sampling session.
+    int num_hits; ///< Number of signals detected. (Need to discuss and clarify)
+} TxHeader;
+
+/**
+ * Structure for transmission of data concerning a single detected signal.
+ */
+typedef struct {
+    unsigned int tx_id; ///< Transmission ID number to link with header packet.
+    double heading; ///< Heading in degrees from North of detected signal.
+    double strength; ///< Strength of detected signal.
+} TxHit;
+
+/**
  * @brief MASDR Application Class
  * 
  * This is the class for the MASDR Application. It contains all of the
