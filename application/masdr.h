@@ -49,7 +49,7 @@ public:
     ~Masdr();
 
     /**
-     * @brief Command the SDR to begin taking samples.
+     * @brief Fork off a new process to start the SDR taking samples.
      */
     void begin_sampling();
 
