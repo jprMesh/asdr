@@ -17,7 +17,7 @@
 #include <uhd/usrp/multi_usrp.hpp>
 #include <uhd/exception.hpp>
 #include <boost/format.hpp>
-#include <boost/thread.hpp> //10/3 MHLI: Not sure where this and pthread diverge, but if one of you can use only one or only the other, go ahead.
+#include <boost/thread.hpp> //10/3/16 MHLI: Not sure where this and pthread diverge, but if one of you can use only one or only the other, go ahead.
 #include <cmath>
 #include <iostream>
 #include <csignal>
