@@ -14,6 +14,8 @@
 
 /******************************************************************************/
 Masdr::Masdr() {
+    process_done = false;
+    transmit_done = false;
     initialize_peripherals();
     initialize_uhd();
     update_status();
@@ -26,7 +28,27 @@ Masdr::~Masdr() {
 
 /******************************************************************************/
 void Masdr::update_status() {
-    was_stationary = phy_status.is_stationary;
+    // update phy_status from peripherals
+}
+
+/******************************************************************************/
+void Masdr::do_action() {
+    if (soft_status == IDLE && phy_status.is_stationary) {
+        begin_sampling();
+        soft_status = SAMPLE;
+    } else if (soft_status == SAMPLE && !phy_status.is_stationary) {
+        stop_sampling();
+        begin_processing();
+        soft_status = PROCESS;
+    } else if (soft_status == PROCESS && process_done) {
+        process_done = false;
+        transmit_data();
+        soft_status = TRANSMIT;
+    } else if (soft_status == TRANSMIT && transmit_done) {
+        transmit_done = false;
+        transmit(SoftStatus.IDLE); // Notify ground station of idleness
+        soft_status = IDLE;
+    }
 }
 
 /******************************************************************************/
@@ -79,6 +101,11 @@ void Masdr::initialize_uhd() {
 }
 
 /******************************************************************************/
+void reconfig_uhd(int txrx) {
+
+}
+
+/******************************************************************************/
 void Masdr::initialize_peripherals() {
 
 }
@@ -99,19 +126,23 @@ void Masdr::begin_processing() {
 }
 
 /******************************************************************************/
- int UHD_SAFE_MAIN(int argc, char const *argv[]) { //Defines a safe wrapper that places a catch-all around main. If an exception is thrown, it prints to stderr and returns.
+void Masdr::transmit(const void *msg, int len) {
+
+}
+
+/******************************************************************************/
+void Masdr::transmit_data() {
+    // call transmit
+}
+
+/******************************************************************************/
+int main(int argc, char const *argv[]) {
 
     Masdr masdr;
 
     while(1) {
-        if (masdr.phy_status.is_stationary && !masdr.was_stationary) {
-            masdr.begin_sampling();
-            masdr.soft_status = SAMPLE;
-        } else if (!masdr.phy_status.is_stationary && masdr.was_stationary) {
-            masdr.stop_sampling();
-            masdr.begin_processing();
-            masdr.soft_status = PROCESS;
-        }
+        masdr.update_status();
+        masdr.do_action();
     }
     return 0;
 }

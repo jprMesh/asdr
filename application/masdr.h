@@ -29,6 +29,7 @@ typedef enum {
     SAMPLE,
     PROCESS,
     TRANSMIT,
+    IDLE,
 } SoftStatus;
 
 /**
@@ -41,6 +42,27 @@ typedef struct {
     double heading; ///< Heading in degrees from north.
     bool is_stationary; ///< Current stationarity.
 } PhyStatus;
+
+/**
+ * Structure for header message before data transmission.
+ * 
+ * Includes sampling location and number of hits, indicating how many TxHit
+ * messages will be following.
+ */
+typedef struct {
+    unsigned int tx_id; ///< Transmission ID number to link with data packets.
+    double location[3]; ///< Location of this sampling session.
+    int num_hits; ///< Number of signals detected. (Need to discuss and clarify)
+} TxHeader;
+
+/**
+ * Structure for transmission of data concerning a single detected signal.
+ */
+typedef struct {
+    unsigned int tx_id; ///< Transmission ID number to link with header packet.
+    double heading; ///< Heading in degrees from North of detected signal.
+    double strength; ///< Strength of detected signal.
+} TxHit;
 
 /**
  * @brief MASDR Application Class
@@ -62,7 +84,45 @@ public:
     ~Masdr();
 
     /**
-     * @brief Command the SDR to begin taking samples.
+     * @brief Update platform status
+     * 
+     * Updates the location, heading, and stationarity.
+     */
+    void update_status();
+
+    /**
+     * @brief Do actions based on the current status.
+     * 
+     * If the system is not currently idle, do not interrupt the current
+     * process. (This may need to change, but I don't see it being necessary)
+     */
+    void do_action();
+
+private:
+    /**
+     * @brief Initialize the UHD interface to the SDR
+     * 
+     * Initialize all components necessary for the interface to the USRP SDR
+     * using the UHD library.
+     */
+    void initialize_uhd();
+
+    /**
+     * @brief Reconfigure the SDR interface for transmitting or receiving.
+     * 
+     * @param txrx Whether to configure for transmitting or receiving.
+     */
+    void reconfig_uhd(int txrx);
+
+    /**
+     * @brief Initialize any peripherals being used
+     * 
+     * This will be the GPS receiver and maybe an external memory device.
+     */
+    void initialize_peripherals();
+
+    /**
+     * @brief Fork off a new process to start the SDR taking samples.
      */
     void begin_sampling();
 
@@ -76,32 +136,20 @@ public:
      */
     void begin_processing();
 
-    PhyStatus phy_status; ///< Physical status of the platform.
-    SoftStatus soft_status; ///< The current stage of the software on the SBC.
-    bool was_stationary; ///< Previous stationary state.
-
-private:
     /**
-     * @brief Update platform status
+     * @brief General transmission method.
      * 
-     * Updates the location, heading, and stationarity.
+     * @param msg Pointer to packet to send.
+     * @param len Size of packet to be sent.
      */
-    void update_status();
+    void transmit(const void *msg, int len);
 
     /**
-     * @brief Initialize the UHD interface to the SDR
+     * @brief Transmit data to ground station
      * 
-     * Initialize all components necessary for the interface to the USRP SDR
-     * using the UHD library.
+     * Transmit sampling location and directions for signals to ground station.
      */
-    void initialize_uhd();
-
-    /**
-     * @brief Initialize any peripherals being used
-     * 
-     * This will be the GPS receiver and maybe an external memory device.
-     */
-    void initialize_peripherals();
+    void transmit_data();
 
     /**
      * @brief Gracefully stop the SDR.
@@ -109,4 +157,9 @@ private:
      * Stop all SDR processing and close any connections to the USRP SDR.
      */
     void shutdown_uhd();
+
+    PhyStatus phy_status; ///< Physical status of the platform.
+    SoftStatus soft_status; ///< The current stage of the software on the SBC.
+    bool process_done; ///< Set when data processing has completed.
+    bool transmit_done; ///< Set when data transmission has completed.
 };
