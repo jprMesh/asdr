@@ -71,7 +71,7 @@ void Masdr::initialize_uhd() {
     //set rx rate
     usrp->set_rx_rate(rate);
     //Set rx freq. 
-    //10/03/16 MHLI: Setting different freqs for tx and rx, not sure if works yet.
+    /// 10/03/16 MHLI: Setting different freqs for tx and rx, not sure if works yet.
     uhd::tune_request_t tune_request_rx(freq_rx);
     uhd::tune_request_t tune_request_tx(freq_tx);
     usrp->set_tx_freq(tune_request_tx);
@@ -136,7 +136,7 @@ void Masdr::transmit_data() {
 }
 
 /******************************************************************************/
-int main(int argc, char const *argv[]) {
+int UHD_SAFE_MAIN(int argc, char *argv[]) {
 
     Masdr masdr;
 
@@ -144,5 +144,6 @@ int main(int argc, char const *argv[]) {
         masdr.update_status();
         masdr.do_action();
     }
-    return 0;
+
+    return EXIT_SUCCESS;
 }
