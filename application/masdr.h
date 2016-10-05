@@ -108,6 +108,13 @@ private:
     void initialize_uhd();
 
     /**
+     * @brief Reconfigure the SDR interface for transmitting or receiving.
+     * 
+     * @param txrx Whether to configure for transmitting or receiving.
+     */
+    void reconfig_uhd(int txrx);
+
+    /**
      * @brief Initialize any peripherals being used
      * 
      * This will be the GPS receiver and maybe an external memory device.
