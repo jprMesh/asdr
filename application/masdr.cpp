@@ -61,8 +61,8 @@ void Masdr::initialize_uhd() {
     float freq_tx = 5.8e9; //set tx frequency
     int gain = 40;
     std::string ant  = "RX/TX";  //ant can be "RX/TX" or "RX2"
-    wirefmt = "sc16"; //or sc8
-    setup_time = 1.0; //sec setup
+    std::string wirefmt = "sc16"; //or sc8
+    int setup_time = 1.0; //sec setup
      
     //Create USRP object
     uhd::usrp::multi_usrp::sptr usrp = uhd::usrp::multi_usrp::make(args);
