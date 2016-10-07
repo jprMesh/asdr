@@ -1,6 +1,0 @@
-#ignore middle files in git
-CMakeCache.txt
-cmake_install.cmake
-masdr
-CMakeFiles/*
-
