@@ -1,0 +1,7 @@
+If libraries need to be added, add them to the CMakeLists.txt file.
+Then, update the makefile by going into the build folder and
+running:
+
+cmake ..
+
+make wil lbe run in the build folder as well.
