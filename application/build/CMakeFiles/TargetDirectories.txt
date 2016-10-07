@@ -1,0 +1,3 @@
+/home/mqp/Documents/asdr/application/build/CMakeFiles/rebuild_cache.dir
+/home/mqp/Documents/asdr/application/build/CMakeFiles/edit_cache.dir
+/home/mqp/Documents/asdr/application/build/CMakeFiles/masdr.dir
