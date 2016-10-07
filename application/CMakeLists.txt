@@ -53,16 +53,14 @@ include_directories(
 link_directories(${Boost_LIBRARY_DIRS})
 
 ### Make the executable #######################################################
-set(SOURCES_MASDR masdr.cpp masdr.h)
+set(SOURCES_MASDR
+    masdr.cpp
+    masdr.h
+    ## Add any other MASDR files here ##
+)
 add_executable(masdr ${SOURCES_MASDR})
 
 SET(CMAKE_BUILD_TYPE "Release")
-MESSAGE(STATUS "******************************************************************************")
-MESSAGE(STATUS "* NOTE: When building your own app, you probably need all kinds of different  ")
-MESSAGE(STATUS "* compiler flags. This is just an example, so it's unlikely these settings    ")
-MESSAGE(STATUS "* exactly match what you require. Make sure to double-check compiler and     ")
-MESSAGE(STATUS "* linker flags to make sure your specific requirements are included.          ")
-MESSAGE(STATUS "******************************************************************************")
 
 # Shared library case: All we need to do is link against the library, and
 # anything else we need (in this case, some Boost libraries):
