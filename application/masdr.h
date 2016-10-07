@@ -24,6 +24,8 @@
 #include <complex>
 #include <pthread.h>
 
+#define RBUF_SIZE 500
+
 /// Status of the software on the SBC.
 typedef enum {
     SAMPLE,
@@ -101,6 +103,13 @@ public:
      */
     void do_action();
 
+    /**
+     * @brief Test the receive functionality.
+     * 
+     * Test the functionality of the rx calling within the program. Probably remove in a bit.
+     */
+    void rx_test();
+    
 private:
     /**
      * @brief Initialize the UHD interface to the SDR
@@ -161,12 +170,17 @@ private:
      */
     void shutdown_uhd();
 
+    uhd::rx_streamer::sptr rx_stream;///< The UHD rx streamer
+    std::complex<float> rbuf[RBUF_SIZE];///< Buffer that signals get received into.
+    uhd::rx_metadata_t md;///< UHD Metadata
     PhyStatus phy_status; ///< Physical status of the platform.
-    SoftStatus soft_status; ///< The current stage of the software on the SBC.
+    SoftStatus soft_status; ///< The current stage of the software on the SBC. 
     bool process_done; ///< Set when data processing has completed.
     bool transmit_done; ///< Set when data transmission has completed.
-};
+};  
+bool stop_signal_called = false;
 /**
 *Check Sensor declaration ///10/7/16 MHLI: Someone will probably want to change this delcaration.
 */
 bool check_locked_sensor(std::vector<std::string> sensor_names, const char* sensor_name, get_sensor_fn_t get_sensor_fn, double setup_time);
+
