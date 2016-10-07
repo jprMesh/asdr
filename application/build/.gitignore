@@ -2,5 +2,5 @@
 CMakeCache.txt
 cmake_install.cmake
 masdr
-
+CMakeFiles/*
 

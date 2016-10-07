@@ -63,7 +63,10 @@ typedef struct {
     double heading; ///< Heading in degrees from North of detected signal.
     double strength; ///< Strength of detected signal.
 } TxHit;
-
+/**
+* 
+*/
+typedef boost::function<uhd::sensor_value_t (const std::string&)> get_sensor_fn_t;
 /**
  * @brief MASDR Application Class
  * 
@@ -163,3 +166,7 @@ private:
     bool process_done; ///< Set when data processing has completed.
     bool transmit_done; ///< Set when data transmission has completed.
 };
+/**
+*Check Sensor declaration ///10/7/16 MHLI: Someone will probably want to change this delcaration.
+*/
+bool check_locked_sensor(std::vector<std::string> sensor_names, const char* sensor_name, get_sensor_fn_t get_sensor_fn, double setup_time);

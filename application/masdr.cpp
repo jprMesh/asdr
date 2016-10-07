@@ -46,7 +46,7 @@ void Masdr::do_action() {
         soft_status = TRANSMIT;
     } else if (soft_status == TRANSMIT && transmit_done) {
         transmit_done = false;
-        transmit(SoftStatus.IDLE); // Notify ground station of idleness
+        //transmit(SoftStatus.IDLE); //10/7/16 MHLI: SoftStatus is not defined yet// Notify ground station of idleness
         soft_status = IDLE;
     }
 }
@@ -63,7 +63,7 @@ void Masdr::initialize_uhd() {
     std::string ant  = "RX/TX";  //ant can be "RX/TX" or "RX2"
     std::string wirefmt = "sc16"; //or sc8
     int setup_time = 1.0; //sec setup
-     
+     std::string args = "";
     //Create USRP object
     uhd::usrp::multi_usrp::sptr usrp = uhd::usrp::multi_usrp::make(args);
     //Lock mboard clocks
@@ -87,9 +87,9 @@ void Masdr::initialize_uhd() {
     check_locked_sensor(usrp->get_rx_sensor_names(0), "lo_locked", boost::bind(&uhd::usrp::multi_usrp::get_rx_sensor, usrp, _1, 0), setup_time);
 
      //create a receive streamer
-    uhd::stream_args_t stream_args(cpu_format,wire_format); //Initialize the format of memory
+    uhd::stream_args_t stream_args("fc32","sc16"); //Initialize the format of memory (CPU format, wire format)
     uhd::rx_streamer::sptr rx_stream = usrp->get_rx_stream(stream_args); //Can only be called once.
-    toRecv.recv_stream = rx_stream; 
+    //toRecv.recv_stream = rx_stream; 
        
     //setup streaming
     uhd::stream_cmd_t stream_cmd(uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS);
@@ -136,14 +136,59 @@ void Masdr::transmit_data() {
 }
 
 /******************************************************************************/
+void Masdr::shutdown_uhd() {
+
+};
+
+/******************************************************************************/
+bool check_locked_sensor(std::vector<std::string> sensor_names, const char* sensor_name, get_sensor_fn_t get_sensor_fn, double setup_time){
+    if (std::find(sensor_names.begin(), sensor_names.end(), sensor_name) == sensor_names.end())
+        return false;
+ 
+    boost::system_time start = boost::get_system_time();
+    boost::system_time first_lock_time;
+ 
+    std::cout << boost::format("Waiting for \"%s\": ") % sensor_name;
+    std::cout.flush();
+ 
+    while (true) {
+        if ((not first_lock_time.is_not_a_date_time()) and
+                (boost::get_system_time() > (first_lock_time + boost::posix_time::seconds(setup_time))))
+        {
+            std::cout << " locked." << std::endl;
+            break;
+        }
+        if (get_sensor_fn(sensor_name).to_bool()){
+            if (first_lock_time.is_not_a_date_time())
+                first_lock_time = boost::get_system_time();
+            std::cout << "+";
+            std::cout.flush();
+        }
+        else {
+            first_lock_time = boost::system_time(); //reset to 'not a date time'
+ 
+            if (boost::get_system_time() > (start + boost::posix_time::seconds(setup_time))){
+                std::cout << std::endl;
+                throw std::runtime_error(str(boost::format("timed out waiting for consecutive locks on sensor \"%s\"") % sensor_name));
+            }
+            std::cout << "_";
+            std::cout.flush();
+        }
+        boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+    }
+    std::cout << std::endl;
+    return true;
+}
+/******************************************************************************/
 int UHD_SAFE_MAIN(int argc, char *argv[]) {
 
     Masdr masdr;
 
-    while(1) {
-        masdr.update_status();
-        masdr.do_action();
-    }
+    // while(1) {
+    //     masdr.update_status();
+    //     masdr.do_action();
+    // }
 
     return EXIT_SUCCESS;
 }
+
