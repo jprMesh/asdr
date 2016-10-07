@@ -17,7 +17,9 @@
 #include <uhd/usrp/multi_usrp.hpp>
 #include <uhd/exception.hpp>
 #include <boost/format.hpp>
-#include <boost/thread.hpp> /// 10/3/16 MHLI: Not sure where this and pthread diverge, but if one of you can use only one or only the other, go ahead.
+#include <boost/thread.hpp> /// 10/3/16 MHLI: Not sure where this and pthread
+                            // diverge, but if one of you can use only
+                            // one or only the other, go ahead.
 #include <cmath>
 #include <iostream>
 #include <csignal>
@@ -65,10 +67,25 @@ typedef struct {
     double heading; ///< Heading in degrees from North of detected signal.
     double strength; ///< Strength of detected signal.
 } TxHit;
+
 /**
-* 
-*/
-typedef boost::function<uhd::sensor_value_t (const std::string&)> get_sensor_fn_t;
+ * idk what this is
+ */
+typedef boost::function<uhd::sensor_value_t (const std::string&)>
+    get_sensor_fn_t;
+
+bool stop_signal_called = false; ///< Global for keyboard interrupts
+
+/**
+ * Check Sensor declaration
+ * 
+ * ///10/7/16 MHLI: Someone will probably want to change this delcaration.
+ */
+bool check_locked_sensor(std::vector<std::string> sensor_names,
+                         const char* sensor_name,
+                         get_sensor_fn_t get_sensor_fn,
+                         double setup_time);
+
 /**
  * @brief MASDR Application Class
  * 
@@ -106,7 +123,8 @@ public:
     /**
      * @brief Test the receive functionality.
      * 
-     * Test the functionality of the rx calling within the program. Probably remove in a bit.
+     * Test the functionality of the rx calling within the program.
+     * Probably remove in a bit.
      */
     void rx_test();
     
@@ -177,10 +195,4 @@ private:
     SoftStatus soft_status; ///< The current stage of the software on the SBC. 
     bool process_done; ///< Set when data processing has completed.
     bool transmit_done; ///< Set when data transmission has completed.
-};  
-bool stop_signal_called = false;
-/**
-*Check Sensor declaration ///10/7/16 MHLI: Someone will probably want to change this delcaration.
-*/
-bool check_locked_sensor(std::vector<std::string> sensor_names, const char* sensor_name, get_sensor_fn_t get_sensor_fn, double setup_time);
-
+};

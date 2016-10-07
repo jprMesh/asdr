@@ -12,8 +12,6 @@
 
 #include "masdr.h"
 
-void sig_int_handler(int){stop_signal_called = true;}
-
 /******************************************************************************/
 Masdr::Masdr() {
     process_done = false;
@@ -48,7 +46,7 @@ void Masdr::do_action() {
         soft_status = TRANSMIT;
     } else if (soft_status == TRANSMIT && transmit_done) {
         transmit_done = false;
-        //transmit(SoftStatus.IDLE); //10/7/16 MHLI: SoftStatus is not defined yet// Notify ground station of idleness
+        // Notify ground station of idleness
         soft_status = IDLE;
     }
 }
@@ -60,13 +58,13 @@ void Masdr::initialize_uhd() {
     uhd::set_thread_priority_safe();
     int spb = 10000; //Numbers of samples in a buffer
     int rate = 6400000; //Cannot = 0
-    float freq_rx = 2400000000;//2.4e9; //Set rx frequency
-//    float freq_tx = 5.8e9; //set tx frequency
+    float freq_rx = 2400000000; //Set rx frequency to 2.4 GHz
+    //float freq_tx = 5.8e9; //set tx frequency
     int gain = 40;
-    std::string ant  = "TX/RX";  //ant can be "TX/RX" or "RX2"
+    std::string ant = "TX/RX"; //ant can be "TX/RX" or "RX2"
     std::string wirefmt = "sc16"; //or sc8
     int setup_time = 1.0; //sec setup
-     std::string args = "";
+    std::string args = "";
     //Create USRP object
     uhd::usrp::multi_usrp::sptr usrp = uhd::usrp::multi_usrp::make(args);
     //Lock mboard clocks
@@ -75,7 +73,8 @@ void Masdr::initialize_uhd() {
     usrp->set_rx_rate(rate);
     
     //Set rx freq. 
-    /// 10/03/16 MHLI: Setting different freqs for tx and rx, not sure if works yet.
+    /// 10/03/16 MHLI: Setting different freqs for tx and rx,
+    //                 not sure if works yet.
     uhd::tune_request_t tune_request_rx(freq_rx);
     //uhd::tune_request_t tune_request_tx(freq_tx);
     usrp->set_rx_freq(tune_request_rx);
@@ -88,21 +87,28 @@ void Masdr::initialize_uhd() {
     //allow for some setup time
     boost::this_thread::sleep(boost::posix_time::seconds(setup_time)); 
     //check Ref and LO Lock detect
-    check_locked_sensor(usrp->get_rx_sensor_names(0), "lo_locked", boost::bind(&uhd::usrp::multi_usrp::get_rx_sensor, usrp, _1, 0), setup_time);
+    check_locked_sensor(usrp->get_rx_sensor_names(0),
+                        "lo_locked",
+                        boost::bind(&uhd::usrp::multi_usrp::get_rx_sensor,
+                                    usrp, _1, 0),
+                        setup_time);
 
-    
-     //create a receive streamer
-    uhd::stream_args_t stream_args("fc32","sc16"); //Initialize the format of memory (CPU format, wire format)
+    //create a receive streamer
+    //Initialize the format of memory (CPU format, wire format)
+    uhd::stream_args_t stream_args("fc32","sc16");
     rx_stream = usrp->get_rx_stream(stream_args); //Can only be called once.
     //toRecv.recv_stream = rx_stream; 
        
     //setup streaming
-    // uhd::stream_cmd_t stream_cmd(uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS);
+    // uhd::stream_cmd_t stream_cmd(
+    //     uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS);
     // stream_cmd.num_samps = size_t(0);
     // stream_cmd.stream_now = true;
     
-    // stream_cmd.time_spec = uhd::time_spec_t(); //holds the time.
-    // rx_stream->issue_stream_cmd(stream_cmd);   //sends the stream command to initialize.
+    // Holds the time.
+    // stream_cmd.time_spec = uhd::time_spec_t();
+    // Send the stream command to initialize.
+    // rx_stream->issue_stream_cmd(stream_cmd);
 }
 
 /******************************************************************************/
@@ -117,16 +123,18 @@ void Masdr::initialize_peripherals() {
 
 /******************************************************************************/
 void Masdr::begin_sampling() {
-    uhd::stream_cmd_t stream_cmd(uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS);
+    uhd::stream_cmd_t stream_cmd(
+        uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS);
     stream_cmd.num_samps = size_t(0);
     stream_cmd.stream_now = true;
-    stream_cmd.time_spec = uhd::time_spec_t(); //holds the time.
-    rx_stream->issue_stream_cmd(stream_cmd);   //sends the stream command to initialize.
+    stream_cmd.time_spec = uhd::time_spec_t(); // Holds the time.
+    rx_stream->issue_stream_cmd(stream_cmd);   // Initialize the stream
 }
 
 /******************************************************************************/
 void Masdr::stop_sampling() {
-    uhd::stream_cmd_t stream_cmd(uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
+    uhd::stream_cmd_t stream_cmd(
+        uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
     rx_stream->issue_stream_cmd(stream_cmd);
 
 }
@@ -134,14 +142,14 @@ void Masdr::stop_sampling() {
 /******************************************************************************/
 void Masdr::rx_test(){
     int i; //Counter, to help test
-    std::cout<<"entered rx_test"<<std::endl;
+    std::cout<<"Entered rx_test"<<std::endl;
     begin_sampling();
-    std::cout<<" began sampling"<<std::endl;
+    std::cout<<"Began sampling"<<std::endl;
     while(1 && !stop_signal_called){
         rx_stream->recv(&rbuf, RBUF_SIZE, md, 3.0, false);
     };
     stop_sampling();
-    std::cout<<"ended Sampling"<<std::endl;
+    std::cout<<"Stopped sampling"<<std::endl;
 }
 
 /******************************************************************************/
@@ -165,9 +173,15 @@ void Masdr::shutdown_uhd() {
 };
 
 /******************************************************************************/
-bool check_locked_sensor(std::vector<std::string> sensor_names, const char* sensor_name, get_sensor_fn_t get_sensor_fn, double setup_time){
-    if (std::find(sensor_names.begin(), sensor_names.end(), sensor_name) == sensor_names.end())
+bool check_locked_sensor(std::vector<std::string> sensor_names,
+                         const char* sensor_name,
+                         get_sensor_fn_t get_sensor_fn,
+                         double setup_time){
+    if (std::find(sensor_names.begin(),
+                  sensor_names.end(),
+                  sensor_name) == sensor_names.end()) {
         return false;
+    }
  
     boost::system_time start = boost::get_system_time();
     boost::system_time first_lock_time;
@@ -175,34 +189,42 @@ bool check_locked_sensor(std::vector<std::string> sensor_names, const char* sens
     std::cout << boost::format("Waiting for \"%s\": ") % sensor_name;
     std::cout.flush();
  
-    while (true) {
-        if ((not first_lock_time.is_not_a_date_time()) and
-                (boost::get_system_time() > (first_lock_time + boost::posix_time::seconds(setup_time))))
-        {
+    while(1) {
+        if (!first_lock_time.is_not_a_date_time()
+            && (boost::get_system_time()
+                > (first_lock_time + boost::posix_time::seconds(setup_time)))) {
             std::cout << " locked." << std::endl;
             break;
         }
-        if (get_sensor_fn(sensor_name).to_bool()){
-            if (first_lock_time.is_not_a_date_time())
+        if (get_sensor_fn(sensor_name).to_bool()) {
+            if (first_lock_time.is_not_a_date_time()) {
                 first_lock_time = boost::get_system_time();
-            std::cout << "+";
-            std::cout.flush();
+            }
+            std::cout << "+" << std::flush;
         }
         else {
             first_lock_time = boost::system_time(); //reset to 'not a date time'
  
-            if (boost::get_system_time() > (start + boost::posix_time::seconds(setup_time))){
+            if (boost::get_system_time()
+                > (start + boost::posix_time::seconds(setup_time))) {
                 std::cout << std::endl;
-                throw std::runtime_error(str(boost::format("timed out waiting for consecutive locks on sensor \"%s\"") % sensor_name));
+                throw std::runtime_error(str(boost::format(
+                    "Timed out waiting for consecutive locks on sensor \"%s\""
+                    ) % sensor_name));
             }
-            std::cout << "_";
-            std::cout.flush();
+            std::cout << "_" << std::flush;
         }
         boost::this_thread::sleep(boost::posix_time::milliseconds(100));
     }
     std::cout << std::endl;
     return true;
 }
+
+/******************************************************************************/
+void sig_int_handler(int) {
+    stop_signal_called = true;
+}
+
 /******************************************************************************/
 int UHD_SAFE_MAIN(int argc, char *argv[]) {
 
