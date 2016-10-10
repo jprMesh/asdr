@@ -148,14 +148,13 @@ void Masdr::rx_test(){
 
     begin_sampling();
     std::cout << "Began sampling" << std::endl;
-    //10/10 MHLI: This still doesn't work???
-    //rx_stream->recv(testbuf, 100, md, 3.0, false);
+    rx_stream->recv(testbuf, 100, md, 3.0, false);
     std::cout << "First Buff done" << std::endl;
         
-    // while(i < 5000){
-    //     i++;
-    //     rx_stream->recv(rbuf, RBUF_SIZE, md, 3.0, false);
-    // };
+    while (i < 5000) {
+        rx_stream->recv(rbuf, RBUF_SIZE, md, 3.0, false);
+        ++i;
+    }
 
     stop_sampling();
     std::cout << "Stopped sampling" << std::endl;
@@ -167,10 +166,9 @@ void Masdr::tx_test() {
     std::complex<float> testbuf[100];
     std::cout << "Entered tx_test" << std::endl;
 
-    //Initialize test buffer. //10/10/16 MHLI: Jonas replace this with the memset thing
-    for (i=0;i < 100; i++) {
-        testbuf[i] = std::complex<float>(0.7,0.7);
-    }
+    //Initialize test buffer.
+    memset(testbuf, 0, 100 * sizeof(std::complex<float>));
+    i = 0;
 
     //begin_sampling();
 
@@ -182,10 +180,10 @@ void Masdr::tx_test() {
     tx_stream->send(testbuf, 100, md);
     std::cout << "First Buff done" << std::endl;
         
-    // while(i < 5000){
-    //     i++;
-    //     rx_stream->recv(rbuf, RBUF_SIZE, md, 3.0, false);
-    // };
+    while (i < 5000) {
+        tx_stream->send(rbuf, RBUF_SIZE, md);
+        ++i;
+    }
 
     //stop_sampling();
     uhd::stream_cmd_t stream_cmd(   
@@ -265,13 +263,14 @@ bool check_locked_sensor(std::vector<std::string> sensor_names,
 }
 
 /******************************************************************************/
-void sig_int_handler(int) {
+void handle_sigint(int) {
     stop_signal_called = true;
+    exit(0);
 }
 
 /******************************************************************************/
 int UHD_SAFE_MAIN(int argc, char *argv[]) {
-
+    signal(SIGINT, handle_sigint);
     Masdr masdr;
     masdr.rx_test();
     masdr.tx_test();

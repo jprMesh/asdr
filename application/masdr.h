@@ -74,6 +74,11 @@ typedef struct {
 typedef boost::function<uhd::sensor_value_t (const std::string&)>
     get_sensor_fn_t;
 
+/**
+ * @brief Handle a SIGINT nicely.
+ */
+void handle_sigint(int);
+
 bool stop_signal_called = false; ///< Global for keyboard interrupts
 
 /**
