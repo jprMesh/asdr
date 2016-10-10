@@ -145,7 +145,7 @@ void Masdr::stop_sampling() {
 void Masdr::rx_test(){
     int i; //Counter, to help test
     std::complex<float> testbuf[100];
-    std::cout<<"Entered rx_test"<<std::endl;
+    std::cout << "Entered rx_test" << std::endl;
 
     //begin_sampling();
     uhd::stream_cmd_t stream_cmd(
@@ -155,10 +155,10 @@ void Masdr::rx_test(){
     stream_cmd.time_spec = uhd::time_spec_t(); // Holds the time.
     rx_stream->issue_stream_cmd(stream_cmd);   // Initialize the stream
 
-    std::cout<<"Began sampling"<<std::endl;
+    std::cout << "Began sampling" << std::endl;
     //10/10 MHLI: This still doesn't work???
     //rx_stream->recv(testbuf, 100, md, 3.0, false);
-    std::cout<<"First Buff done"<std::endl;
+    std::cout << "First Buff done" << std::endl;
         
     // while(i < 5000){
     //     i++;
@@ -170,14 +170,14 @@ void Masdr::rx_test(){
         uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
     rx_stream->issue_stream_cmd(stream_cmd);
 
-    std::cout<<"Stopped sampling"<<std::endl;
+    std::cout << "Stopped sampling" << std::endl;
 }
 
 /******************************************************************************/
 void Masdr::tx_test() {
     int i; //Counter, to help test
     std::complex<float> testbuf[100];
-    std::cout<<"Entered tx_test"<<std::endl;
+    std::cout << "Entered tx_test" << std::endl;
 
     //Initialize test buffer. //10/10/16 MHLI: Jonas replace this with the memset thing
     for (i=0;i < 100; i++) {
@@ -192,9 +192,9 @@ void Masdr::tx_test() {
     md.start_of_burst = false;
     md.end_of_burst = false;
 
-    std::cout<<"Began transmit"<<std::endl;
+    std::cout << "Began transmit" << std::endl;
     tx_stream->send(testbuf, 100, md);
-    std::cout<<"First Buff done"<std::endl;
+    std::cout << "First Buff done" << std::endl;
         
     // while(i < 5000){
     //     i++;
@@ -206,7 +206,7 @@ void Masdr::tx_test() {
         uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
     tx_stream->issue_stream_cmd(stream_cmd);
 
-    std::cout<<"Stopped sampling"<<std::endl;
+    std::cout << "Stopped sampling" << std::endl;
 }
 
 /******************************************************************************/
