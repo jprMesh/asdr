@@ -173,8 +173,6 @@ void Masdr::tx_test() {
     }
 
     //begin_sampling();
-    uhd::stream_args_t stream_args(cpu_format, wire_format);
-    uhd::tx_streamer::sptr tx_stream = usrp->get_tx_stream(stream_args);
 
     uhd::tx_metadata_t md;
     md.start_of_burst = false;
