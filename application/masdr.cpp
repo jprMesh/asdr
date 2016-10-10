@@ -192,7 +192,8 @@ void Masdr::tx_test() {
     //stop_sampling();
     uhd::stream_cmd_t stream_cmd(   
         uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
-    tx_stream->issue_stream_cmd(stream_cmd);
+    //tx_stream->issue_stream_cmd(stream_cmd);
+    // Tx stream can't do that.
 
     std::cout << "Stopped sampling" << std::endl;
 }
