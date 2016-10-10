@@ -127,6 +127,14 @@ public:
      * Probably remove in a bit.
      */
     void rx_test();
+
+    /** 
+     * @brief Test the transmit functionality.
+     * 
+     * Test the functionality of the tx calling within the program.
+     * Probably remove in a bit.
+     */
+    void tx_test();
     
 private:
     /**
@@ -189,6 +197,7 @@ private:
     void shutdown_uhd();
 
     uhd::rx_streamer::sptr rx_stream;///< The UHD rx streamer
+    uhd::rx_streamer::sptr tx_stream;///< The UHD tx streamer
     std::complex<float> rbuf[RBUF_SIZE];///< Buffer that signals get received into.
     uhd::rx_metadata_t md;///< UHD Metadata
     PhyStatus phy_status; ///< Physical status of the platform.

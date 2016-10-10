@@ -57,7 +57,8 @@ void Masdr::initialize_uhd() {
 
     uhd::set_thread_priority_safe();
     int spb = 10000; //Numbers of samples in a buffer
-    int rate = 6400000; //Cannot = 0
+    //int rate = 640000; //Cannot = 0
+    int rate = 1e6;
     float freq_rx = 2400000000; //Set rx frequency to 2.4 GHz
     //float freq_tx = 5.8e9; //set tx frequency
     int gain = 40;
@@ -97,6 +98,7 @@ void Masdr::initialize_uhd() {
     //Initialize the format of memory (CPU format, wire format)
     uhd::stream_args_t stream_args("fc32","sc16");
     rx_stream = usrp->get_rx_stream(stream_args); //Can only be called once.
+    tx_stream = usrp->get_tx_stream(stream_args); //Can only be called once.
     //toRecv.recv_stream = rx_stream; 
        
     //setup streaming
@@ -142,13 +144,68 @@ void Masdr::stop_sampling() {
 /******************************************************************************/
 void Masdr::rx_test(){
     int i; //Counter, to help test
+    std::complex<float> testbuf[100];
     std::cout<<"Entered rx_test"<<std::endl;
-    begin_sampling();
+
+    //begin_sampling();
+    uhd::stream_cmd_t stream_cmd(
+        uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS);   
+    stream_cmd.num_samps = size_t(0);
+    stream_cmd.stream_now = true;
+    stream_cmd.time_spec = uhd::time_spec_t(); // Holds the time.
+    rx_stream->issue_stream_cmd(stream_cmd);   // Initialize the stream
+
     std::cout<<"Began sampling"<<std::endl;
-    while(1 && !stop_signal_called){
-        rx_stream->recv(&rbuf, RBUF_SIZE, md, 3.0, false);
-    };
-    stop_sampling();
+    //10/10 MHLI: This still doesn't work???
+    //rx_stream->recv(testbuf, 100, md, 3.0, false);
+    std::cout<<"First Buff done"<std::endl;
+        
+    // while(i < 5000){
+    //     i++;
+    //     rx_stream->recv(rbuf, RBUF_SIZE, md, 3.0, false);
+    // };
+
+    //stop_sampling();
+    uhd::stream_cmd_t stream_cmd(   
+        uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
+    rx_stream->issue_stream_cmd(stream_cmd);
+
+    std::cout<<"Stopped sampling"<<std::endl;
+}
+
+/******************************************************************************/
+void Masdr::tx_test() {
+    int i; //Counter, to help test
+    std::complex<float> testbuf[100];
+    std::cout<<"Entered tx_test"<<std::endl;
+
+    //Initialize test buffer. //10/10/16 MHLI: Jonas replace this with the memset thing
+    for (i=0;i < 100; i++) {
+        testbuf[i] = std::complex<float>(0.7,0.7);
+    }
+
+    //begin_sampling();
+    uhd::stream_args_t stream_args(cpu_format, wire_format);
+    uhd::tx_streamer::sptr tx_stream = usrp->get_tx_stream(stream_args);
+
+    uhd::tx_metadata_t md;
+    md.start_of_burst = false;
+    md.end_of_burst = false;
+
+    std::cout<<"Began transmit"<<std::endl;
+    tx_stream->send(testbuf, 100, md);
+    std::cout<<"First Buff done"<std::endl;
+        
+    // while(i < 5000){
+    //     i++;
+    //     rx_stream->recv(rbuf, RBUF_SIZE, md, 3.0, false);
+    // };
+
+    //stop_sampling();
+    uhd::stream_cmd_t stream_cmd(   
+        uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
+    tx_stream->issue_stream_cmd(stream_cmd);
+
     std::cout<<"Stopped sampling"<<std::endl;
 }
 
@@ -230,7 +287,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
 
     Masdr masdr;
     masdr.rx_test();
-
+    masdr.tx_test();
     return EXIT_SUCCESS;
 }
 
