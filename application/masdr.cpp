@@ -148,8 +148,8 @@ void Masdr::rx_test(){
     std::cout << "Entered rx_test" << std::endl;
 
     //begin_sampling();
-    uhd::stream_cmd_t stream_cmd(
-        uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS);   
+    uhd::stream_cmd_t stream_cmd;
+    stream_cmd.stream_mode = uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS;
     stream_cmd.num_samps = size_t(0);
     stream_cmd.stream_now = true;
     stream_cmd.time_spec = uhd::time_spec_t(); // Holds the time.
@@ -166,8 +166,7 @@ void Masdr::rx_test(){
     // };
 
     //stop_sampling();
-    uhd::stream_cmd_t stream_cmd(   
-        uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
+    stream_cmd.stream_mode = uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS;
     rx_stream->issue_stream_cmd(stream_cmd);
 
     std::cout << "Stopped sampling" << std::endl;
