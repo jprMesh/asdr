@@ -196,10 +196,10 @@ private:
      */
     void shutdown_uhd();
 
-    uhd::rx_streamer::sptr rx_stream;///< The UHD rx streamer
-    uhd::rx_streamer::sptr tx_stream;///< The UHD tx streamer
-    std::complex<float> rbuf[RBUF_SIZE];///< Buffer that signals get received into.
-    uhd::rx_metadata_t md;///< UHD Metadata
+    uhd::rx_streamer::sptr rx_stream; ///< The UHD rx streamer
+    uhd::rx_streamer::sptr tx_stream; ///< The UHD tx streamer
+    std::complex<float> rbuf[RBUF_SIZE]; ///< Buffer for received signals.
+    uhd::rx_metadata_t md; ///< UHD Metadata
     PhyStatus phy_status; ///< Physical status of the platform.
     SoftStatus soft_status; ///< The current stage of the software on the SBC. 
     bool process_done; ///< Set when data processing has completed.

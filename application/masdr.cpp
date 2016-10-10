@@ -138,7 +138,6 @@ void Masdr::stop_sampling() {
     uhd::stream_cmd_t stream_cmd(
         uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
     rx_stream->issue_stream_cmd(stream_cmd);
-
 }
 
 /******************************************************************************/
@@ -147,14 +146,7 @@ void Masdr::rx_test(){
     std::complex<float> testbuf[100];
     std::cout << "Entered rx_test" << std::endl;
 
-    //begin_sampling();
-    uhd::stream_cmd_t stream_cmd;
-    stream_cmd.stream_mode = uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS;
-    stream_cmd.num_samps = size_t(0);
-    stream_cmd.stream_now = true;
-    stream_cmd.time_spec = uhd::time_spec_t(); // Holds the time.
-    rx_stream->issue_stream_cmd(stream_cmd);   // Initialize the stream
-
+    begin_sampling();
     std::cout << "Began sampling" << std::endl;
     //10/10 MHLI: This still doesn't work???
     //rx_stream->recv(testbuf, 100, md, 3.0, false);
@@ -165,10 +157,7 @@ void Masdr::rx_test(){
     //     rx_stream->recv(rbuf, RBUF_SIZE, md, 3.0, false);
     // };
 
-    //stop_sampling();
-    stream_cmd.stream_mode = uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS;
-    rx_stream->issue_stream_cmd(stream_cmd);
-
+    stop_sampling();
     std::cout << "Stopped sampling" << std::endl;
 }
 
