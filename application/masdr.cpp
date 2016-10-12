@@ -196,12 +196,18 @@ void Masdr::tx_test() {
 
 /******************************************************************************/
 void Masdr::begin_processing() {
-
+ //Energy Detection
+    //Threshold?
 }
 
 /******************************************************************************/
 void Masdr::transmit(const void *msg, int len) {
-
+    //Form the packet 
+    //Interleave
+    //crc 
+    //raised cosine pulse shaping
+    //Mod Scheme?
+    //tx
 }
 
 /******************************************************************************/
