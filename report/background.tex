@@ -79,14 +79,22 @@ Another approach to spectrum sensing is through the use of match filters. Match 
 Match filters fundamentally relies on prior knowledge of the characteristics of signals to be detected, otherwise this method will not perform with accuracy. The prior knowledge constraint limits the use of signal detection when unexpected signals are involved. Furthermore, match filter detection is optimal with stationary gaussian noise to hinder distortion. This will limit the real world applications for signal detection with match filtering as a significant portion of signal emitting devices are mobile.
 
 \subsection{Cyclostationary Feature Detection}
-Cyclostationary feature detection uses the periodicity of a signal as an advantage to detect the presence of signals. Stationary noise or interference will be distinguishable from signals as they do not have these periodic tendencies. This adaptation too, however, will require prior knowledge of the characteristics of the reference signals to be detected.
-\begin{figure}[ht]
-\centering
-\includegraphics[width=0.70\textwidth]{img/cyclostationary_feature.png}
-\caption{Cyclostationary Feature Detection}
-\label{fig:cyclo_detection}
+Cyclostationary Feature Detection (or CFD) depends on the fact that all communication schemes have some sort of signal repetition as a core aspect. A signal with this kind of repetition is called a Cyclostationary Process. Because of this property, when you correlate the signal with itself (or autocorrelation), there will be repeated peaks. The periodic nature of the signal also means that the autocorrelation will be periodic as well. This allows it to be expressed as a Fourier Series, called the Cyclic Autocorrelation Function (CAF) and denoted by $R_x^\alpha(\tau)$.\par 
+\[R_x^\alpha(\tau)=lim(t->\infty) \frac{1}{T} \int_-T/2^T/2 R_x(t,\tau)exp(-j2\pi\alpha t dt\]
+Where $R_x(t,\tau)$ is just the autocorrelation function of x at t with x at $\tau$. This function gives us an understanding of the times when the signal repeats, but is missing vital information of the repeated frequencies. By taking the fourier transform of $R_x^\alpha(\tau)$, we can get a better understanding of the frequencies in the Cyclostationary Process. This is denoted as $S_x^\alpha(f)$, and equals: \par
+\[ S_x^\alpha(f)=\int_-\infty^\infty R_x^\alpha(\tau)exp(-j2\pi f\tau d\tau \]
+This is called the Spectral Correlation Function (SCF). When it is normalized, it becomes the Spectral Coherence Function (SOF):
+\[C_x^\alpha(f) = \frac{ S_x^\alpha(f)}{ (S_x^\alpha(f+\alpha/2) S_x^\alpha(f-\alpha/2))^{1/2}} \]
+The SOF is from between 0 and 1, and represents the strength of the periodicity at that point. By plotting this value, the unique response of the Cyclostationary Process can be found, allowing for it to be categorized. \par
+One of the major benefits of CFD is that it is not nearly as affected by noise. Under the generally held assumption that noise is white and Gaussian, there is no periodic response, and as such noise is not factored into CFD. A block diagram of an implementation of CFD is shown in Figure \ref{fig:cyclo_detection} below. \par
+\begin{figure}[ht!]
+	\centering
+	\includegraphics[width=0.70\textwidth]{img/cyclostationary_feature.png}
+	\caption{Cyclostationary Feature Detection}
+	\label{fig:cyclo_detection}
 \end{figure}\par
-The reason behind the general lack of implementation of this method is due to the drawbacks of high computational complexity and long sensing time.
+The primary downside to Cyclostationary Feature Detection is the complexity and time required to properly utilize it. The complexity lies in the number of integrals and correlations that need to be computed in order to implement CFD. In addition, the system needs to listen for signal long enough for the Cyclostationary Process to repeat. Because of these downsides, it is not common to be used on embedded systems. \par
+
 
 \section{Localization}
 Once a signal has been identified on a measured frequency, the next step is localization. Localization refers to the act of determining the location of a transmitted signal. There are many different methods for localization. However, a lot of them become impractical for mobile passive sensing. In the following section, a variety of localization techniques will be discussed, as well as the practicality of implementing each of them.\par
