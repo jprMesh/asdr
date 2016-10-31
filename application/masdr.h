@@ -26,7 +26,7 @@
 #include <complex>
 #include <pthread.h>
 
-#define RBUF_SIZE 500
+#define RBUF_SIZE 10000
 
 /// Status of the software on the SBC.
 typedef enum {
@@ -45,6 +45,7 @@ typedef struct {
     double location[3]; ///< Location as an array of lat, long, and height.
     double heading; ///< Heading in degrees from north.
     bool is_stationary; ///< Current stationarity.
+    bool is_rotating; ///< Checks for change in magnetometer reading
 } PhyStatus;
 
 /**

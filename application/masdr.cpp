@@ -33,10 +33,10 @@ void Masdr::update_status() {
 
 /******************************************************************************/
 void Masdr::do_action() {
-    if (soft_status == IDLE && phy_status.is_stationary) {
+    if (soft_status == IDLE && phy_status.is_stationary && phy_status.is_rotating) {
         begin_sampling();
         soft_status = SAMPLE;
-    } else if (soft_status == SAMPLE && !phy_status.is_stationary) {
+    } else if (soft_status == SAMPLE && !(phy_status.is_stationary && is_rotating) {
         stop_sampling();
         begin_processing();
         soft_status = PROCESS;
@@ -56,35 +56,36 @@ void Masdr::initialize_uhd() {
     /// 10/07/16 MHLI: Currently only going to config for rx.
 
     uhd::set_thread_priority_safe();
-    int spb = 10000; //Numbers of samples in a buffer
-    //int rate = 640000; //Cannot = 0
-    int rate = 1e6;
+
+    int rate = 5e6;
     float freq_rx = 2400000000; //Set rx frequency to 2.4 GHz
-    //float freq_tx = 5.8e9; //set tx frequency
+    float freq_tx = 900e6; //set tx frequency
     int gain = 40;
-    std::string ant = "TX/RX"; //ant can be "TX/RX" or "RX2"
+    std::string rx_ant = "RX2"; //ant can be "TX/RX" or "RX2"
+    std::string tx_ant = "TX/RX"; //ant can be "TX/RX" or "RX2"
     std::string wirefmt = "sc16"; //or sc8
     int setup_time = 1.0; //sec setup
-    std::string args = "";
+
+    int bw =0; ///10/31/16 MHLI: Should probably be width of wifi stuff
     //Create USRP object
-    uhd::usrp::multi_usrp::sptr usrp = uhd::usrp::multi_usrp::make(args);
+    uhd::usrp::multi_usrp::sptr usrp = uhd::usrp::multi_usrp::make((std::string)"");
     //Lock mboard clocks
     usrp->set_clock_source("internal"); //internal, external, mimo
-    //set rx rate
+    //set rates.
     usrp->set_rx_rate(rate);
-    
-    //Set rx freq. 
-    /// 10/03/16 MHLI: Setting different freqs for tx and rx,
-    //                 not sure if works yet.
+    usrp->set_tx_rate(rate);
+    //Set frequencies. 
     uhd::tune_request_t tune_request_rx(freq_rx);
-    //uhd::tune_request_t tune_request_tx(freq_tx);
+    uhd::tune_request_t tune_request_tx(freq_tx);
     usrp->set_rx_freq(tune_request_rx);
-    
+    usrp->set_tx_freq(tune_request_tx);
     //Set gain
     usrp->set_rx_gain(gain);
     
-    //set the antenna
-    if (ant != "NULL") usrp->set_rx_antenna(ant);
+    //set the antennas
+    usrp->set_rx_antenna(rx_ant);
+    usrp->set_tx_antenna(tx_ant);
+
     //allow for some setup time
     boost::this_thread::sleep(boost::posix_time::seconds(setup_time)); 
     //check Ref and LO Lock detect
@@ -94,23 +95,11 @@ void Masdr::initialize_uhd() {
                                     usrp, _1, 0),
                         setup_time);
 
-    //create a receive streamer
+    //create streamers
     //Initialize the format of memory (CPU format, wire format)
     uhd::stream_args_t stream_args("fc32","sc16");
     rx_stream = usrp->get_rx_stream(stream_args); //Can only be called once.
     tx_stream = usrp->get_tx_stream(stream_args); //Can only be called once.
-    //toRecv.recv_stream = rx_stream; 
-       
-    //setup streaming
-    // uhd::stream_cmd_t stream_cmd(
-    //     uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS);
-    // stream_cmd.num_samps = size_t(0);
-    // stream_cmd.stream_now = true;
-    
-    // Holds the time.
-    // stream_cmd.time_spec = uhd::time_spec_t();
-    // Send the stream command to initialize.
-    // rx_stream->issue_stream_cmd(stream_cmd);
 }
 
 /******************************************************************************/
@@ -170,7 +159,6 @@ void Masdr::tx_test() {
     memset(testbuf, 0, 100 * sizeof(std::complex<float>));
     i = 0;
 
-    //begin_sampling();
 
     uhd::tx_metadata_t md;
     md.start_of_burst = false;
@@ -185,13 +173,7 @@ void Masdr::tx_test() {
         ++i;
     }
 
-    //stop_sampling();
-    uhd::stream_cmd_t stream_cmd(   
-        uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
-    //tx_stream->issue_stream_cmd(stream_cmd);
-    // Tx stream can't do that.
-
-    std::cout << "Stopped sampling" << std::endl;
+    std::cout << "Stopped transmit" << std::endl;
 }
 
 /******************************************************************************/
@@ -278,8 +260,12 @@ void handle_sigint(int) {
 int UHD_SAFE_MAIN(int argc, char *argv[]) {
     signal(SIGINT, handle_sigint);
     Masdr masdr;
+    //Test transmission and receiving.
     masdr.rx_test();
     masdr.tx_test();
+
+    masdr.update_status();
+    masdr.do_action();
     return EXIT_SUCCESS;
 }
 
