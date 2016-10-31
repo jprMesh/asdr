@@ -24,7 +24,6 @@
 #include <iostream>
 #include <csignal>
 #include <complex>
-#include <pthread.h>
 
 #define RBUF_SIZE 10000
 
@@ -59,6 +58,17 @@ typedef struct {
     double location[3]; ///< Location of this sampling session.
     int num_hits; ///< Number of signals detected. (Need to discuss and clarify)
 } TxHeader;
+
+/**
+* Structure for received buffer, includes direction as well.
+*/
+typedef struct RecItem{
+    float heading;
+    float rec_buf[RBUF_SIZE];
+    struct RecItem* next;
+} recItem;
+
+
 
 /**
  * Structure for transmission of data concerning a single detected signal.
@@ -204,10 +214,12 @@ private:
 
     uhd::rx_streamer::sptr rx_stream; ///< The UHD rx streamer
     uhd::tx_streamer::sptr tx_stream; ///< The UHD tx streamer
-    std::complex<float> rbuf[RBUF_SIZE]; ///< Buffer for received signals.
+    recItem rec_front; ///< Buffer for received signals.
+    recItem *current_rec;
     uhd::rx_metadata_t md; ///< UHD Metadata
     PhyStatus phy_status; ///< Physical status of the platform.
-    SoftStatus soft_status; ///< The current stage of the software on the SBC. 
+    SoftStatus soft_status; ///< The current stage of the software on the SBC.
+    recItem standardRecItem;
     bool process_done; ///< Set when data processing has completed.
     bool transmit_done; ///< Set when data transmission has completed.
 };

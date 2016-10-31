@@ -16,6 +16,10 @@
 Masdr::Masdr() {
     process_done = false;
     transmit_done = false;
+    standardRecItem.heading = 0;
+    standardRecItem.next = NULL;
+    rec_front.heading = 0;
+    rec_front.next = NULL;
     initialize_peripherals();
     initialize_uhd();
     update_status();
@@ -35,15 +39,28 @@ void Masdr::update_status() {
 void Masdr::do_action() {
     if (soft_status == IDLE && phy_status.is_stationary && phy_status.is_rotating) {
         begin_sampling();
+        current_rec = &rec_front;
+        current_rec->heading = phy_status.heading;
+        rx_stream->recv(current_rec->rec_buf,RBUF_SIZE,md,3.0,false);
         soft_status = SAMPLE;
-    } else if (soft_status == SAMPLE && !(phy_status.is_stationary && is_rotating) {
+
+    } else if(soft_status == SAMPLE && phy_status.is_stationary && phy_status.is_rotating) {
+        recItem new_rec = standardRecItem;
+        current_rec->next = &new_rec;
+        current_rec = current_rec->next;
+        current_rec->heading = phy_status.heading;
+        rx_stream->recv(current_rec->rec_buf, RBUF_SIZE, md,3.0,false);
+
+    } else if (soft_status == SAMPLE) {
         stop_sampling();
         begin_processing();
         soft_status = PROCESS;
+
     } else if (soft_status == PROCESS && process_done) {
         process_done = false;
         transmit_data();
         soft_status = TRANSMIT;
+
     } else if (soft_status == TRANSMIT && transmit_done) {
         transmit_done = false;
         // Notify ground station of idleness
@@ -141,7 +158,7 @@ void Masdr::rx_test(){
     std::cout << "First Buff done" << std::endl;
         
     while (i < 5000) {
-        rx_stream->recv(rbuf, RBUF_SIZE, md, 3.0, false);
+        rx_stream->recv(testbuf, 100, md, 3.0, false);
         ++i;
     }
 
@@ -169,7 +186,7 @@ void Masdr::tx_test() {
     std::cout << "First Buff done" << std::endl;
         
     while (i < 5000) {
-        tx_stream->send(rbuf, RBUF_SIZE, md);
+        tx_stream->send(testbuf, 100, md);
         ++i;
     }
 
@@ -183,17 +200,17 @@ void Masdr::begin_processing() {
 }
 
 /******************************************************************************/
-void Masdr::transmit(const void *msg, int len) {
-    //Form the packet 
-    //Interleave
-    //crc 
+void Masdr::transmit(const void *msg, int len) { 
     //raised cosine pulse shaping
-    //Mod Scheme?
+    //Mod Scheme: BPSK
     //tx
 }
 
 /******************************************************************************/
 void Masdr::transmit_data() {
+    //Form Packet
+    //Interleave
+    //Crc
     // call transmit
 }
 
