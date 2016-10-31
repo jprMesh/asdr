@@ -63,9 +63,9 @@ typedef struct {
 * Structure for received buffer, includes direction as well.
 */
 typedef struct RecItem{
-    float heading;
-    float rec_buf[RBUF_SIZE];
-    struct RecItem* next;
+    float heading; ///< direction of drone, according to magnetometer
+    float rec_buf[RBUF_SIZE]; ///< recorded buffer associated with the current heading
+    struct RecItem* next; ///< next recorded block, either a pointer or NULL
 } recItem;
 
 
@@ -80,22 +80,19 @@ typedef struct {
 } TxHit;
 
 /**
- * idk what this is
+ * @brief Handle a SIGINT nicely.
+ */
+void handle_sigint(int);
+bool stop_signal_called = false; ///< Global for keyboard interrupts
+
+/**
+ * type provided by UHD, find documentation at http://files.ettus.com/manual/
  */
 typedef boost::function<uhd::sensor_value_t (const std::string&)>
     get_sensor_fn_t;
 
 /**
- * @brief Handle a SIGINT nicely.
- */
-void handle_sigint(int);
-
-bool stop_signal_called = false; ///< Global for keyboard interrupts
-
-/**
- * Check Sensor declaration
- * 
- * ///10/7/16 MHLI: Someone will probably want to change this delcaration.
+ * Function provided by UHD, find documentation at http://files.ettus.com/manual/
  */
 bool check_locked_sensor(std::vector<std::string> sensor_names,
                          const char* sensor_name,

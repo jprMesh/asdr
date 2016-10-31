@@ -16,10 +16,13 @@
 Masdr::Masdr() {
     process_done = false;
     transmit_done = false;
+
+    //Initialize linked list of received buffer.
     standardRecItem.heading = 0;
     standardRecItem.next = NULL;
     rec_front.heading = 0;
     rec_front.next = NULL;
+    
     initialize_peripherals();
     initialize_uhd();
     update_status();
@@ -33,18 +36,29 @@ Masdr::~Masdr() {
 /******************************************************************************/
 void Masdr::update_status() {
     // update phy_status from peripherals
+    
+    ///10/31/16 MHLI: FILLER INFORMATION,REPLACE WITH CORRECT UPDATING
+    phy_status.heading = 0;
+    phy_status.is_rotating = false;
+    phy_status.is_stationary = false;
+    phy_status.location[0] = 0;
+    phy_status.location[1] = 0;
+    phy_status.location[2] = 0;
+
 }
 
 /******************************************************************************/
 void Masdr::do_action() {
     if (soft_status == IDLE && phy_status.is_stationary && phy_status.is_rotating) {
         begin_sampling();
+        //Initialize save buffer
         current_rec = &rec_front;
         current_rec->heading = phy_status.heading;
         rx_stream->recv(current_rec->rec_buf,RBUF_SIZE,md,3.0,false);
         soft_status = SAMPLE;
 
     } else if(soft_status == SAMPLE && phy_status.is_stationary && phy_status.is_rotating) {
+        //Start new buffer
         recItem new_rec = standardRecItem;
         current_rec->next = &new_rec;
         current_rec = current_rec->next;
@@ -93,12 +107,12 @@ void Masdr::initialize_uhd() {
     usrp->set_tx_rate(rate);
     //Set frequencies. 
     uhd::tune_request_t tune_request_rx(freq_rx);
+    usrp->set_rx_freq(tune_request_rx); 
     uhd::tune_request_t tune_request_tx(freq_tx);
-    usrp->set_rx_freq(tune_request_rx);
     usrp->set_tx_freq(tune_request_tx);
     //Set gain
     usrp->set_rx_gain(gain);
-    
+    usrp->set_tx_gain(gain);
     //set the antennas
     usrp->set_rx_antenna(rx_ant);
     usrp->set_tx_antenna(tx_ant);
