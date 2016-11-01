@@ -81,6 +81,9 @@ else(NOT UHD_USE_STATIC_LIBS)
     )
 endif(NOT UHD_USE_STATIC_LIBS)
 
+### Doxygen command ###########################################################
+add_custom_target(doc doxygen ${CMAKE_SOURCE_DIR}/config.dox)
+
 ### Once it's built... ########################################################
 # Here, you would have commands to install your program.
 # We will skip these in this example.
