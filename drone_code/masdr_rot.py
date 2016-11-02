@@ -1,9 +1,14 @@
 '''
 Rotation pattern script for 3DR Solo.
 I believe this will work, at least as far as connecting to an inflight drone.
-To run, connect to the `solo wifi` network hosted by the controller and access
+Before running, while still connected to the internet, the script has to be
+"packed up" with all the dependencies by calling the 'pack' utility:
+        solo script pack
+This will create a file called 'solo-script.tar.gz', which I think is what
+actually gets uploaded in the next step.
+To run, connect to the 'solo wifi' network hosted by the controller and access
 the Solo CLI. From the CLI, run this script by calling:
-    solo script run masdr_rot.py
+        solo script run masdr_rot.py
 The drone should change to guided control (controller will not work for duration
 of the maneuver), and begin rotating. After completing the rotation, it should
 restore RC control to the controller.

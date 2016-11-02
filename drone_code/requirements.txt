@@ -1,0 +1,3 @@
+### Requirements for the MASDR drone maneuver scripts ###
+
+dronekit >= 2.0.0
