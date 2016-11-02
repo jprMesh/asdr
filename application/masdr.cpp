@@ -18,10 +18,10 @@ Masdr::Masdr() {
     transmit_done = false;
 
     //Initialize linked list of received buffer.
-    standardRecItem.heading = 0;
-    standardRecItem.next = NULL;
-    rec_front.heading = 0;
-    rec_front.next = NULL;
+    standard_RecvNode.heading = 0;
+    standard_RecvNode.next = NULL;
+    recv_head.heading = 0;
+    recv_head.next = NULL;
     
     initialize_peripherals();
     initialize_uhd();
@@ -51,19 +51,10 @@ void Masdr::update_status() {
 void Masdr::do_action() {
     if (soft_status == IDLE && phy_status.is_stationary && phy_status.is_rotating) {
         begin_sampling();
-        //Initialize save buffer
-        current_rec = &rec_front;
-        current_rec->heading = phy_status.heading;
-        rx_stream->recv(current_rec->rec_buf,RBUF_SIZE,md,3.0,false);
         soft_status = SAMPLE;
 
     } else if(soft_status == SAMPLE && phy_status.is_stationary && phy_status.is_rotating) {
         //Start new buffer
-        recItem new_rec = standardRecItem;
-        current_rec->next = &new_rec;
-        current_rec = current_rec->next;
-        current_rec->heading = phy_status.heading;
-        rx_stream->recv(current_rec->rec_buf, RBUF_SIZE, md,3.0,false);
 
     } else if (soft_status == SAMPLE) {
         stop_sampling();
@@ -295,8 +286,10 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
     masdr.rx_test();
     masdr.tx_test();
 
-    masdr.update_status();
-    masdr.do_action();
+    while(1) {
+        masdr.update_status();
+        masdr.state_transition();
+    }
     return EXIT_SUCCESS;
 }
 

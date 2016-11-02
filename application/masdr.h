@@ -65,13 +65,13 @@ typedef struct {
 } TxHeader;
 
 /**
-* Structure for received buffer, includes direction as well.
+* Linked list node structure for received buffer, includes direction as well.
 */
-typedef struct RecItem{
-    float heading; ///< direction of drone, according to magnetometer
-    float rec_buf[RBUF_SIZE]; ///< recorded buffer associated with the current heading
-    struct RecItem* next; ///< next recorded block, either a pointer or NULL
-} recItem;
+typedef struct recvnode{
+    float heading; ///< Heading in degrees from north, according to magnetometer
+    float rec_buf[RBUF_SIZE]; ///< USRP samples from current direction
+    struct recvnode* next; ///< Next recorded block, either a pointer or NULL
+} RecvNode;
 
 
 
@@ -216,12 +216,12 @@ private:
 
     uhd::rx_streamer::sptr rx_stream; ///< The UHD rx streamer
     uhd::tx_streamer::sptr tx_stream; ///< The UHD tx streamer
-    recItem rec_front; ///< Buffer for received signals.
-    recItem *current_rec;
     uhd::rx_metadata_t md; ///< UHD Metadata
-    PhyStatus phy_status; ///< Physical status of the platform.
-    SoftStatus soft_status; ///< The current stage of the software on the SBC.
-    recItem standardRecItem;
-    bool process_done; ///< Set when data processing has completed.
-    bool transmit_done; ///< Set when data transmission has completed.
+    PhyStatus phy_status; ///< Physical status of the platform
+    SoftStatus soft_status; ///< The current stage of the software on the SBC
+    RecvNode standard_RecvNode; ///< Default values for new RecvNode nodes
+    RecvNode recv_head; ///< Head node in linked list buffer for received signals
+    RecvNode* curr_recv_buff; ///< Current buffer for receiving
+    bool process_done; ///< Set when data processing has completed
+    bool transmit_done; ///< Set when data transmission has completed
 };
