@@ -18,10 +18,8 @@ Masdr::Masdr() {
     transmit_done = false;
 
     //Initialize linked list of received buffer.
-    standard_RecvNode.heading = 0;
-    standard_RecvNode.next = NULL;
-    recv_head.heading = 0;
-    recv_head.next = NULL;
+    recv_head->heading = 0;
+    recv_head->next = NULL;
     
     initialize_peripherals();
     initialize_uhd();
@@ -31,6 +29,7 @@ Masdr::Masdr() {
 /******************************************************************************/
 Masdr::~Masdr() {
     shutdown_uhd();
+    delete recv_head->next; // This won't work. I'll fix it. -Jonas 11/2
 }
 
 /******************************************************************************/
@@ -70,6 +69,27 @@ void Masdr::do_action() {
         transmit_done = false;
         // Notify ground station of idleness
         soft_status = IDLE;
+    }
+}
+
+/******************************************************************************/
+void Masdr::repeat_action() {
+    if (soft_status == SAMPLE) {
+        //Start new buffer
+        RecvNode *new_rec = new RecvNode; // should be initialized to 0.
+        curr_recv_buff->next = new_rec;
+        curr_recv_buff = curr_recv_buff->next;
+        curr_recv_buff->heading = phy_status.heading;
+        rx_stream->recv(curr_recv_buff->rec_buf, RBUF_SIZE, md, 3.0, false);
+    
+    } else if (soft_status == PROCESS) {
+        ;
+    
+    } else if (soft_status == TRANSMIT) {
+        ;
+    
+    } else if (soft_status == IDLE) {
+        ;
     }
 }
 
@@ -136,6 +156,11 @@ void Masdr::initialize_peripherals() {
 
 /******************************************************************************/
 void Masdr::begin_sampling() {
+    // Initialize save buffer
+    curr_recv_buff = recv_head;
+    curr_recv_buff->heading = phy_status.heading;
+    rx_stream->recv(curr_recv_buff->rec_buf,RBUF_SIZE,md,3.0,false);
+    // Initialize new sampling stream
     uhd::stream_cmd_t stream_cmd(
         uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS);
     stream_cmd.num_samps = size_t(0);
@@ -149,6 +174,8 @@ void Masdr::stop_sampling() {
     uhd::stream_cmd_t stream_cmd(
         uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
     rx_stream->issue_stream_cmd(stream_cmd);
+    // Clear linked list
+    delete recv_head->next; // This won't work. I'll fix it. -Jonas 11/2
 }
 
 /******************************************************************************/
@@ -289,6 +316,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
     while(1) {
         masdr.update_status();
         masdr.state_transition();
+        masdr.repeat_action();
     }
     return EXIT_SUCCESS;
 }

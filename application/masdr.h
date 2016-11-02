@@ -73,8 +73,6 @@ typedef struct recvnode{
     struct recvnode* next; ///< Next recorded block, either a pointer or NULL
 } RecvNode;
 
-
-
 /**
  * Structure for transmission of data concerning a single detected signal.
  */
@@ -131,12 +129,20 @@ public:
     void update_status();
 
     /**
-     * @brief Do actions based on the current status.
+     * @brief Handle software state transitions based on the current status.
      * 
      * If the system is not currently idle, do not interrupt the current
      * process. (This may need to change, but I don't see it being necessary)
      */
-    void do_action();
+    void state_transition();
+
+    /**
+     * @brief Do any repetitive action associated with the current state.
+     * 
+     * Gets called every loop and perfoms an action based on the current value
+     * of soft_status. In sample mode, this means starting a new recv buffer.
+     */
+    void repeat_action();
 
     /**
      * @brief Test the receive functionality.
@@ -219,8 +225,7 @@ private:
     uhd::rx_metadata_t md; ///< UHD Metadata
     PhyStatus phy_status; ///< Physical status of the platform
     SoftStatus soft_status; ///< The current stage of the software on the SBC
-    RecvNode standard_RecvNode; ///< Default values for new RecvNode nodes
-    RecvNode recv_head; ///< Head node in linked list buffer for received signals
+    RecvNode* recv_head; ///< Head node in linked list buffer for received signals
     RecvNode* curr_recv_buff; ///< Current buffer for receiving
     bool process_done; ///< Set when data processing has completed
     bool transmit_done; ///< Set when data transmission has completed
