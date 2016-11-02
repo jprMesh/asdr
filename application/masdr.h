@@ -48,8 +48,7 @@ typedef enum {
 typedef struct {
     double location[3]; ///< Location as an array of lat, long, and height.
     double heading; ///< Heading in degrees from north.
-    bool is_stationary; ///< Current stationarity.
-    bool is_rotating; ///< Checks for change in magnetometer reading
+    bool is_stat_and_rot; ///< Currently stationary and rotating.
 } PhyStatus;
 
 /**

@@ -38,8 +38,7 @@ void Masdr::update_status() {
     
     ///10/31/16 MHLI: FILLER INFORMATION,REPLACE WITH CORRECT UPDATING
     phy_status.heading = 0;
-    phy_status.is_rotating = false;
-    phy_status.is_stationary = false;
+    phy_status.is_stat_and_rot = false;
     phy_status.location[0] = 0;
     phy_status.location[1] = 0;
     phy_status.location[2] = 0;
@@ -47,15 +46,12 @@ void Masdr::update_status() {
 }
 
 /******************************************************************************/
-void Masdr::do_action() {
-    if (soft_status == IDLE && phy_status.is_stationary && phy_status.is_rotating) {
+void Masdr::state_transition() {
+    if (soft_status == IDLE && phy_status.is_stat_and_rot) {
         begin_sampling();
         soft_status = SAMPLE;
 
-    } else if(soft_status == SAMPLE && phy_status.is_stationary && phy_status.is_rotating) {
-        //Start new buffer
-
-    } else if (soft_status == SAMPLE) {
+    } else if (soft_status == SAMPLE && !phy_status.is_stat_and_rot) {
         stop_sampling();
         begin_processing();
         soft_status = PROCESS;
@@ -81,13 +77,13 @@ void Masdr::repeat_action() {
         curr_recv_buff = curr_recv_buff->next;
         curr_recv_buff->heading = phy_status.heading;
         rx_stream->recv(curr_recv_buff->rec_buf, RBUF_SIZE, md, 3.0, false);
-    
+
     } else if (soft_status == PROCESS) {
         ;
-    
+
     } else if (soft_status == TRANSMIT) {
         ;
-    
+
     } else if (soft_status == IDLE) {
         ;
     }
