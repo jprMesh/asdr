@@ -23,6 +23,24 @@
 #define RBUF_SIZE 500
 #define FFT_N 16384
 
+/**
+ * Linked list node structure for received sample buffer and heading.
+ */
+typedef struct recvnode{
+    float heading; ///< Heading in degrees from north, according to magnetometer
+    float recv_buf[RBUF_SIZE]; ///< USRP samples from current direction
+    struct recvnode* next; ///< Next recorded block, either a pointer or NULL
+
+    /**
+     * @brief Delete the next item in the list.
+     *
+     * This will call recursively until everything after the element it was
+     * initially called on is deleted.
+     */
+    ~recvnode() {
+        delete next;
+    }
+} RecvNode;
 
 /**
  * Status of the software on the SBC.
@@ -56,15 +74,6 @@ typedef struct {
     double location[3]; ///< Location of this sampling session.
     int num_hits; ///< Number of signals detected. (Need to discuss and clarify)
 } TxHeader;
-
-/**
-* Linked list node structure for received buffer, includes direction as well.
-*/
-typedef struct recvnode{
-    float heading; ///< Heading in degrees from north, according to magnetometer
-    float rec_buf[RBUF_SIZE]; ///< USRP samples from current direction
-    struct recvnode* next; ///< Next recorded block, either a pointer or NULL
-} RecvNode;
 
 /**
  * Structure for transmission of data concerning a single detected signal.

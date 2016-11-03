@@ -30,7 +30,7 @@ Masdr::Masdr() {
 /******************************************************************************/
 Masdr::~Masdr() {
     shutdown_uhd();
-    delete recv_head->next; // This won't work. I'll fix it. -Jonas 11/2
+    delete recv_head->next;
 }
 
 /******************************************************************************/
@@ -77,7 +77,7 @@ void Masdr::repeat_action() {
         curr_recv_buff->next = new_rec;
         curr_recv_buff = curr_recv_buff->next;
         curr_recv_buff->heading = phy_status.heading;
-        rx_stream->recv(curr_recv_buff->rec_buf, RBUF_SIZE, md, 3.0, false);
+        rx_stream->recv(curr_recv_buff->recv_buf, RBUF_SIZE, md, 3.0, false);
 
     } else if (soft_status == PROCESS) {
         ;
@@ -161,7 +161,7 @@ void Masdr::begin_sampling() {
     // Initialize save buffer
     curr_recv_buff = recv_head;
     curr_recv_buff->heading = phy_status.heading;
-    rx_stream->recv(curr_recv_buff->rec_buf,RBUF_SIZE,md,3.0,false);
+    rx_stream->recv(curr_recv_buff->recv_buf,RBUF_SIZE,md,3.0,false);
     // Initialize new sampling stream
     uhd::stream_cmd_t stream_cmd(
         uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS);
@@ -177,7 +177,7 @@ void Masdr::stop_sampling() {
         uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
     rx_stream->issue_stream_cmd(stream_cmd);
     // Clear linked list
-    delete recv_head->next; // This won't work. I'll fix it. -Jonas 11/2
+    delete recv_head->next;
 }
 
 /******************************************************************************/
