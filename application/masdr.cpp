@@ -93,17 +93,6 @@ void Masdr::repeat_action() {
 /******************************************************************************/
     ///11/3/16 MHLI: WIP
 void Masdr::test_RecvNode() {
-
-    RecvNode *curent_head = new RecvNode;
-    recvNode *front = new_rec;
-    front->
-
-    RecvNode *new_rec = new RecvNode; // should be initialized to 0.
-    new_rec->heading = 0;
-    new_rec->next = NULL;
-    curr_recv_buff->next = new_rec;
-    curr_recv_buff = curr_recv_buff->next;
-    curr_recv_buff->heading = phy_status.heading;
     
 
 }
@@ -129,7 +118,7 @@ void Masdr::initialize_uhd() {
     std::string wirefmt = "sc16"; //or sc8
     int setup_time = 1.0; //sec setup
 
-    int bw =0; ///10/31/16 MHLI: Should probably be width of wifi stuff
+    int bw =1e6; ///10/31/16 MHLI: UP to 56e6
     //Create USRP object
     uhd::usrp::multi_usrp::sptr usrp = uhd::usrp::multi_usrp::make((std::string)"");
     //Lock mboard clocks
@@ -174,6 +163,18 @@ void Masdr::reconfig_uhd(int txrx) {
 void Masdr::shutdown_uhd() {
 
 };
+
+/******************************************************************************/
+bool Masdr::energy_detection(float *sig_in, int size){
+    float acc=0;
+    int i;
+    for (i = 0; i < size; i++)
+        acc += sig_in[i];
+    if(acc > THRESH_E)
+        return true;
+    else
+        return false;
+}
 
 /******************************************************************************/
 void Masdr::begin_sampling() {
@@ -277,6 +278,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
     //Test transmission and receiving.
     masdr.rx_test();
     masdr.tx_test();
+    fftw_test();
 
     while(1) {
         masdr.update_status();
@@ -285,3 +287,21 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
     }
     return EXIT_SUCCESS;
 }
+
+/******************************************************************************/
+///////////Test functions
+/******************************************************************************/
+void fftw_test() {
+     fftw_complex in[FFT_N], out[FFT_N];
+     fftw_plan p;
+     ///ONLY HAVE TO RUN ONCE PER FFT SIZE, also is an out of place FFT
+     p = fftw_create_plan(N, FFTW_FORWARD, FFTW_ESTIMATE); //fftw_create_plan(Size, forward or backwards FFT, FFTW_ESTIMATE or FFTW_MEASURE)
+     
+     fftw_one(p, in, out);
+     //Normalized is off.
+     fftw_destroy_plan(p);  
+ }
+ fftw_complex *testsig_gen(float *input_buff){
+
+ }
+

@@ -25,7 +25,7 @@
 #include <uhd/usrp/multi_usrp.hpp>
 #include <uhd/exception.hpp>
 // Other libraries
-//#include <fftw.h>
+#include <fftw3.h>
 #include "utils.h"
 
 
@@ -123,6 +123,11 @@ private:
     void begin_sampling();
 
     /**
+     * @brief Test the Recv Structure. REMOVE LATER
+     */
+    void test_RecvNode() ;
+
+    /**
      * @brief Command the SDR to stop taking samples.
      */
     void stop_sampling();
@@ -157,5 +162,10 @@ private:
     bool process_done; ///< Set when data processing has completed
     bool transmit_done; ///< Set when data transmission has completed
 };
+
+    /**
+     * @brief Figuring out how fftw works, REMOVE LATER
+     */
+void fftw_test();
 
 #endif // __masdr_h__
