@@ -273,6 +273,15 @@ void Masdr::begin_processing() {
     // fftw_plan p = fftw_create_plan(FFT_N, FFTW_FORWARD, FFTW_ESTIMATE);
     // fftw_one(p, in, out);
     // fftw_destroy_plan(p);
+
+    //while data structure is null, energy detect current buffer,
+    //bool hasEnergy = energy_detection(current->recv_buf);
+    //if(hasEnergy){
+        //fftw_one(p, current->Recv_buf, fft_sig)
+        //match_filt(fft_sig);
+        //localize(fft_sig);
+    //}
+
 }
 
 /******************************************************************************/
