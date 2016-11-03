@@ -153,7 +153,7 @@ private:
     PhyStatus phy_status; ///< Physical status of the platform
     SoftStatus soft_status; ///< The current stage of the software on the SBC
     RecvNode* recv_head; ///< Head node in linked list buffer for received signals
-    RecvNode* curr_recv_buff; ///< Current buffer for receiving
+    RecvNode* curr_recv_buf; ///< Current buffer for receiving
     bool process_done; ///< Set when data processing has completed
     bool transmit_done; ///< Set when data transmission has completed
 };

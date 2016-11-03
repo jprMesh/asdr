@@ -74,10 +74,10 @@ void Masdr::repeat_action() {
     if (soft_status == SAMPLE) {
         //Start new buffer
         RecvNode *new_rec = new RecvNode; // should be initialized to 0.
-        curr_recv_buff->next = new_rec;
-        curr_recv_buff = curr_recv_buff->next;
-        curr_recv_buff->heading = phy_status.heading;
-        rx_stream->recv(curr_recv_buff->recv_buf, RBUF_SIZE, md, 3.0, false);
+        curr_recv_buf->next = new_rec;
+        curr_recv_buf = curr_recv_buf->next;
+        curr_recv_buf->heading = phy_status.heading;
+        rx_stream->recv(curr_recv_buf->recv_buf, RBUF_SIZE, md, 3.0, false);
 
     } else if (soft_status == PROCESS) {
         ;
@@ -159,9 +159,9 @@ void Masdr::shutdown_uhd() {
 /******************************************************************************/
 void Masdr::begin_sampling() {
     // Initialize save buffer
-    curr_recv_buff = recv_head;
-    curr_recv_buff->heading = phy_status.heading;
-    rx_stream->recv(curr_recv_buff->recv_buf,RBUF_SIZE,md,3.0,false);
+    curr_recv_buf = recv_head;
+    curr_recv_buf->heading = phy_status.heading;
+    rx_stream->recv(curr_recv_buf->recv_buf,RBUF_SIZE,md,3.0,false);
     // Initialize new sampling stream
     uhd::stream_cmd_t stream_cmd(
         uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS);
