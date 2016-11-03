@@ -13,6 +13,7 @@
 #ifndef __utils_h__
 #define __utils_h__
 
+#include <iostream>
 // UHD libraries
 #include <uhd/usrp/multi_usrp.hpp>
 // Boost libraries
@@ -27,7 +28,7 @@
 /**
  * Linked list node structure for received sample buffer and heading.
  */
-typedef struct recvnode{
+typedef struct recvnode {
     float heading; ///< Heading in degrees from north, according to magnetometer
     float recv_buf[RBUF_SIZE]; ///< USRP samples from current direction
     struct recvnode* next; ///< Next recorded block, either a pointer or NULL
@@ -39,6 +40,7 @@ typedef struct recvnode{
      * initially called on is deleted.
      */
     ~recvnode() {
+        std::cout << "deleting node " << next << std::endl;
         delete next;
     }
 } RecvNode;
