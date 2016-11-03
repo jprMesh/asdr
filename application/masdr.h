@@ -25,7 +25,7 @@
 #include <uhd/usrp/multi_usrp.hpp>
 #include <uhd/exception.hpp>
 // Other libraries
-//#include <fftw.h>
+#include <fftw3.h>
 #include "utils.h"
 
 
@@ -86,6 +86,8 @@ public:
      * Probably remove in a bit.
      */
     void tx_test();
+
+    void test_RecvNode();
     
 private:
     /**
@@ -152,7 +154,7 @@ private:
     uhd::rx_metadata_t md; ///< UHD Metadata
     PhyStatus phy_status; ///< Physical status of the platform
     SoftStatus soft_status; ///< The current stage of the software on the SBC
-    RecvNode* recv_head; ///< Head node in linked list buffer for received signals
+    RecvNode recv_head; ///< Head node in linked list buffer for received signals
     RecvNode* curr_recv_buf; ///< Current buffer for receiving
     bool process_done; ///< Set when data processing has completed
     bool transmit_done; ///< Set when data transmission has completed
