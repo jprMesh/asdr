@@ -11,6 +11,7 @@
 // Sponsor: Gryphon Sensors
 
 #include "masdr.h"
+#include "utils.h"
 
 /******************************************************************************/
 Masdr::Masdr() {
@@ -90,6 +91,11 @@ void Masdr::repeat_action() {
 }
 
 /******************************************************************************/
+void Masdr::initialize_peripherals() {
+
+}
+
+/******************************************************************************/
 void Masdr::initialize_uhd() {
     /// 10/07/16 MHLI: Currently only going to config for rx.
 
@@ -141,14 +147,14 @@ void Masdr::initialize_uhd() {
 }
 
 /******************************************************************************/
-void reconfig_uhd(int txrx) {
+void Masdr::reconfig_uhd(int txrx) {
 
 }
 
 /******************************************************************************/
-void Masdr::initialize_peripherals() {
+void Masdr::shutdown_uhd() {
 
-}
+};
 
 /******************************************************************************/
 void Masdr::begin_sampling() {
@@ -223,8 +229,11 @@ void Masdr::tx_test() {
 
 /******************************************************************************/
 void Masdr::begin_processing() {
- //Energy Detection
-    //Threshold?
+    // FFT
+    // fftw_complex in[FFT_N], out[FFT_N];
+    // fftw_plan p = fftw_create_plan(FFT_N, FFTW_FORWARD, FFTW_ESTIMATE);
+    // fftw_one(p, in, out);
+    // fftw_destroy_plan(p);
 }
 
 /******************************************************************************/
@@ -243,65 +252,6 @@ void Masdr::transmit_data() {
 }
 
 /******************************************************************************/
-void Masdr::shutdown_uhd() {
-
-};
-
-/******************************************************************************/
-bool check_locked_sensor(std::vector<std::string> sensor_names,
-                         const char* sensor_name,
-                         get_sensor_fn_t get_sensor_fn,
-                         double setup_time){
-    if (std::find(sensor_names.begin(),
-                  sensor_names.end(),
-                  sensor_name) == sensor_names.end()) {
-        return false;
-    }
- 
-    boost::system_time start = boost::get_system_time();
-    boost::system_time first_lock_time;
- 
-    std::cout << boost::format("Waiting for \"%s\": ") % sensor_name;
-    std::cout.flush();
- 
-    while(1) {
-        if (!first_lock_time.is_not_a_date_time()
-            && (boost::get_system_time()
-                > (first_lock_time + boost::posix_time::seconds(setup_time)))) {
-            std::cout << " locked." << std::endl;
-            break;
-        }
-        if (get_sensor_fn(sensor_name).to_bool()) {
-            if (first_lock_time.is_not_a_date_time()) {
-                first_lock_time = boost::get_system_time();
-            }
-            std::cout << "+" << std::flush;
-        }
-        else {
-            first_lock_time = boost::system_time(); //reset to 'not a date time'
- 
-            if (boost::get_system_time()
-                > (start + boost::posix_time::seconds(setup_time))) {
-                std::cout << std::endl;
-                throw std::runtime_error(str(boost::format(
-                    "Timed out waiting for consecutive locks on sensor \"%s\""
-                    ) % sensor_name));
-            }
-            std::cout << "_" << std::flush;
-        }
-        boost::this_thread::sleep(boost::posix_time::milliseconds(100));
-    }
-    std::cout << std::endl;
-    return true;
-}
-
-/******************************************************************************/
-void handle_sigint(int) {
-    stop_signal_called = true;
-    exit(0);
-}
-
-/******************************************************************************/
 int UHD_SAFE_MAIN(int argc, char *argv[]) {
     signal(SIGINT, handle_sigint);
     Masdr masdr;
@@ -316,4 +266,3 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
     }
     return EXIT_SUCCESS;
 }
-

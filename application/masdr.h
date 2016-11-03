@@ -10,6 +10,9 @@
 // Advisor: Professor Alex Wyglinski
 // Sponsor: Gryphon Sensors
 
+#ifndef __masdr_h__
+#define __masdr_h__
+
 // Standard libraries
 #include <iostream>
 #include <csignal>
@@ -21,85 +24,10 @@
 #include <uhd/utils/safe_main.hpp>
 #include <uhd/usrp/multi_usrp.hpp>
 #include <uhd/exception.hpp>
-// Boost libraries
-#include <boost/format.hpp>
-#include <boost/thread.hpp>
 // Other libraries
-#include <fftw.h>
+//#include <fftw.h>
+#include "utils.h"
 
-// Buffer sizes
-#define RBUF_SIZE 500
-#define FFT_N 16384
-
-
-/// Status of the software on the SBC.
-typedef enum {
-    SAMPLE,
-    PROCESS,
-    TRANSMIT,
-    IDLE,
-} SoftStatus;
-
-/**
- * Physical status of the platform.
- * 
- * Includes location, heading, and stationarity.
- */
-typedef struct {
-    double location[3]; ///< Location as an array of lat, long, and height.
-    double heading; ///< Heading in degrees from north.
-    bool is_stat_and_rot; ///< Currently stationary and rotating.
-} PhyStatus;
-
-/**
- * Structure for header message before data transmission.
- * 
- * Includes sampling location and number of hits, indicating how many TxHit
- * messages will be following.
- */
-typedef struct {
-    unsigned int tx_id; ///< Transmission ID number to link with data packets.
-    double location[3]; ///< Location of this sampling session.
-    int num_hits; ///< Number of signals detected. (Need to discuss and clarify)
-} TxHeader;
-
-/**
-* Linked list node structure for received buffer, includes direction as well.
-*/
-typedef struct recvnode{
-    float heading; ///< Heading in degrees from north, according to magnetometer
-    float rec_buf[RBUF_SIZE]; ///< USRP samples from current direction
-    struct recvnode* next; ///< Next recorded block, either a pointer or NULL
-} RecvNode;
-
-/**
- * Structure for transmission of data concerning a single detected signal.
- */
-typedef struct {
-    unsigned int tx_id; ///< Transmission ID number to link with header packet.
-    double heading; ///< Heading in degrees from North of detected signal.
-    double strength; ///< Strength of detected signal.
-} TxHit;
-
-/**
- * @brief Handle a SIGINT nicely.
- */
-void handle_sigint(int);
-bool stop_signal_called = false; ///< Global for keyboard interrupts
-
-/**
- * type provided by UHD, find documentation at http://files.ettus.com/manual/
- */
-typedef boost::function<uhd::sensor_value_t (const std::string&)>
-    get_sensor_fn_t;
-
-/**
- * Function provided by UHD, find documentation at http://files.ettus.com/manual/
- */
-bool check_locked_sensor(std::vector<std::string> sensor_names,
-                         const char* sensor_name,
-                         get_sensor_fn_t get_sensor_fn,
-                         double setup_time);
 
 /**
  * @brief MASDR Application Class
@@ -161,6 +89,13 @@ public:
     
 private:
     /**
+     * @brief Initialize any peripherals being used
+     * 
+     * This will be the GPS receiver and maybe an external memory device.
+     */
+    void initialize_peripherals();
+
+    /**
      * @brief Initialize the UHD interface to the SDR
      * 
      * Initialize all components necessary for the interface to the USRP SDR
@@ -176,11 +111,11 @@ private:
     void reconfig_uhd(int txrx);
 
     /**
-     * @brief Initialize any peripherals being used
+     * @brief Gracefully stop the SDR.
      * 
-     * This will be the GPS receiver and maybe an external memory device.
+     * Stop all SDR processing and close any connections to the USRP SDR.
      */
-    void initialize_peripherals();
+    void shutdown_uhd();
 
     /**
      * @brief Fork off a new process to start the SDR taking samples.
@@ -212,13 +147,6 @@ private:
      */
     void transmit_data();
 
-    /**
-     * @brief Gracefully stop the SDR.
-     * 
-     * Stop all SDR processing and close any connections to the USRP SDR.
-     */
-    void shutdown_uhd();
-
     uhd::rx_streamer::sptr rx_stream; ///< The UHD rx streamer
     uhd::tx_streamer::sptr tx_stream; ///< The UHD tx streamer
     uhd::rx_metadata_t md; ///< UHD Metadata
@@ -229,3 +157,5 @@ private:
     bool process_done; ///< Set when data processing has completed
     bool transmit_done; ///< Set when data transmission has completed
 };
+
+#endif // __masdr_h__

@@ -56,6 +56,8 @@ link_directories(${Boost_LIBRARY_DIRS})
 set(SOURCES_MASDR
     masdr.cpp
     masdr.h
+    utils.cpp
+    utils.h
     ## Add any other MASDR files here ##
 )
 add_executable(masdr ${SOURCES_MASDR})
