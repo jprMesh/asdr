@@ -23,6 +23,7 @@
 // Buffer sizes
 #define RBUF_SIZE 16384
 #define FFT_N 16384
+#define THRESH_E 0.002 ///11/3/16 MHLI: currently arbitrarily picked
 
 /**
  * Linked list node structure for received sample buffer and heading.
