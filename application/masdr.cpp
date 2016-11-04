@@ -22,9 +22,9 @@ Masdr::Masdr() {
     recv_head.heading = 0;
     recv_head.next = NULL;
     
-    // initialize_peripherals();
-    // initialize_uhd();
-    // update_status();
+    initialize_peripherals();
+    initialize_uhd();
+    update_status();
 }
 
 /******************************************************************************/
@@ -110,7 +110,6 @@ void Masdr::test_RecvNode() {
     std::cout << "Done freeing list" << std::endl;
     std::cout << recv_head.next << std::endl;
 }
-
 
 /******************************************************************************/
 void Masdr::initialize_peripherals() {
@@ -200,6 +199,7 @@ void Masdr::stop_sampling() {
     rx_stream->issue_stream_cmd(stream_cmd);
     // Clear linked list
     delete recv_head.next;
+    recv_head.next = NULL;
 }
 
 /******************************************************************************/
@@ -276,10 +276,7 @@ void Masdr::transmit_data() {
 /******************************************************************************/
 int UHD_SAFE_MAIN(int argc, char *argv[]) {
     signal(SIGINT, handle_sigint);
-    std::cout << "bruh" << std::endl;
     Masdr masdr;
-    std::cout << "bruh" << std::endl;
-    masdr.test_RecvNode();
 
     // while(1) {
     //     masdr.update_status();
