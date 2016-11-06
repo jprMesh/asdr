@@ -98,6 +98,11 @@ typedef struct {
 void handle_sigint(int);
 
 /**
+ * @brief Test FFT functionality.
+ */
+void fft_test();
+
+/**
  * type provided by UHD, find documentation at http://files.ettus.com/manual/
  */
 typedef boost::function<uhd::sensor_value_t (const std::string&)>
