@@ -183,7 +183,7 @@ bool Masdr::energy_detection(float *sig_in, int size){
     float acc=0;
     int i;
     for (i = 0; i < size; i++)
-        acc += sig_in[i];
+        acc += sqrt(sig_in[i].real()*sig_in[i].real()+sig_in[i].imag()*sig_in[i].imag());
     if(acc > THRESH_E)
         return true;
     else
@@ -264,10 +264,9 @@ void Masdr::rx_test(){
         rx_stream->recv(testbuf, RBUF_SIZE, md, 3.0, false);
         
         for(j=0;j<RBUF_SIZE;j++) {
-            accum += testbuf[j]; 
+            accum += sqrt(testbuf[j].real() *testbuf[j].real() + testbuf[j].imag()*testbuf[j].imag()); 
         }
         std::cout << "Received Value: "<<accum<<std::endl;
-
         ++i;
     }
 
@@ -312,7 +311,8 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
     signal(SIGINT, handle_sigint);
     Masdr masdr;
 
-    masdr.energy_test();
+    masdr.rx_test();
+    //masdr.energy_test();
 
     /// 11/6/16 MHLI: Commented out while we test energy functions
     // while(1) {
