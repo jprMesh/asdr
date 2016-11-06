@@ -21,6 +21,7 @@
 #include <boost/thread.hpp>
 //FFT Library
 #include <fftw3.h>
+#include "lsm303dlhc_driver.h"
 // Buffer sizes
 #define RBUF_SIZE 16384
 #define FFT_N 16384
@@ -91,6 +92,11 @@ typedef struct {
  * @brief Handle a SIGINT nicely.
  */
 void handle_sigint(int);
+
+/**
+ * @brief Test FFT functionality.
+ */
+void fft_test();
 
 /**
  * type provided by UHD, find documentation at http://files.ettus.com/manual/

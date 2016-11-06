@@ -26,7 +26,7 @@
 #include <uhd/exception.hpp>
 // Other libraries
 #include "utils.h"
-
+#define DEBUG_THRESH 1
 
 /**
  * @brief MASDR Application Class

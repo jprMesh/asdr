@@ -124,7 +124,8 @@ void Masdr::initialize_uhd() {
     uhd::set_thread_priority_safe();
 
     int rate = 5e6;
-    float freq_rx = 2400000000; //Set rx frequency to 2.4 GHz
+    //float freq_rx = 2.4e9; //Set rx frequency to 2.4 GHz
+    float freq_rx = 900e6; //11/6/16 MHLI: TEST
     float freq_tx = 900e6; //set tx frequency
     int gain = 40;
     std::string rx_ant = "RX2"; //ant can be "TX/RX" or "RX2"
@@ -132,7 +133,7 @@ void Masdr::initialize_uhd() {
     std::string wirefmt = "sc16"; //or sc8
     int setup_time = 1.0; //sec setup
 
-    int bw =1e6; ///10/31/16 MHLI: UP to 56e6
+    int bw =10e6; ///10/31/16 MHLI: UP to 56e6
     //Create USRP object
     uhd::usrp::multi_usrp::sptr usrp = uhd::usrp::multi_usrp::make((std::string)"");
     //Lock mboard clocks
@@ -249,7 +250,7 @@ void Masdr::transmit_data() {
 /************************************TESTS*************************************/
 /******************************************************************************/
 void Masdr::rx_test(){
-    int i=0,j; //Counter, to help 
+    int i=0,j, numLoops; //Counter, to help 
     float accum;
     std::complex<float> testbuf[RBUF_SIZE];
     std::cout << "Entered rx_test" << std::endl;
@@ -258,16 +259,25 @@ void Masdr::rx_test(){
     std::cout << "Began sampling" << std::endl;
     rx_stream->recv(testbuf, RBUF_SIZE, md, 3.0, false);
     std::cout << "First Buff done" << std::endl;
-        
-    while (i < 5000) {
+
+    if(DEBUG_THRESH)
+        while (1){//(i < 5000) {
         accum = 0;
         rx_stream->recv(testbuf, RBUF_SIZE, md, 3.0, false);
         
         for(j=0;j<RBUF_SIZE;j++) {
-            accum += sqrt(testbuf[j].real() *testbuf[j].real() + testbuf[j].imag()*testbuf[j].imag()); 
+            accum += (sqrt(testbuf[j].real() *testbuf[j].real()
+                      + testbuf[j].imag()*testbuf[j].imag())); 
         }
         std::cout << "Received Value: "<<accum<<std::endl;
-        ++i;
+        //++i;
+    }
+    else 
+        numLoops = 5000;
+
+
+    while(i<numLoops && !DEBUG_THRESH){
+        rx_stream->recv(testbuf, RBUF_SIZE, md, 3.0, false);
     }
 
     stop_sampling();
