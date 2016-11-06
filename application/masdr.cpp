@@ -179,7 +179,7 @@ void Masdr::shutdown_uhd() {
 }
 
 /******************************************************************************/
-bool Masdr::energy_detection(float *sig_in, int size){
+bool Masdr::energy_detection(std::complex<float> *sig_in, int size){
     float acc=0;
     int i;
     for (i = 0; i < size; i++)

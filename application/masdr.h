@@ -134,7 +134,7 @@ private:
     /**
      * @brief Detect if there's any energy detected on the bandwidth being measured.
      */
-    bool energy_detection(float *sig_in, int size);
+    bool energy_detection(std::complex<float> *sig_in, int size);
 
 
     /**

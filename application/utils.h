@@ -31,7 +31,7 @@
  */
 typedef struct recvnode {
     float heading; ///< Heading in degrees from north, according to magnetometer
-    float recv_buf[RBUF_SIZE]; ///< USRP samples from current direction
+    std::complex<float> recv_buf[RBUF_SIZE]; ///< USRP samples from current direction
     struct recvnode* next; ///< Next recorded block, either a pointer or NULL
 
     /**
