@@ -21,7 +21,7 @@
 #include <boost/thread.hpp>
 
 // Buffer sizes
-#define RBUF_SIZE 500
+#define RBUF_SIZE 16384
 #define FFT_N 16384
 #define THRESH_E 0.002 ///11/3/16 MHLI: currently arbitrarily picked
 
@@ -40,7 +40,6 @@ typedef struct recvnode {
      * initially called on is deleted.
      */
     ~recvnode() {
-        std::cout << "deleting node " << next << std::endl;
         delete next;
     }
 } RecvNode;

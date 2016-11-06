@@ -22,9 +22,9 @@ Masdr::Masdr() {
     recv_head.heading = 0;
     recv_head.next = NULL;
     
-    // initialize_peripherals();
-    // initialize_uhd();
-    // update_status();
+    initialize_peripherals();
+    initialize_uhd();
+    update_status();
 }
 
 /******************************************************************************/
@@ -72,12 +72,13 @@ void Masdr::state_transition() {
 /******************************************************************************/
 void Masdr::repeat_action() {
     if (soft_status == SAMPLE) {
-        //Start new buffer
-        RecvNode *new_rec = new RecvNode; // should be initialized to 0.
-        curr_recv_buf->next = new_rec;
-        curr_recv_buf = curr_recv_buf->next;
+        // Receive into current buffer
         curr_recv_buf->heading = phy_status.heading;
-        rx_stream->recv(curr_recv_buf->recv_buf, RBUF_SIZE, md, 3.0, false);
+        rx_stream->recv(curr_recv_buf->recv_buf,RBUF_SIZE,md,3.0,false);
+        // Start new buffer
+        RecvNode *new_node = new RecvNode; // should be initialized to 0.
+        curr_recv_buf->next = new_node;
+        curr_recv_buf = curr_recv_buf->next;
 
     } else if (soft_status == PROCESS) {
         ;
@@ -92,10 +93,6 @@ void Masdr::repeat_action() {
 
 /******************************************************************************/
 void Masdr::test_RecvNode() {
-<<<<<<< HEAD
-    
-
-=======
     std::cout << "Begin testing" << std::endl;
     recv_head.heading = 180;
     curr_recv_buf = &recv_head;
@@ -113,9 +110,7 @@ void Masdr::test_RecvNode() {
     recv_head.next = NULL;
     std::cout << "Done freeing list" << std::endl;
     std::cout << recv_head.next << std::endl;
->>>>>>> 6d90e552c537125628bf39de9c815f389284684f
 }
-
 
 /******************************************************************************/
 void Masdr::initialize_peripherals() {
@@ -197,10 +192,6 @@ bool Masdr::energy_detection(float *sig_in, int size){
 
 /******************************************************************************/
 void Masdr::begin_sampling() {
-    // Initialize save buffer
-    curr_recv_buf = &recv_head;
-    curr_recv_buf->heading = phy_status.heading;
-    rx_stream->recv(curr_recv_buf->recv_buf,RBUF_SIZE,md,3.0,false);
     // Initialize new sampling stream
     uhd::stream_cmd_t stream_cmd(
         uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS);
@@ -208,6 +199,8 @@ void Masdr::begin_sampling() {
     stream_cmd.stream_now = true;
     stream_cmd.time_spec = uhd::time_spec_t(); // Holds the time.
     rx_stream->issue_stream_cmd(stream_cmd);   // Initialize the stream
+    // Set current buffer to head
+    curr_recv_buf = &recv_head;
 }
 
 /******************************************************************************/
@@ -217,6 +210,7 @@ void Masdr::stop_sampling() {
     rx_stream->issue_stream_cmd(stream_cmd);
     // Clear linked list
     delete recv_head.next;
+    recv_head.next = NULL;
 }
 
 /******************************************************************************/
@@ -302,19 +296,13 @@ void Masdr::transmit_data() {
 /******************************************************************************/
 int UHD_SAFE_MAIN(int argc, char *argv[]) {
     signal(SIGINT, handle_sigint);
-    std::cout << "bruh" << std::endl;
     Masdr masdr;
-    //Test transmission and receiving.
-    masdr.rx_test();
-    masdr.tx_test();
-//fftw_test();
-    masdr.test_RecvNode();  
 
-    // while(1) {
-    //     masdr.update_status();
-    //     masdr.state_transition();
-    //     masdr.repeat_action();
-    // }
+    while(1) {
+        masdr.update_status();
+        masdr.state_transition();
+        masdr.repeat_action();
+    }
     return EXIT_SUCCESS;
 }
 
