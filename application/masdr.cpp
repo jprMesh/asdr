@@ -309,17 +309,17 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
 /******************************************************************************/
 ///////////Test functions
 /******************************************************************************/
-void fftw_test() {
-     fftw_complex in[FFT_N], out[FFT_N];
-     fftw_plan p;
-     ///ONLY HAVE TO RUN ONCE PER FFT SIZE, also is an out of place FFT
-     p = fftw_create_plan(N, FFTW_FORWARD, FFTW_ESTIMATE); //fftw_create_plan(Size, forward or backwards FFT, FFTW_ESTIMATE or FFTW_MEASURE)
+// void fftw_test() {
+//      fftw_complex in[FFT_N], out[FFT_N];
+//      fftw_plan p;
+//      ///ONLY HAVE TO RUN ONCE PER FFT SIZE, also is an out of place FFT
+//      p = fftw_create_plan(N, FFTW_FORWARD, FFTW_ESTIMATE); //fftw_create_plan(Size, forward or backwards FFT, FFTW_ESTIMATE or FFTW_MEASURE)
      
-     fftw_one(p, in, out);
-     //Normalized is off.
-     fftw_destroy_plan(p);  
- }
- fftw_complex *testsig_gen(float *input_buff){
+//      fftw_one(p, in, out);
+//      //Normalized is off.
+//      fftw_destroy_plan(p);  
+//  }
+//  fftw_complex *testsig_gen(float *input_buff){
 
- }
+//  }
 

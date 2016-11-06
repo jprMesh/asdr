@@ -25,7 +25,6 @@
 #include <uhd/usrp/multi_usrp.hpp>
 #include <uhd/exception.hpp>
 // Other libraries
-#include <fftw3.h>
 #include "utils.h"
 
 
@@ -86,7 +85,10 @@ public:
      * Probably remove in a bit.
      */
     void tx_test();
-
+    
+    /**
+     * @brief Test the Recv Structure. REMOVE LATER
+     */
     void test_RecvNode();
     
 private:
@@ -127,12 +129,8 @@ private:
     /**
      * @brief Detect if there's any energy detected on the bandwidth being measured.
      */
-    bool Masdr::energy_detection(float *sig_in, int size)
+    bool energy_detection(float *sig_in, int size);
 
-    /**
-     * @brief Test the Recv Structure. REMOVE LATER
-     */
-    void test_RecvNode() ;
 
     /**
      * @brief Command the SDR to stop taking samples.
