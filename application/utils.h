@@ -115,5 +115,8 @@ bool check_locked_sensor(std::vector<std::string> sensor_names,
                          const char* sensor_name,
                          get_sensor_fn_t get_sensor_fn,
                          double setup_time);
+void init_mag();
+
+float read_mag();
 
 #endif // __utils_h__

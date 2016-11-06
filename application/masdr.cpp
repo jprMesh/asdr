@@ -327,7 +327,7 @@ void Masdr::tx_test() {
 /******************************************************************************/
 void Masdr::mag_test() {
     float deg;
-    init_mag()
+    init_mag();
     while(1){
         deg=read_mag();
         std::cout<< "Mag Reading: "<<deg <<std::endl;

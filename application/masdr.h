@@ -97,6 +97,13 @@ public:
      */
     void tx_test();
     
+    /** 
+     * @brief Test the magnetometer functionality.
+     * 
+     * Test the functionality of the mag calling within the program.
+     * Probably remove in a bit.
+     */
+    void mag_test();
     /**
      * @brief Test the Recv Structure. REMOVE LATER
      */
