@@ -89,8 +89,13 @@ public:
     /**
      * @brief Test the Recv Structure. REMOVE LATER
      */
-    void test_RecvNode();
+    void RecvNode_test();
     
+    /**
+     * @brief Test the energy detection amount. REMOVE LATER
+     */
+    void energy_test();
+
 private:
     /**
      * @brief Initialize any peripherals being used

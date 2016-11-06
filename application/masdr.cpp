@@ -92,7 +92,7 @@ void Masdr::repeat_action() {
 }
 
 /******************************************************************************/
-void Masdr::test_RecvNode() {
+void Masdr::RecvNode_test() {
     std::cout << "Begin testing" << std::endl;
     recv_head.heading = 180;
     curr_recv_buf = &recv_head;
@@ -214,6 +214,40 @@ void Masdr::stop_sampling() {
 }
 
 /******************************************************************************/
+void Masdr::begin_processing() {
+    // FFT
+    // fftw_complex in[FFT_N], out[FFT_N];
+    // fftw_plan p = fftw_create_plan(FFT_N, FFTW_FORWARD, FFTW_ESTIMATE);
+    // fftw_one(p, in, out);
+    // fftw_destroy_plan(p);
+
+    //while data structure is null, energy detect current buffer,
+    bool hasEnergy = energy_detection(curr_recv_buf->recv_buf,RBUF_SIZE);
+    //if(hasEnergy){
+        //fftw_one(p, current->Recv_buf, fft_sig)
+        //match_filt(fft_sig);
+        //localize(fft_sig);
+    //}
+
+}
+
+/******************************************************************************/
+void Masdr::transmit(const void *msg, int len) { 
+    //raised cosine pulse shaping
+    //Mod Scheme: BPSK
+    //tx
+}
+
+/******************************************************************************/
+void Masdr::transmit_data() {
+    //Form Packet
+    //Interleave
+    //Crc
+    // call transmit
+}
+/******************************************************************************/
+/************************************TESTS*************************************/
+/******************************************************************************/
 void Masdr::rx_test(){
     int i; //Counter, to help test
     std::complex<float> testbuf[100];
@@ -261,36 +295,8 @@ void Masdr::tx_test() {
 }
 
 /******************************************************************************/
-void Masdr::begin_processing() {
-    // FFT
-    // fftw_complex in[FFT_N], out[FFT_N];
-    // fftw_plan p = fftw_create_plan(FFT_N, FFTW_FORWARD, FFTW_ESTIMATE);
-    // fftw_one(p, in, out);
-    // fftw_destroy_plan(p);
-
-    //while data structure is null, energy detect current buffer,
-    //bool hasEnergy = energy_detection(current->recv_buf);
-    //if(hasEnergy){
-        //fftw_one(p, current->Recv_buf, fft_sig)
-        //match_filt(fft_sig);
-        //localize(fft_sig);
-    //}
-
-}
-
-/******************************************************************************/
-void Masdr::transmit(const void *msg, int len) { 
-    //raised cosine pulse shaping
-    //Mod Scheme: BPSK
-    //tx
-}
-
-/******************************************************************************/
-void Masdr::transmit_data() {
-    //Form Packet
-    //Interleave
-    //Crc
-    // call transmit
+void Masdr::energy_test(){
+    //Test energy detection stuff.
 }
 
 /******************************************************************************/
@@ -298,11 +304,15 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
     signal(SIGINT, handle_sigint);
     Masdr masdr;
 
-    while(1) {
-        masdr.update_status();
-        masdr.state_transition();
-        masdr.repeat_action();
-    }
+    masdr.energy_test();
+
+    /// 11/6/16 MHLI: Commented out while we test energy functions
+    // while(1) {
+    //     masdr.update_status();
+    //     masdr.state_transition();
+    //     masdr.repeat_action();
+    // }
+
     return EXIT_SUCCESS;
 }
 
@@ -322,4 +332,3 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
 //  fftw_complex *testsig_gen(float *input_buff){
 
 //  }
-
