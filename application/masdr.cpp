@@ -331,6 +331,7 @@ void Masdr::mag_test() {
     while(1){
         deg=read_mag();
         std::cout<< "Mag Reading: "<<deg <<std::endl;
+        usleep(4000000);
     }
         
 }

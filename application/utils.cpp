@@ -89,9 +89,9 @@ void init_mag(){
     }
   
     //Set sampling rate
-    //if(MEMS_ERROR == SetODR_M(ODR_220Hz_M)){
-    //    perror("Error setting ODR_M\n");
-    //}
+    if(MEMS_ERROR == SetODR_M(ODR_220Hz_M)){
+        perror("Error setting ODR_M\n");
+    }
   
     //Enable x and y axis. Disable z axis
     if(MEMS_ERROR == SetAxis(X_ENABLE | Y_ENABLE | Z_DISABLE)){
@@ -109,7 +109,7 @@ void init_mag(){
     }
  
     //Tell the Magnetometer to sleep
-    if(MEMS_ERROR == SetModeMag(SLEEP_MODE)){
+    if(MEMS_ERROR == SetModeMag(CONTINUOUS_MODE)){
         perror("Error setting Mode to sleep\n");
     }
 }
