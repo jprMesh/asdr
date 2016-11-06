@@ -14,6 +14,9 @@
 #define __utils_h__
 
 #include <iostream>
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
 // UHD libraries
 #include <uhd/usrp/multi_usrp.hpp>
 // Boost libraries
@@ -21,6 +24,8 @@
 #include <boost/thread.hpp>
 //FFT Library
 #include <fftw3.h>
+//Magnotometer driver
+#include "lsm303dlhc_driver.h"
 // Buffer sizes
 #define RBUF_SIZE 16384
 #define FFT_N 16384
