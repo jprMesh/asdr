@@ -58,6 +58,8 @@ set(SOURCES_MASDR
     masdr.h
     utils.cpp
     utils.h
+	##lsm303dlhc_driver.c will uncomment when working
+	##lsm303dlhc_driver.h
     ## Add any other MASDR files here ##
 )
 add_executable(masdr ${SOURCES_MASDR})
