@@ -124,8 +124,8 @@ void Masdr::initialize_uhd() {
     uhd::set_thread_priority_safe();
 
     int rate = 5e6;
-    float freq_rx = 2.4e9; //Set rx frequency to 2.4 GHz
-    //float freq_rx = 900e6; //11/6/16 MHLI: TEST, for when we only have 900 MHz Ant
+    //float freq_rx = 2.4e9; //Set rx frequency to 2.4 GHz
+    float freq_rx = 900e6; //11/6/16 MHLI: TEST, for when we only have 900 MHz Ant
     
     float freq_tx = 900e6; //set tx frequency
     int gain = 40;
@@ -293,6 +293,7 @@ void Masdr::rx_test(){
 
     stop_sampling();
     std::cout << "Stopped sampling" << std::endl;
+    std::cout <<"RX test done." <<std::endl<<std::endl;
 }
 
 /******************************************************************************/
@@ -320,11 +321,13 @@ void Masdr::tx_test() {
     }
 
     std::cout << "Stopped transmit" << std::endl;
+    std::cout <<"Tx test done." <<std::endl<<std::endl;
 }
 
 /******************************************************************************/
 void Masdr::energy_test(){
     //Test energy detection stuff.
+    std::cout<<"Energy test done." <<std::endl<<std::endl;
 }
 
 /******************************************************************************/

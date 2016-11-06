@@ -32,6 +32,10 @@
     #define DEBUG_THRESH 1
     #define DEBUG_ENERGY 0
     #define DEBUG_TX 0
+#else
+    #define DEBUG_THRESH 0
+    #define DEBUG_ENERGY 0
+    #define DEBUG_TX 0
 #endif
 /**
  * @brief MASDR Application Class
