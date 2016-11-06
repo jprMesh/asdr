@@ -124,8 +124,9 @@ void Masdr::initialize_uhd() {
     uhd::set_thread_priority_safe();
 
     int rate = 5e6;
-    //float freq_rx = 2.4e9; //Set rx frequency to 2.4 GHz
-    float freq_rx = 900e6; //11/6/16 MHLI: TEST
+    float freq_rx = 2.4e9; //Set rx frequency to 2.4 GHz
+    //float freq_rx = 900e6; //11/6/16 MHLI: TEST, for when we only have 900 MHz Ant
+    
     float freq_tx = 900e6; //set tx frequency
     int gain = 40;
     std::string rx_ant = "RX2"; //ant can be "TX/RX" or "RX2"
@@ -250,8 +251,8 @@ void Masdr::transmit_data() {
 /************************************TESTS*************************************/
 /******************************************************************************/
 void Masdr::rx_test(){
-    int i=0,j, numLoops; //Counter, to help 
-    float accum;
+    int i=0,j, numLoops; //Counter, to hel, p 
+    float accum, max_inBuf, max_total, mag_squared;
     std::complex<float> testbuf[RBUF_SIZE];
     std::cout << "Entered rx_test" << std::endl;
 
@@ -266,10 +267,20 @@ void Masdr::rx_test(){
         rx_stream->recv(testbuf, RBUF_SIZE, md, 3.0, false);
         
         for(j=0;j<RBUF_SIZE;j++) {
-            accum += (sqrt(testbuf[j].real() *testbuf[j].real()
+            mag_squared = (sqrt(testbuf[j].real() *testbuf[j].real()
                       + testbuf[j].imag()*testbuf[j].imag())); 
+            accum += mag_squared;
+
+            if(mag_squared > max_inBuf)
+                max_inBuf = mag_squared;
+            if(mag_squared > max_total)
+                max_total = mag_squared;
+
         }
-        std::cout << "Received Value: "<<accum<<std::endl;
+
+        std::cout<< "Max in buf: "<<max_inBuf <<std::endl;
+        max_inBuf = 0;
+        //std::cout << "Received Value: "<<accum<<std::endl;
         //++i;
     }
     else 
@@ -321,15 +332,19 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
     signal(SIGINT, handle_sigint);
     Masdr masdr;
 
-    masdr.rx_test();
-    //masdr.energy_test();
-
+    if(G_DEBUG){
+        if(DEBUG_THRESH) masdr.rx_test();
+        if(DEBUG_TX) masdr.tx_test();
+        if (DEBUG_ENERGY)masdr.energy_test();
+    }
     /// 11/6/16 MHLI: Commented out while we test energy functions
-    // while(1) {
-    //     masdr.update_status();
-    //     masdr.state_transition();
-    //     masdr.repeat_action();
-    // }
+    else{
+        while(1) {
+            masdr.update_status();
+            masdr.state_transition();
+            masdr.repeat_action();
+        }
+    }
 
     return EXIT_SUCCESS;
 }
