@@ -123,6 +123,11 @@ private:
      * @brief Fork off a new process to start the SDR taking samples.
      */
     void begin_sampling();
+    
+    /**
+     * @brief Detect if there's any energy detected on the bandwidth being measured.
+     */
+    bool Masdr::energy_detection(float *sig_in, int size)
 
     /**
      * @brief Test the Recv Structure. REMOVE LATER

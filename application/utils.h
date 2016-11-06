@@ -19,7 +19,8 @@
 // Boost libraries
 #include <boost/format.hpp>
 #include <boost/thread.hpp>
-
+//FFT Library
+#include <fftw3.h>
 // Buffer sizes
 #define RBUF_SIZE 16384
 #define FFT_N 16384
