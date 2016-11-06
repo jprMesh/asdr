@@ -325,6 +325,17 @@ void Masdr::tx_test() {
 }
 
 /******************************************************************************/
+void Masdr::mag_test() {
+    float deg;
+    init_mag()
+    while(1){
+        deg=read_mag();
+        std::cout<< "Mag Reading: "<<deg <<std::endl;
+    }
+        
+}
+
+/******************************************************************************/
 void Masdr::energy_test(){
     //Test energy detection stuff.
     std::cout<<"Energy test done." <<std::endl<<std::endl;
@@ -339,6 +350,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
         if(DEBUG_THRESH) masdr.rx_test();
         if(DEBUG_TX) masdr.tx_test();
         if (DEBUG_ENERGY)masdr.energy_test();
+        if(DEBUG_MAG)masdr.mag_test();
     }
     /// 11/6/16 MHLI: Commented out while we test energy functions
     else{
