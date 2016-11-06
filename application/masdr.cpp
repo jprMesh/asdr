@@ -249,17 +249,25 @@ void Masdr::transmit_data() {
 /************************************TESTS*************************************/
 /******************************************************************************/
 void Masdr::rx_test(){
-    int i; //Counter, to help test
-    std::complex<float> testbuf[100];
+    int i=0,j; //Counter, to help 
+    float accum;
+    std::complex<float> testbuf[RBUF_SIZE];
     std::cout << "Entered rx_test" << std::endl;
 
     begin_sampling();
     std::cout << "Began sampling" << std::endl;
-    rx_stream->recv(testbuf, 100, md, 3.0, false);
+    rx_stream->recv(testbuf, RBUF_SIZE, md, 3.0, false);
     std::cout << "First Buff done" << std::endl;
         
     while (i < 5000) {
-        rx_stream->recv(testbuf, 100, md, 3.0, false);
+        accum = 0;
+        rx_stream->recv(testbuf, RBUF_SIZE, md, 3.0, false);
+        
+        for(j=0;j<RBUF_SIZE;j++) {
+            accum += testbuf[j]; 
+        }
+        std::cout << "Received Value: "<<accum<<std::endl;
+
         ++i;
     }
 
