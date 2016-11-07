@@ -38,11 +38,15 @@
 * Output		: Data REad
 * Return		: None
 *******************************************************************************/
-u8_t ReadReg(u8_t deviceAddr, u8_t Reg, u8_t* Data) {
-  
+u8_t ReadReg(int deviceAddr, u8_t Reg, u8_t* Data) {
+  int handle =0;
+  handle = open("/dev/i2c-2", O_RDWR);
+  if(ioctl(handle, I2C_SLAVE, MAG_I2C_ADDRESS) != 0){
+     perror("Error setting device address");
+  }
   //To be completed with either I2c or SPI reading function
   //*Data = SPI_Mems_Read_Reg( Reg );
-  if(!read(deviceAddr, &Reg, 1)) 
+  if(!read(handle, &Reg, 1)) 
   return MEMS_ERROR;
   else  
   return MEMS_SUCCESS;
@@ -57,11 +61,15 @@ u8_t ReadReg(u8_t deviceAddr, u8_t Reg, u8_t* Data) {
 * Output		: None
 * Return		: None
 *******************************************************************************/
-u8_t WriteReg(u8_t deviceAddress, u8_t WriteAddr, u8_t Data) {
-    
+u8_t WriteReg(int deviceAddress, u8_t WriteAddr, u8_t Data) {
+  int handle =0;
+  handle = open("/dev/i2c-2", O_RDWR);
+  if(ioctl(handle, I2C_SLAVE, MAG_I2C_ADDRESS) != 0){
+     perror("Error setting device address");
+  }
   //To be completed with either I2c or SPI writing function
   //SPI_Mems_Write_Reg(Reg, Data);
-  return write(deviceAddress,&Data,1); 
+  return write(handle,&Data,1); 
 }
 
 

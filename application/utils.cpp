@@ -13,9 +13,8 @@
 #include "utils.h"
 #include "lsm303dlhc_driver.c"
 #include <math.h>
-
-bool stop_signal_called = false; ///< Global for keyboard interrupts
 int i2cHandle = 0;
+bool stop_signal_called = false; ///< Global for keyboard interrupts
 
 /******************************************************************************/
 bool check_locked_sensor(std::vector<std::string> sensor_names,
@@ -95,9 +94,9 @@ void init_mag(){
     }
   
     //Enable x and y axis. Disable z axis
-    if(MEMS_ERROR == SetAxis(X_ENABLE | Y_ENABLE | Z_DISABLE)){
-        perror("Error setting axis\n");
-    }
+    //if(MEMS_ERROR == SetAxis(X_ENABLE | Y_ENABLE | Z_DISABLE)){
+    //    perror("Error setting axis\n");
+    //}
   
     //Set the scale to default
     if(MEMS_ERROR == SetFullScale(FULLSCALE_2)){

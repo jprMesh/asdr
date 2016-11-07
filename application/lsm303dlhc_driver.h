@@ -532,8 +532,8 @@ status_t GetMagAxesRaw(MagAxesRaw_t* buff);
 //u8_t ReadReg(u8_t Reg, u8_t* Data);
 //u8_t WriteReg(u8_t Reg, u8_t Data);
 
-u8_t ReadReg(u8_t deviceAddr, u8_t Reg, u8_t* Data);
-u8_t WriteReg(u8_t deviceAddress, u8_t WriteAddr, u8_t Data); 
+u8_t ReadReg(int deviceAddr, u8_t Reg, u8_t* Data);
+u8_t WriteReg(int deviceAddress, u8_t WriteAddr, u8_t Data); 
 
 
 #endif /* __LIS3DH_H */
