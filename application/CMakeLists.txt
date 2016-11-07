@@ -45,12 +45,28 @@ find_package(UHD "3.8.0" REQUIRED)
 # To specify an exact version:
 #find_package(UHD 3.8.1 EXACT REQUIRED)
 
+###########################################################WHY DOESN'T THIS WORK
+find_path (FFTW_INCLUDES fftw3.h)
+
+if (FFTW_INCLUDES)
+  # Already in cache, be silent
+  set (FFTW_FIND_QUIETLY TRUE)
+endif (FFTW_INCLUDES)
+find_library (FFTW_LIBRARIES NAMES fftw3)
+
+# handle the QUIETLY and REQUIRED arguments and set FFTW_FOUND to TRUE if
+# all listed variables are TRUE
+include (FindPackageHandleStandardArgs)
+find_package_handle_standard_args (FFTW DEFAULT_MSG FFTW_LIBRARIES FFTW_INCLUDES)
+
+mark_as_advanced (FFTW_LIBRARIES FFTW_INCLUDES)
+################################################################################
 ### Configure Compiler ########################################################
 include_directories(
     ${Boost_INCLUDE_DIRS}
     ${UHD_INCLUDE_DIRS}
-#    ${fftw3_INCLUDE_DIRS}
 )
+
 link_directories(${Boost_LIBRARY_DIRS})
 
 ### Make the executable #######################################################

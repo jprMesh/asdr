@@ -399,6 +399,11 @@ void Masdr::energy_test(){
     //Test energy detection stuff.
     std::cout<<"Energy test done." <<std::endl<<std::endl;
 }
+/******************************************************************************/
+void Masdr::transmit_data_test(){
+    int i;
+    transmit_data();    
+}
 
 /******************************************************************************/
 int UHD_SAFE_MAIN(int argc, char *argv[]) {
@@ -411,6 +416,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
         if (DEBUG_ENERGY)masdr.energy_test();
         if(DEBUG_MAG)masdr.mag_test();
         if(DEBUG_FFT) fftw_test();
+        if(DEBUG_TX_DATA) masdr.transmit_data_test();
     }
     /// 11/6/16 MHLI: Commented out while we test energy functions
     else{
@@ -436,14 +442,14 @@ void fftw_test() {
 //      fftw_execute(p);
 // //      //Normalized is off.
 //      fftw_destroy_plan(p);  
-    //  fftw_complex *in, *out;
-    // fftw_plan p;
+     fftw_complex *in, *out;
+    fftw_plan p;
 
-    // in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
-    // out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
-    // p = fftw_plan_dft_1d(N_FFT, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+    in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
+    out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
+    p = fftw_plan_dft_1d(N_FFT, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
 
-    // fftw_execute(p); /* repeat as needed */
-    // fftw_destroy_plan(p);
-    // fftw_free(in); fftw_free(out);
+    fftw_execute(p); /* repeat as needed */
+    fftw_destroy_plan(p);
+    fftw_free(in); fftw_free(out);
  }
