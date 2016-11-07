@@ -15,15 +15,58 @@ restore RC control to the controller.
 '''
 
 from dronekit import connect, VehicleMode, mavutil
-from time import sleep
+from time import sleep  
+
+drone = None
+
+def main():
+    target = 'udpout:0.0.0.0:14560'
+    #target = 'udpin:0.0.0.0:14550'
+    print 'Connecting to ' + target + '...'
+    drone = connect(target, wait_ready=True)
+
+    while 1:
+        if not drone.armed:
+            continue
+        command = raw_input('MASDR>$ ')
+        if command == 'rotate':
+            rotate()
+        if command == 'exit':
+            break
+    drone.close()
+
+def rotate():
+    """ Take control of drone and command it to rotate 360 degrees """
+    print 'Starting rotation...'
+    chmode('GUIDED')
+    # Go to North
+    # condition_yaw(0, relative=False)
+    # sleep(3)
+    condition_yaw(90, relative=True)
+    sleep(1.5)
+    condition_yaw(90, relative=True)
+    sleep(1.5)
+    condition_yaw(90, relative=True)
+    sleep(1.5)
+    condition_yaw(90, relative=True)
+    sleep(1.5)
+    chmode('LOITER')
+
+def chmode(new_mode):
+    """ Change drone mode (guided, loiter, etc) """
+    drone.mode = VehicleMode(new_mode)
+    while drone.mode.name != new_mode:
+        drone.mode = VehicleMode(new_mode)
+        sleep(0.1)
 
 def condition_yaw(heading, relative=False):
+    """ Send command to yaw a certain amount """
     if relative:
         is_relative=1 #yaw relative to direction of travel
     else:
         is_relative=0 #yaw is an absolute angle
     # create the CONDITION_YAW command using command_long_encode()
-    msg = vehicle.message_factory.command_long_encode(
+    msg = drone.message_factory.command_long_encode(
         0, 0,    # target system, target component
         mavutil.mavlink.MAV_CMD_CONDITION_YAW, #command
         0, #confirmation
@@ -32,32 +75,8 @@ def condition_yaw(heading, relative=False):
         1,          # param 3, direction -1 ccw, 1 cw
         is_relative, # param 4, relative offset 1, absolute angle 0
         0, 0, 0)    # param 5 ~ 7 not used
-    # send command to vehicle
-    vehicle.send_mavlink(msg)
+    # send command to drone
+    drone.send_mavlink(msg)
 
-target = 'udpout:0.0.0.0:14560'
-#target = 'udpin:0.0.0.0:14550'
-print 'Connecting to ' + target + '...'
-vehicle = connect(target, wait_ready=True)
-
-
-
-print "Starting rotation..."
-while vehicle.mode.name != "GUIDED":
-    vehicle.mode = VehicleMode("GUIDED")
-    sleep(0.5)
-condition_yaw(0, relative=False) # Go to North
-sleep(2)
-condition_yaw(90, relative=False)
-sleep(2)
-condition_yaw(180, relative=False)
-sleep(2)
-condition_yaw(270, relative=False)
-sleep(2)
-condition_yaw(0, relative=False)
-sleep(2)
-while vehicle.mode.name != "LOITER":
-    vehicle.mode = VehicleMode("LOITER")
-    sleep(0.5)
-vehicle.close()
-print "Done."
+if __name__ == '__main__':
+    main()
