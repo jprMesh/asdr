@@ -125,10 +125,10 @@ void Masdr::initialize_uhd() {
 
     int rate = 5e6;
     float freq_rx = 2.4e9; //Set rx frequency to 2.4 GHz
-    //float freq_rx = 900e6; //11/6/16 MHLI: TEST, for when we only have 900 MHz Ant
+    //float freq_rx = 700e6; //11/6/16 MHLI: TEST, for when we only have 900 MHz Ant
     
     float freq_tx = 900e6; //set tx frequency
-    int gain = 40;
+    int gain = 50;
     std::string rx_ant = "RX2"; //ant can be "TX/RX" or "RX2"
     std::string tx_ant = "TX/RX"; //ant can be "TX/RX" or "RX2"
     std::string wirefmt = "sc16"; //or sc8
@@ -311,10 +311,15 @@ void Masdr::rx_test(){
 
         }
         if(!(i%20)){
-            std::cout<< i <<": ";
+            std::cout<<(int)accum*SCALE_ACC;
+            for (i=0; i < (int)accum*SCALE_ACC; i++){
+                std::cout << "#";
+            }
+           std::cout<<std::endl;
+            // std::cout<< i <<": ";
         //std::cout<< "Max in buf: "<<max_inBuf <<std::endl;
         //std::cout<< "Max in total"<< max_total <<std::endl;
-        std::cout << "Max in Periodic: "<<max_periodic <<std::endl;
+        // std::cout << "Max in Periodic: "<<max_periodic <<std::endl;
         }
         max_inBuf = 0;
         //std::cout << "Received Value: "<<accum<<std::endl;
@@ -393,6 +398,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
         if(DEBUG_TX) masdr.tx_test();
         if (DEBUG_ENERGY)masdr.energy_test();
         if(DEBUG_MAG)masdr.mag_test();
+        if(DEBUG_FFT) fftw_test();
     }
     /// 11/6/16 MHLI: Commented out while we test energy functions
     else{
@@ -409,16 +415,23 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
 /******************************************************************************/
 ///////////Test functions
 /******************************************************************************/
-// void fftw_test() {
+void fftw_test() {
 //      fftw_complex in[FFT_N], out[FFT_N];
 //      fftw_plan p;
-//      ///ONLY HAVE TO RUN ONCE PER FFT SIZE, also is an out of place FFT
-//      p = fftw_create_plan(N, FFTW_FORWARD, FFTW_ESTIMATE); //fftw_create_plan(Size, forward or backwards FFT, FFTW_ESTIMATE or FFTW_MEASURE)
+// //      ///ONLY HAVE TO RUN ONCE PER FFT SIZE, also is an out of place FFT
+//      p = fftw_plan_dft_1d( FFT_N, in, out, FFTW_FORWARD, FFTW_ESTIMATE ); //fftw_create_plan(Size, forward or backwards FFT, FFTW_ESTIMATE or FFTW_MEASURE)
      
-//      fftw_one(p, in, out);
-//      //Normalized is off.
+//      fftw_execute(p);
+// //      //Normalized is off.
 //      fftw_destroy_plan(p);  
-//  }
-//  fftw_complex *testsig_gen(float *input_buff){
+    //  fftw_complex *in, *out;
+    // fftw_plan p;
 
-//  }
+    // in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
+    // out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
+    // p = fftw_plan_dft_1d(N_FFT, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+
+    // fftw_execute(p); /* repeat as needed */
+    // fftw_destroy_plan(p);
+    // fftw_free(in); fftw_free(out);
+ }

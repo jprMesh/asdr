@@ -29,7 +29,7 @@
 // Buffer sizes
 #define RBUF_SIZE 16384
 #define TBUF_SIZE 64 //11/6/16 NARUT: dependent on our packet size
-#define FFT_N 16384
+#define N_FFT 1024
 #define THRESH_E 0.002 ///11/3/16 MHLI: currently arbitrarily picked
 
 // Defining standard bits for bit manipulation
