@@ -14,6 +14,9 @@
 #define __utils_h__
 
 #include <iostream>
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
 // UHD libraries
 #include <uhd/usrp/multi_usrp.hpp>
 // Boost libraries
@@ -21,6 +24,8 @@
 #include <boost/thread.hpp>
 //FFT Library
 #include <fftw3.h>
+//Magnotometer driver
+#include "lsm303dlhc_driver.h"
 // Buffer sizes
 #define RBUF_SIZE 16384
 #define FFT_N 16384
@@ -93,6 +98,11 @@ typedef struct {
 void handle_sigint(int);
 
 /**
+ * @brief Test FFT functionality.
+ */
+void fft_test();
+
+/**
  * type provided by UHD, find documentation at http://files.ettus.com/manual/
  */
 typedef boost::function<uhd::sensor_value_t (const std::string&)>
@@ -105,5 +115,8 @@ bool check_locked_sensor(std::vector<std::string> sensor_names,
                          const char* sensor_name,
                          get_sensor_fn_t get_sensor_fn,
                          double setup_time);
+void init_mag();
+
+float read_mag();
 
 #endif // __utils_h__
