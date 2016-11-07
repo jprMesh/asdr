@@ -12,9 +12,10 @@
 
 #include "utils.h"
 #include "lsm303dlhc_driver.c"
-#include <math.h> 
+#include <math.h>
+
 bool stop_signal_called = false; ///< Global for keyboard interrupts
-int i2cHandle =0;
+int i2cHandle = 0;
 
 /******************************************************************************/
 bool check_locked_sensor(std::vector<std::string> sensor_names,
