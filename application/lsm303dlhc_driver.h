@@ -27,6 +27,14 @@
 #define __LSM303DLHC_DRIVER__H
 
 /* Includes ------------------------------------------------------------------*/
+#include <stdlib.h>
+#include <unistd.h>
+#include <linux/i2c.h>
+#include <linux/i2c-dev.h>
+#include <sys/ioctl.h>
+#include <fcntl.h>
+#include <string.h>
+#include <stdio.h>
 /* Exported types ------------------------------------------------------------*/
 
 //these could change accordingly with the architecture
