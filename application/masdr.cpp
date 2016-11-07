@@ -238,6 +238,7 @@ void Masdr::transmit(const void *msg, int len) {
     //raised cosine pulse shaping
     //Mod Scheme: BPSK
     //tx
+    //11/6/16 NARUT: is two transmits neccessary?
 }
 
 /******************************************************************************/
@@ -245,14 +246,37 @@ void Masdr::transmit_data() {
     //Form Packet
     //Interleave
     //Crc
-    // call transmit
-    /*
-    std::complex<float> transmitBuffer[N]; N bits to send at a time
-    for(N bits){
-        if bit = 1 then transmitBuffer[i] = std::complex<float>(1,0)  
-        else if bit = 0 then transmitBuffer[i] = std::complex<float(-1,0)
+    //call transmit
+    float gpsData = 32.0; // random GPS value
+    float magData = 12.5; // random magnetometer value
+    int i; // looping
+    int bias = 0; //compensating shift for adding more data
+    std::complex<float> transmitBuffer[TBUF_SIZE];
+
+    // used to perform binary operations on floats
+    union {
+        float input;
+        int output;
+    } data;
+
+    //packing gpsdata
+    data.input = gpsData;
+    for(i = 0; i < 32; i++){
+        if ((data.output >> (31 - i)) & 1)
+            transmitBuffer[i + bias] = std::complex<float>(1,0);
+        else 
+            transmitBuffer[i + bias] = std::complex<float>(-1,0);
     }
-*/
+    bias += 32; // compensate for adding gpsData
+
+    //packing magData
+    data.input = magData;
+    for(i = 0; i < 32; i++){
+        if ((data.output >> (31 - i)) & 1)
+            transmitBuffer[i + bias] = std::complex<float>(1,0);
+        else 
+            transmitBuffer[i + bias] = std::complex<float>(-1,0);
+    }
 }
 /******************************************************************************/
 /************************************TESTS*************************************/

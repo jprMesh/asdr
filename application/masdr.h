@@ -39,6 +39,8 @@
     #define DEBUG_TX 0
     #define DEBUG_MAG 0
 #endif
+
+
 /**
  * @brief MASDR Application Class
  * 
