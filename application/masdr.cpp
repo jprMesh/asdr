@@ -244,6 +244,13 @@ void Masdr::transmit_data() {
     //Interleave
     //Crc
     // call transmit
+    /*
+    std::complex<float> transmitBuffer[N]; N bits to send at a time
+    for(N bits){
+        if bit = 1 then transmitBuffer[i] = std::complex<float>(1,0)  
+        else if bit = 0 then transmitBuffer[i] = std::complex<float(-1,0)
+    }
+*/
 }
 /******************************************************************************/
 /************************************TESTS*************************************/
@@ -311,7 +318,8 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
     signal(SIGINT, handle_sigint);
     Masdr masdr;
 
-    masdr.rx_test();
+    masdr.tx_test();
+    //masdr.rx_test();
     //masdr.energy_test();
 
     /// 11/6/16 MHLI: Commented out while we test energy functions
