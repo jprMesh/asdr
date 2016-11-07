@@ -11,8 +11,10 @@
 // Sponsor: Gryphon Sensors
 
 #include "utils.h"
-
+#include "lsm303dlhc_driver.c"
+#include <math.h> 
 bool stop_signal_called = false; ///< Global for keyboard interrupts
+int i2cHandle =0;
 
 /******************************************************************************/
 bool check_locked_sensor(std::vector<std::string> sensor_names,
@@ -66,4 +68,70 @@ bool check_locked_sensor(std::vector<std::string> sensor_names,
 void handle_sigint(int) {
     stop_signal_called = true;
     exit(0);
+}
+
+/******************************************************************************/
+void init_mag(){
+
+    int opResult = 0; // for error checking of operations
+    
+    i2cHandle = open("/dev/i2c-2", O_RDWR);
+ 
+    // Tell the I2C peripheral that the device address isn't a 10-bit
+    //if(ioctl(i2cHandle, I2C_TENBIT, 0) != 0){
+    //    perror("Error setting address length");
+    //}
+   
+    // Tell the I2C peripheral what the address of the magnetometer is
+    //and set the magnetometer to the slave
+    if(ioctl(i2cHandle, I2C_SLAVE, MAG_I2C_ADDRESS) != 0){
+        perror("Error setting device address");
+    }
+  
+    //Set sampling rate
+    if(MEMS_ERROR == SetODR_M(ODR_220Hz_M)){
+        perror("Error setting ODR_M\n");
+    }
+  
+    //Enable x and y axis. Disable z axis
+    if(MEMS_ERROR == SetAxis(X_ENABLE | Y_ENABLE | Z_DISABLE)){
+        perror("Error setting axis\n");
+    }
+  
+    //Set the scale to default
+    if(MEMS_ERROR == SetFullScale(FULLSCALE_2)){
+        perror("Error setting scale\n");
+    }
+  
+    //Set gain to default
+    if(MEMS_ERROR == SetGainMag(GAIN_1100_M)){
+        perror("Error setting Gain\n");
+    }
+ 
+    //Tell the Magnetometer to sleep
+    if(MEMS_ERROR == SetModeMag(CONTINUOUS_MODE)){
+        perror("Error setting Mode to sleep\n");
+    }
+}
+
+/******************************************************************************/
+float read_mag(){
+    MagAxesRaw_t axes;
+    axes.AXIS_X=0;
+    axes.AXIS_Y=0;
+    axes.AXIS_Z=0;
+    if(MEMS_ERROR == GetMagAxesRaw(&axes) ){
+        perror("Error reading Magnetometer data\n");
+    }
+    float Pi = 3.14159;
+    // Calculate the angle of the vector y,x
+    float heading = (atan2((float)axes.AXIS_Y,(float)axes.AXIS_X) * 180) / Pi;
+  
+    // Normalize to 0-360
+    if (heading < 0)
+    {
+      heading = 360 + heading;
+    }
+    return heading;
+    
 }
