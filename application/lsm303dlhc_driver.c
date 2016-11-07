@@ -42,7 +42,7 @@ u8_t ReadReg(u8_t deviceAddr, u8_t Reg, u8_t* Data) {
   
   //To be completed with either I2c or SPI reading function
   //*Data = SPI_Mems_Read_Reg( Reg );
-  if(!read(deviceAddr, Data, 1)) 
+  if(!read(deviceAddr, &Reg, 1)) 
   return MEMS_ERROR;
   else  
   return MEMS_SUCCESS;
@@ -61,7 +61,7 @@ u8_t WriteReg(u8_t deviceAddress, u8_t WriteAddr, u8_t Data) {
     
   //To be completed with either I2c or SPI writing function
   //SPI_Mems_Write_Reg(Reg, Data);
-  return write(deviceAddress, &WriteAddr, 1); 
+  return write(deviceAddress,&Data,1); 
 }
 
 
