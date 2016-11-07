@@ -250,8 +250,12 @@ void Masdr::transmit_data() {
     float gpsData = 32.0; // random GPS value
     float magData = 12.5; // random magnetometer value
     int i; // looping
-    int bias = 0; //compensating shift for adding more data
+    int bias = 0; // compensating shift for adding more data
     std::complex<float> transmitBuffer[TBUF_SIZE];
+
+    uhd::tx_metadata_t md;
+    md.start_of_burst = false;
+    md.end_of_burst = false;
 
     // used to perform binary operations on floats
     union {
@@ -259,6 +263,7 @@ void Masdr::transmit_data() {
         int output;
     } data;
 
+    std::cout << "Starting transmit" << std::endl;
     //packing gpsdata
     data.input = gpsData;
     for(i = 0; i < 32; i++){
@@ -277,6 +282,13 @@ void Masdr::transmit_data() {
         else 
             transmitBuffer[i + bias] = std::complex<float>(-1,0);
     }
+
+    i = 0;
+    while (i++ < 5000) {
+        tx_stream->send(transmitBuffer, 64, md);
+    }
+
+    std::cout << "Stopped transmit" << std::endl;
 }
 /******************************************************************************/
 /************************************TESTS*************************************/
