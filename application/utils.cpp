@@ -78,9 +78,9 @@ void init_mag(){
     i2cHandle = open("/dev/i2c-2", O_RDWR);
  
     // Tell the I2C peripheral that the device address isn't a 10-bit
-    if(ioctl(i2cHandle, I2C_TENBIT, 0) != 0){
-        perror("Error setting address length");
-    }
+    //if(ioctl(i2cHandle, I2C_TENBIT, 0) != 0){
+    //    perror("Error setting address length");
+    //}
    
     // Tell the I2C peripheral what the address of the magnetometer is
     //and set the magnetometer to the slave
@@ -117,6 +117,9 @@ void init_mag(){
 /******************************************************************************/
 float read_mag(){
     MagAxesRaw_t axes;
+    axes.AXIS_X=0;
+    axes.AXIS_Y=0;
+    axes.AXIS_Z=0;
     if(MEMS_ERROR == GetMagAxesRaw(&axes) ){
         perror("Error reading Magnetometer data\n");
     }

@@ -124,8 +124,8 @@ void Masdr::initialize_uhd() {
     uhd::set_thread_priority_safe();
 
     int rate = 5e6;
-    //float freq_rx = 2.4e9; //Set rx frequency to 2.4 GHz
-    float freq_rx = 900e6; //11/6/16 MHLI: TEST, for when we only have 900 MHz Ant
+    float freq_rx = 2.4e9; //Set rx frequency to 2.4 GHz
+    //float freq_rx = 900e6; //11/6/16 MHLI: TEST, for when we only have 900 MHz Ant
     
     float freq_tx = 900e6; //set tx frequency
     int gain = 40;
@@ -238,6 +238,7 @@ void Masdr::transmit(const void *msg, int len) {
     //raised cosine pulse shaping
     //Mod Scheme: BPSK
     //tx
+    //11/6/16 NARUT: is two transmits neccessary?
 }
 
 /******************************************************************************/
@@ -245,14 +246,44 @@ void Masdr::transmit_data() {
     //Form Packet
     //Interleave
     //Crc
-    // call transmit
+    //call transmit
+    float gpsData = 32.0; // random GPS value
+    float magData = 12.5; // random magnetometer value
+    int i; // looping
+    int bias = 0; //compensating shift for adding more data
+    std::complex<float> transmitBuffer[TBUF_SIZE];
+
+    // used to perform binary operations on floats
+    union {
+        float input;
+        int output;
+    } data;
+
+    //packing gpsdata
+    data.input = gpsData;
+    for(i = 0; i < 32; i++){
+        if ((data.output >> (31 - i)) & 1)
+            transmitBuffer[i + bias] = std::complex<float>(1,0);
+        else 
+            transmitBuffer[i + bias] = std::complex<float>(-1,0);
+    }
+    bias += 32; // compensate for adding gpsData
+
+    //packing magData
+    data.input = magData;
+    for(i = 0; i < 32; i++){
+        if ((data.output >> (31 - i)) & 1)
+            transmitBuffer[i + bias] = std::complex<float>(1,0);
+        else 
+            transmitBuffer[i + bias] = std::complex<float>(-1,0);
+    }
 }
 /******************************************************************************/
 /************************************TESTS*************************************/
 /******************************************************************************/
 void Masdr::rx_test(){
     int i=0,j, numLoops; //Counter, to hel, p 
-    float accum, max_inBuf, max_total, mag_squared;
+    float accum, max_inBuf=0,max_periodic = 0, max_total=0, mag_squared;
     std::complex<float> testbuf[RBUF_SIZE];
     std::cout << "Entered rx_test" << std::endl;
 
@@ -275,13 +306,23 @@ void Masdr::rx_test(){
                 max_inBuf = mag_squared;
             if(mag_squared > max_total)
                 max_total = mag_squared;
+            if(mag_squared > max_periodic)
+                max_periodic = mag_squared;
 
         }
-
-        std::cout<< "Max in buf: "<<max_inBuf <<std::endl;
+        if(!(i%20)){
+            std::cout<< i <<": ";
+        //std::cout<< "Max in buf: "<<max_inBuf <<std::endl;
+        //std::cout<< "Max in total"<< max_total <<std::endl;
+        std::cout << "Max in Periodic: "<<max_periodic <<std::endl;
+        }
         max_inBuf = 0;
         //std::cout << "Received Value: "<<accum<<std::endl;
-        //++i;
+        ++i;
+        if(i > 5000){
+            i = 0;
+            max_periodic = 0;
+        }
     }
     else 
         numLoops = 5000;
