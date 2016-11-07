@@ -124,8 +124,8 @@ void Masdr::initialize_uhd() {
     uhd::set_thread_priority_safe();
 
     int rate = 5e6;
-    //float freq_rx = 2.4e9; //Set rx frequency to 2.4 GHz
-    float freq_rx = 900e6; //11/6/16 MHLI: TEST, for when we only have 900 MHz Ant
+    float freq_rx = 2.4e9; //Set rx frequency to 2.4 GHz
+    //float freq_rx = 900e6; //11/6/16 MHLI: TEST, for when we only have 900 MHz Ant
     
     float freq_tx = 900e6; //set tx frequency
     int gain = 40;
@@ -295,7 +295,7 @@ void Masdr::transmit_data() {
 /******************************************************************************/
 void Masdr::rx_test(){
     int i=0,j, numLoops; //Counter, to hel, p 
-    float accum, max_inBuf, max_total, mag_squared;
+    float accum, max_inBuf=0,max_periodic = 0, max_total=0, mag_squared;
     std::complex<float> testbuf[RBUF_SIZE];
     std::cout << "Entered rx_test" << std::endl;
 
@@ -318,13 +318,23 @@ void Masdr::rx_test(){
                 max_inBuf = mag_squared;
             if(mag_squared > max_total)
                 max_total = mag_squared;
+            if(mag_squared > max_periodic)
+                max_periodic = mag_squared;
 
         }
-
-        std::cout<< "Max in buf: "<<max_inBuf <<std::endl;
+        if(!(i%20)){
+            std::cout<< i <<": ";
+        //std::cout<< "Max in buf: "<<max_inBuf <<std::endl;
+        //std::cout<< "Max in total"<< max_total <<std::endl;
+        std::cout << "Max in Periodic: "<<max_periodic <<std::endl;
+        }
         max_inBuf = 0;
         //std::cout << "Received Value: "<<accum<<std::endl;
-        //++i;
+        ++i;
+        if(i > 5000){
+            i = 0;
+            max_periodic = 0;
+        }
     }
     else 
         numLoops = 5000;
