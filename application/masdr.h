@@ -200,6 +200,8 @@ private:
     SoftStatus soft_status; ///< The current stage of the software on the SBC
     RecvNode recv_head; ///< Head node in linked list buffer for received signals
     RecvNode* curr_recv_buf; ///< Current buffer for receiving
+    TransNode* trans_head; ///< Head node in linked list buffer for transmitting
+    TransNode* curr_trans_buf; ///< Used to add more values at the end of the buffer
     bool process_done; ///< Set when data processing has completed
     bool transmit_done; ///< Set when data transmission has completed
 };

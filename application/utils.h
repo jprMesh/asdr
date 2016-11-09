@@ -28,7 +28,8 @@
 #include "lsm303dlhc_driver.h"
 // Buffer sizes
 #define RBUF_SIZE 16384
-#define TBUF_SIZE 64 //11/6/16 NARUT: dependent on our packet size
+#define TBUF_SIZE 160   //11/6/16 NARUT: dependent 
+                        //on our packet size 5 floats (32*5)
 #define N_FFT 1024
 #define THRESH_E 0.002 ///11/3/16 MHLI: currently arbitrarily picked
 
@@ -84,6 +85,26 @@ typedef struct recvnode {
         delete next;
     }
 } RecvNode;
+
+/**
+ * Linked list node structure of data to be packaged then transmitted.
+ */
+typedef struct transnode {
+    float heading; ///< Heading in degrees from north, according to magnetometer
+    float gps[3]; ///< The GPS location for this data
+    float data; ///< The data that we want to transmit
+    struct transnode* next; ///< Next recorded block, either a pointer or NULL
+
+    /**
+     * @brief Delete the next item in the list.
+     *
+     * This will call recursively until everything after the element it was
+     * initially called on is deleted.
+     */
+    ~transnode() {
+        delete next;
+    }
+} TransNode;
 
 /**
  * Status of the software on the SBC.

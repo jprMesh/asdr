@@ -401,7 +401,6 @@ void Masdr::energy_test(){
 }
 /******************************************************************************/
 void Masdr::transmit_data_test(){
-    int i;
     transmit_data();    
 }
 
@@ -413,7 +412,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
     if(G_DEBUG){
         if(DEBUG_THRESH) masdr.rx_test();
         if(DEBUG_TX) masdr.tx_test();
-        if (DEBUG_ENERGY)masdr.energy_test();
+        if(DEBUG_ENERGY)masdr.energy_test();
         if(DEBUG_MAG)masdr.mag_test();
         if(DEBUG_FFT) fftw_test();
         if(DEBUG_TX_DATA) masdr.transmit_data_test();
