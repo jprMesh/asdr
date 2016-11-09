@@ -25,7 +25,8 @@
 //FFT Library
 #include <fftw3.h>
 //Magnotometer driver
-#include "lsm303dlhc_driver.h"
+//#include "lsm303dlhc.h"
+//#include "lsm303dlhc_mag.c"
 // Buffer sizes
 #define RBUF_SIZE 16384
 #define TBUF_SIZE 160   //11/6/16 NARUT: dependent 

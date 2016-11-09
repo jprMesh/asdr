@@ -46,7 +46,7 @@
 #include <linux/input-polldev.h>
 #include <linux/slab.h>
 
-#include <linux/input/lsm303dlhc.h>
+#include <lsm303dlhc.h>
 /* #include "lsm303dlhc.h" */
 
 /* #define DEBUG 1 */
