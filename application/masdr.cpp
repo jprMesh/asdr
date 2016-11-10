@@ -127,14 +127,15 @@ void Masdr::initialize_uhd() {
     float freq_rx = 2.4e9; //Set rx frequency to 2.4 GHz
     //float freq_rx = 700e6; //11/6/16 MHLI: TEST, for when we only have 900 MHz Ant
     
-    float freq_tx = 900e6; //set tx frequency
+    float freq_tx = 905e6; //set tx frequency
     int gain = 50;
     std::string rx_ant = "RX2"; //ant can be "TX/RX" or "RX2"
     std::string tx_ant = "TX/RX"; //ant can be "TX/RX" or "RX2"
     std::string wirefmt = "sc16"; //or sc8
     int setup_time = 1.0; //sec setup
 
-    int bw =10e6; ///10/31/16 MHLI: UP to 56e6
+    //int bw =10e6; ///10/31/16 MHLI: UP to 56e6
+    int bw = 0;
     //Create USRP object
     uhd::usrp::multi_usrp::sptr usrp = uhd::usrp::multi_usrp::make((std::string)"");
     //Lock mboard clocks
@@ -265,27 +266,31 @@ void Masdr::transmit_data() {
 
     std::cout << "Starting transmit" << std::endl;
     //packing gpsdata
-    data.input = gpsData;
-    for(i = 0; i < 32; i++){
-        if ((data.output >> (31 - i)) & 1)
-            transmitBuffer[i + bias] = std::complex<float>(1,0);
-        else 
-            transmitBuffer[i + bias] = std::complex<float>(-1,0);
-    }
-    bias += 32; // compensate for adding gpsData
+    // data.input = gpsData;
+    // for(i = 0; i < 32; i++){
+    //     if ((data.output >> (31 - i)) & 1)
+    //         transmitBuffer[i + bias] = std::complex<float>(1,0);
+    //     else 
+    //         transmitBuffer[i + bias] = std::complex<float>(-1,0);
+    // }
+    // bias += 32; // compensate for adding gpsData
 
-    //packing magData
-    data.input = magData;
-    for(i = 0; i < 32; i++){
-        if ((data.output >> (31 - i)) & 1)
-            transmitBuffer[i + bias] = std::complex<float>(1,0);
-        else 
-            transmitBuffer[i + bias] = std::complex<float>(-1,0);
+    // //packing magData
+    // data.input = magData;
+    // for(i = 0; i < 32; i++){
+    //     if ((data.output >> (31 - i)) & 1)
+    //         transmitBuffer[i + bias] = std::complex<float>(1,0);
+    //     else 
+    //         transmitBuffer[i + bias] = std::complex<float>(-1,0);
+    // }
+
+    for(i = 0; i < 64; i++) {
+        transmitBuffer[i] = std::complex<float>(1,0);
     }
 
     i = 0;
-    while (i++ < 5000) {
-        tx_stream->send(transmitBuffer, 64, md);
+    while (1) {
+        tx_stream->send(transmitBuffer, 64 * sizeof(std::complex<float>), md);
     }
 
     std::cout << "Stopped transmit" << std::endl;
@@ -401,6 +406,8 @@ void Masdr::energy_test(){
 }
 /******************************************************************************/
 void Masdr::transmit_data_test(){
+    int i;
+    std::cout <<"In tx data test" <<std::endl;
     transmit_data();    
 }
 
@@ -441,14 +448,16 @@ void fftw_test() {
 //      fftw_execute(p);
 // //      //Normalized is off.
 //      fftw_destroy_plan(p);  
-//     fftw_complex *in, *out;
-//    fftw_plan p;
 
-//    in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
-//    out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
-//    p = fftw_plan_dft_1d(N_FFT, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+    fftw_complex *in, *out;
+   fftw_plan p;
 
-//    fftw_execute(p); /* repeat as needed */
-//    fftw_destroy_plan(p);
-//    fftw_free(in); fftw_free(out);
+   in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
+   out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
+   p = fftw_plan_dft_1d(N_FFT, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+
+   fftw_execute(p); /* repeat as needed */
+   fftw_destroy_plan(p);
+   fftw_free(in); fftw_free(out);
+
  }
