@@ -235,28 +235,23 @@ void Masdr::begin_processing() {
 }
 
 /******************************************************************************/
-void Masdr::transmit(const void *msg, int len) { 
-    //raised cosine pulse shaping
-    //Mod Scheme: BPSK
-    //tx
-    //11/6/16 NARUT: is two transmits neccessary?
+void Masdr::transmit(std::complex<float> *msg, int len) { 
+    uhd::tx_metadata_t md;
+    md.start_of_burst = false;
+    md.end_of_burst = false;
+    tx_stream->send(msg, len * sizeof(std::complex<float>), md);
 }
 
 /******************************************************************************/
 void Masdr::transmit_data() {
-    //Form Packet
-    //Interleave
-    //Crc
-    //call transmit
-    float gpsData = 32.0; // random GPS value
-    float magData = 12.5; // random magnetometer value
+    if (trans_head == NULL) {
+        std::cout << "No values to transmit" << std::endl;
+        return;
+    }
     int i; // looping
     int bias = 0; // compensating shift for adding more data
+    TransNode* trans_temp = trans_head;
     std::complex<float> transmitBuffer[TBUF_SIZE];
-
-    uhd::tx_metadata_t md;
-    md.start_of_burst = false;
-    md.end_of_burst = false;
 
     // used to perform binary operations on floats
     union {
@@ -264,36 +259,78 @@ void Masdr::transmit_data() {
         int output;
     } data;
 
-    std::cout << "Starting transmit" << std::endl;
-    //packing gpsdata
-    // data.input = gpsData;
-    // for(i = 0; i < 32; i++){
-    //     if ((data.output >> (31 - i)) & 1)
-    //         transmitBuffer[i + bias] = std::complex<float>(1,0);
-    //     else 
-    //         transmitBuffer[i + bias] = std::complex<float>(-1,0);
-    // }
-    // bias += 32; // compensate for adding gpsData
+    std::cout << "Starting packaging" << std::endl;
+    while (trans_temp != NULL) {
+        //packing 33 start bits
+        for(i = 0; i < 33; i++) {
+            transmitBuffer[i+bias] = std::complex<float>(1,0);
+        }
+        bias += 33; // compensate for adding start bits
 
-    // //packing magData
-    // data.input = magData;
-    // for(i = 0; i < 32; i++){
-    //     if ((data.output >> (31 - i)) & 1)
-    //         transmitBuffer[i + bias] = std::complex<float>(1,0);
-    //     else 
-    //         transmitBuffer[i + bias] = std::complex<float>(-1,0);
-    // }
+        //packing magnetometer data
+        data.input = trans_temp->heading;
+        for(i = 0; i < 32; i++) {
+            if ((data.output >> (31 - i)) & 1)
+                transmitBuffer[i+bias] = std::complex<float>(1,0);
+            else 
+                transmitBuffer[i+bias] = std::complex<float>(-1,0);
+        }
+        bias += 32; // compensate for adding magnetometer data
 
-    for(i = 0; i < 64; i++) {
-        transmitBuffer[i] = std::complex<float>(1,0);
+        //packing gps data
+        data.input = trans_temp->gps[0];
+        for(i = 0; i < 32; i++) {
+            if ((data.output >> (31 - i)) & 1)
+                transmitBuffer[i+bias] = std::complex<float>(1,0);
+            else 
+                transmitBuffer[i+bias] = std::complex<float>(-1,0);
+        }
+        bias += 32; // compensate for adding gps data 0
+
+        data.input = trans_temp->gps[1];
+        for(i = 0; i < 32; i++) {
+            if ((data.output >> (31 - i)) & 1)
+                transmitBuffer[i+bias] = std::complex<float>(1,0);
+            else 
+                transmitBuffer[i+bias] = std::complex<float>(-1,0);
+        }
+        bias += 32; // compensate for adding gps data 1
+
+        data.input = trans_temp->gps[2];
+        for(i = 0; i < 32; i++) {
+            if ((data.output >> (31 - i)) & 1)
+                transmitBuffer[i+bias] = std::complex<float>(1,0);
+            else 
+                transmitBuffer[i+bias] = std::complex<float>(-1,0);
+        }
+        bias += 32; // compensate for adding gps data 2
+
+        //packing data
+        data.input = trans_temp->data;
+        for(i = 0; i < 32; i++) {
+            if ((data.output >> (31 - i)) & 1)
+                transmitBuffer[i+bias] = std::complex<float>(1,0);
+            else 
+                transmitBuffer[i+bias] = std::complex<float>(-1,0);
+        }
+        bias += 32; // compensate for adding data
+
+        //packing 33 end bits
+        for(i = 0; i < 33; i++) {
+            transmitBuffer[i+bias] = std::complex<float>(-1,0);
+        }
+        
+        std::cout << "Transmitting..." << std::endl;
+        transmit(transmitBuffer, TBUF_SIZE);
+        trans_temp = trans_temp->next;
     }
 
-    i = 0;
-    while (1) {
-        tx_stream->send(transmitBuffer, 64 * sizeof(std::complex<float>), md);
-    }
+    // TESTING
+    // for(i = 0; i < TBUF_SIZE; i++) {
+    //     transmitBuffer[i] = std::complex<float>(1,0);
+    // }
 
-    std::cout << "Stopped transmit" << std::endl;
+    std::cout << "Done with transmit" << std::endl;
 }
 /******************************************************************************/
 /************************************TESTS*************************************/

@@ -29,8 +29,8 @@
 //#include "lsm303dlhc_mag.c"
 // Buffer sizes
 #define RBUF_SIZE 16384
-#define TBUF_SIZE 160   //11/6/16 NARUT: dependent 
-                        //on our packet size 5 floats (32*5)
+#define TBUF_SIZE 226   //11/6/16 NARUT: dependent 
+                        //on our packet size 5 floats (32*5) + (33*2) start/end
 #define N_FFT 1024
 #define THRESH_E 0.002 ///11/3/16 MHLI: currently arbitrarily picked
 

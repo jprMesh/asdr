@@ -185,7 +185,7 @@ private:
      * @param msg Pointer to packet to send.
      * @param len Size of packet to be sent.
      */
-    void transmit(const void *msg, int len);
+    void transmit(std::complex<float> *msg, int len);
 
     /**
      * @brief Transmit data to ground station
