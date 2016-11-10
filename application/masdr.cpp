@@ -325,6 +325,11 @@ void Masdr::transmit_data() {
         trans_temp = trans_temp->next;
     }
 
+    // delete the values after sending
+    delete trans_head;
+    // set to null for checking when filling in the linkedlist
+    trans_head = NULL;
+    
     // TESTING
     // for(i = 0; i < TBUF_SIZE; i++) {
     //     transmitBuffer[i] = std::complex<float>(1,0);
