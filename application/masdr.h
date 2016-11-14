@@ -24,6 +24,9 @@
 #include <uhd/utils/safe_main.hpp>
 #include <uhd/usrp/multi_usrp.hpp>
 #include <uhd/exception.hpp>
+//FFT Library
+#include  <complex.h>
+#include <fftw3.h>
 // Other libraries
 #include "utils.h"
 
@@ -123,10 +126,15 @@ public:
      */
     void energy_test();
 
-        /**
+    /**
      * @brief Test the transmit data. REMOVE LATER
      */
     void transmit_data_test();
+
+    /**
+     * @brief Figuring out how fftw works, REMOVE LATER
+     */
+    void fft_test();
 
 private:
     /**
@@ -203,13 +211,12 @@ private:
     RecvNode* curr_recv_buf; ///< Current buffer for receiving
     TransNode* trans_head; ///< Head node in linked list buffer for transmitting
     TransNode* curr_trans_buf; ///< Used to add more values at the end of the buffer
+    fftw_plan fft_p; ///< FFTW Plan
+    fftw_complex *fft_in, *fft_out; ///< Buffers for FFT.
     bool process_done; ///< Set when data processing has completed
     bool transmit_done; ///< Set when data transmission has completed
 };
 
-    /**
-     * @brief Figuring out how fftw works, REMOVE LATER
-     */
-void fftw_test();
+
 
 #endif // __masdr_h__

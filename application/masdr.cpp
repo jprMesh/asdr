@@ -22,13 +22,22 @@ Masdr::Masdr() {
     recv_head.heading = 0;
     recv_head.next = NULL;
     
+    //Initialize FFTW
+    fft_in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
+    fft_out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
+    fft_p = fftw_plan_dft_1d(N_FFT, fft_in, fft_out, FFTW_FORWARD, FFTW_MEASURE); //Should be FFTW_ESTIMATE
+
     initialize_peripherals();
     initialize_uhd();
     update_status();
+    
 }
 
 /******************************************************************************/
 Masdr::~Masdr() {
+    //Shutdown fftw
+    fftw_destroy_plan(fft_p);
+    fftw_free(fft_in); fftw_free(fft_out);
     shutdown_uhd();
     delete recv_head.next;
 }
@@ -452,6 +461,60 @@ void Masdr::transmit_data_test(){
     std::cout <<"In tx data test" <<std::endl;
     transmit_data();    
 }
+/******************************************************************************/
+void Masdr::fft_test(){
+   int i, numTests = 100, max_index = 0, real_index;
+   int freq = 3000000;
+   int freq_scale = 25000000;
+   double max_mag = 0, magnitude;
+   fftw_plan p2;
+
+    p2 = fftw_plan_dft_1d(N_FFT, fft_out, fft_in, FFTW_BACKWARD, FFTW_MEASURE);
+
+
+   for(i = 0; i <N_FFT; i++){
+        // in[0][i] = cos(2 * PI * freq * i / freq_scale);
+        fft_in[0][i] = 1;
+        fft_in[1][i] = 0;
+   }
+
+
+         std::cout<< "Test Forward"<<std::endl<<std::endl;
+        fftw_execute(fft_p); /* repeat as needed */   
+        for (i = 0; i < N_FFT; i++){
+            magnitude =sqrt(fft_out[0][i]*fft_out[0][i] + fft_out[1][i]*fft_out[1][i]);
+            if(magnitude > max_mag){
+                max_mag = magnitude;
+                max_index = i;
+            }
+            std::cout <<magnitude <<std::endl; 
+        }
+
+        std::cout << "Max Magnitude: "<<max_mag<< " at index: " << max_index<<std::endl;
+        std::cout << "Bucket represents " <<max_index * freq_scale /2/ N_FFT <<std::endl;
+    
+    std::cout<< "Test Backward" <<std::endl<<std::endl;    
+    // for(i = 0; i < N_FFT; i++){
+    //     out[0][i] = 0;
+    //     out[1][i] = 0;
+    // } 
+    // out[0][N_FFT/2] = 1;
+    max_mag = 0;
+   fftw_execute(p2);
+   for (i = 0; i < N_FFT; i++){
+            magnitude =sqrt(fft_in[0][i]*fft_in[0][i] + fft_in[1][i]*fft_in[1][i])/N_FFT;
+            if(magnitude > max_mag){
+                max_mag = magnitude;
+                max_index = i;
+            }
+            std::cout << magnitude/N_FFT <<std::endl; 
+        }
+
+
+        std::cout << "Max Magnitude: "<<max_mag/N_FFT<< " at index: " << max_index<<std::endl;
+        std::cout << "Bucket represents " <<max_index * freq_scale /2/ N_FFT <<std::endl;
+        
+}
 
 /******************************************************************************/
 int UHD_SAFE_MAIN(int argc, char *argv[]) {
@@ -463,7 +526,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
         if(DEBUG_TX) masdr.tx_test();
         if(DEBUG_ENERGY)masdr.energy_test();
         if(DEBUG_MAG)masdr.mag_test();
-        if(DEBUG_FFT) fftw_test();
+        if(DEBUG_FFT) masdr.fft_test();
         if(DEBUG_TX_DATA) masdr.transmit_data_test();
     }
     /// 11/6/16 MHLI: Commented out while we test energy functions
@@ -479,77 +542,4 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
 }
 
 /******************************************************************************/
-///////////Test functions
-/******************************************************************************/
-void fftw_test() {
-//      fftw_complex in[FFT_N], out[FFT_N];
-//      fftw_plan p;
-// //      ///ONLY HAVE TO RUN ONCE PER FFT SIZE, also is an out of place FFT
-//      p = fftw_plan_dft_1d( FFT_N, in, out, FFTW_FORWARD, FFTW_ESTIMATE ); 
-//fftw_create_plan(Size, forward or backwards FFT, FFTW_ESTIMATE or FFTW_MEASURE)
-     
-//      fftw_execute(p);
-// //      //Normalized is off.
-//      fftw_destroy_plan(p);  
 
-    fftw_complex *in, *out;
-   fftw_plan p, p2;
-   int i, numTests = 100, max_index = 0, real_index;
-   int freq = 3000000;
-   int freq_scale = 25000000;
-   double max_mag = 0, magnitude;
-
-   in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
-   out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
-   p = fftw_plan_dft_1d(N_FFT, in, out, FFTW_FORWARD, FFTW_MEASURE); //Should be FFTW_ESTIMATE
-    p2 = fftw_plan_dft_1d(N_FFT, out, in, FFTW_BACKWARD, FFTW_MEASURE);
-
-
-   for(i = 0; i <N_FFT; i++){
-        in[0][i] = cos(2 * PI * freq * i / freq_scale);
-        in[1][i] = 0;
-   }
-
-
-         std::cout<< "Test Forward"<<std::endl<<std::endl;
-        fftw_execute(p); /* repeat as needed */   
-        // for (i = 0; i < N_FFT; i++){
-        //     magnitude =sqrt(out[0][i]*out[0][i] + out[1][i]*out[1][i]);
-        //     if(magnitude > max_mag){
-        //         max_mag = magnitude;
-        //         max_index = i;
-        //     }
-        //     std::cout << out[0][i]<<", "<<out[1][i] <<std::endl; 
-        // }
-
-        // std::cout << "Max Magnitude: "<<max_mag<< " at index: " << max_index<<std::endl;
-        // std::cout << "Bucket represents " <<max_index * freq_scale /2/ N_FFT <<std::endl;
-    
-    std::cout<< "Test Backward" <<std::endl<<std::endl;    
-    for(i = 0; i < N_FFT; i++){
-        out[0][i] = 0;
-        out[1][i] = 0;
-    } 
-    out[0][N_FFT/2] = 1;
-
-   fftw_execute(p2);
-   for (i = 0; i < N_FFT; i++){
-            magnitude =in[0][i] / N_FFT;
-            if(magnitude > max_mag){
-                max_mag = magnitude;
-                max_index = i;
-            }
-            std::cout << magnitude<<", "<<in[1][i]/N_FFT <<std::endl; 
-        }
-
-
-        std::cout << "Max Magnitude: "<<max_mag<< " at index: " << max_index<<std::endl;
-        std::cout << "Bucket represents " <<max_index * freq_scale /2/ N_FFT <<std::endl;
-        std::cout <<"Real Index: "<<freq /freq_scale * N_FFT<<std::endl;
-        std::cout <<"Value at real index: " <<out[0][freq /freq_scale * N_FFT]<<","<<out[1][freq /freq_scale * N_FFT] <<std::endl;
- 
-   fftw_destroy_plan(p);
-   fftw_destroy_plan(p2);
-   fftw_free(in); fftw_free(out);
-
- }

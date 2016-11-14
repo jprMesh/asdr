@@ -22,9 +22,6 @@
 // Boost libraries
 #include <boost/format.hpp>
 #include <boost/thread.hpp>
-//FFT Library
-#include  <complex.h>
-#include <fftw3.h>
 //Magnotometer driver
 //#include "lsm303dlhc.h"
 //#include "lsm303dlhc_mag.c"
