@@ -175,7 +175,10 @@ void Masdr::reconfig_uhd(int txrx) {
 
 /******************************************************************************/
 void Masdr::shutdown_uhd() {
-
+    //post-running wrapping up
+    uhd::stream_cmd_t stream_cmd(
+        uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
+    rx_stream->issue_stream_cmd(stream_cmd);
 }
 
 /******************************************************************************/
@@ -534,8 +537,8 @@ void Masdr::fft_test(){
 
 
     for(i = 0; i <N_FFT; i++){
-        // in[0][i] = cos(2 * PI * freq * i / freq_scale);
-        fft_in[i][0] = 1;
+        fft_in[i][0] = cos(2 * PI * freq * i / freq_scale);
+        //fft_in[i][0] = 1;
         fft_in[i][1] = 0;
     }
 
@@ -602,5 +605,6 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
     return EXIT_SUCCESS;
 }
 
-/******************************************************************************/
+
+
 
