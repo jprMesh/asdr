@@ -23,6 +23,7 @@
 #include <boost/format.hpp>
 #include <boost/thread.hpp>
 //FFT Library
+#include  <complex.h>
 #include <fftw3.h>
 //Magnotometer driver
 //#include "lsm303dlhc.h"
@@ -31,9 +32,11 @@
 #define RBUF_SIZE 16384
 #define TBUF_SIZE 226   //11/6/16 NARUT: dependent 
                         //on our packet size 5 floats (32*5) + (33*2) start/end
-#define N_FFT 1024
-#define THRESH_E 0.002 ///11/3/16 MHLI: currently arbitrarily picked
 
+#define N_FFT 1024
+//#define N_FFT 128 ///for testing FFT, REMOVE LATER
+#define THRESH_E 0.002 ///11/3/16 MHLI: currently arbitrarily picked
+#define PI 3.14159265359
 // Defining standard bits for bit manipulation
 #define BIT0    0x00000001
 #define BIT1    0x00000002
