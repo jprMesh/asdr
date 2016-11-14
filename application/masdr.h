@@ -32,13 +32,13 @@
 
 #define G_DEBUG 1
 #if G_DEBUG
-    #define DEBUG_THRESH 0
+    #define DEBUG_THRESH 1
     #define DEBUG_ENERGY 0
     #define DEBUG_TX 0
     #define DEBUG_MAG 0
-    #define DEBUG_FFT 1
+    #define DEBUG_FFT 0
     #define DEBUG_TX_DATA 0
-    #define SCALE_ACC 0
+    #define SCALE_ACC 1
 
 #else
     #define DEBUG_THRESH 0
@@ -50,6 +50,8 @@
     #define SCALE_ACC 0
 #endif
 
+#define N_FFT 16384
+//#define N_FFT 128 ///for testing FFT, REMOVE LATER
 
 /**
  * @brief MASDR Application Class

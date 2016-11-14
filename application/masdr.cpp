@@ -132,7 +132,7 @@ void Masdr::initialize_uhd() {
 
     uhd::set_thread_priority_safe();
 
-    int rate = 5e6;
+    int rate = 25e6;
     float freq_rx = 2.4e9; //Set rx frequency to 2.4 GHz
     //float freq_rx = 700e6; //11/6/16 MHLI: TEST, for when we only have 900 MHz Ant
     
@@ -144,7 +144,8 @@ void Masdr::initialize_uhd() {
     int setup_time = 1.0; //sec setup
 
     //int bw =10e6; ///10/31/16 MHLI: UP to 56e6
-    int bw = 0;
+    int rx_bw = 20e6;
+    int tx_bw = 0;
     //Create USRP object
     uhd::usrp::multi_usrp::sptr usrp = uhd::usrp::multi_usrp::make((std::string)"");
     //Lock mboard clocks
@@ -160,6 +161,9 @@ void Masdr::initialize_uhd() {
     //Set gain
     usrp->set_rx_gain(gain);
     usrp->set_tx_gain(gain);
+    //Set BW
+    usrp->set_rx_bandwidth(rx_bw);
+    usrp->set_tx_bandwidth(tx_bw);
     //set the antennas
     usrp->set_rx_antenna(rx_ant);
     usrp->set_tx_antenna(tx_ant);
@@ -192,11 +196,24 @@ void Masdr::shutdown_uhd() {
 
 /******************************************************************************/
 bool Masdr::energy_detection(std::complex<float> *sig_in, int size){
-    float acc=0;
+    float acc=0,max=0, mag;
     int i;
-    for (i = 0; i < size; i++)
-        acc += sqrt(sig_in[i].real()*sig_in[i].real()+sig_in[i].imag()*sig_in[i].imag());
-    if(acc > THRESH_E)
+    for (i = 0; i < size; i++) {
+        mag = sqrt(sig_in[i].real()*sig_in[i].real()+sig_in[i].imag()*sig_in[i].imag());
+        acc += mag;
+        if(max < mag)
+            max = mag;
+    }
+
+    // if(DEBUG_THRESH) {    
+    //     std::cout<< max ;        
+    //     for (i=0; i < (int)(mag*1000); i++){
+    //         std::cout << "#";
+    //     }
+    //     std::cout<<std::endl;
+    // }
+
+    if(max > THRESH_E)
         return true;
     else
         return false;
@@ -362,40 +379,42 @@ void Masdr::rx_test(){
 
     if(DEBUG_THRESH)
         while (1){//(i < 5000) {
-        accum = 0;
-        rx_stream->recv(testbuf, RBUF_SIZE, md, 3.0, false);
+        // accum = 0;
+        // rx_stream->recv(testbuf, RBUF_SIZE, md, 3.0, false);
         
-        for(j=0;j<RBUF_SIZE;j++) {
-            mag_squared = (sqrt(testbuf[j].real() *testbuf[j].real()
-                      + testbuf[j].imag()*testbuf[j].imag())); 
-            accum += mag_squared;
+        // for(j=0;j<RBUF_SIZE;j++) {
+        //     mag_squared = (sqrt(testbuf[j].real() *testbuf[j].real()
+        //               + testbuf[j].imag()*testbuf[j].imag()));
+        //     accum += mag_squared;
 
-            if(mag_squared > max_inBuf)
-                max_inBuf = mag_squared;
-            if(mag_squared > max_total)
-                max_total = mag_squared;
-            if(mag_squared > max_periodic)
-                max_periodic = mag_squared;
+        //     if(mag_squared > max_inBuf)
+        //         max_inBuf = mag_squared;
+        //     if(mag_squared > max_total)
+        //         max_total = mag_squared;
+        //     if(mag_squared > max_periodic)
+        //         max_periodic = mag_squared;
+        // }
+        // if(!(i%20)){
+        //     std::cout<<(int)accum*SCALE_ACC;
+        //     for (i=0; i < (int)accum*SCALE_ACC; i++){
+        //         std::cout << "#";
+        //     }
+        //    std::cout<<std::endl;
+        //     // std::cout<< i <<": ";
+        // //std::cout<< "Max in buf: "<<max_inBuf <<std::endl;
+        // //std::cout<< "Max in total"<< max_total <<std::endl;
+        // // std::cout << "Max in Periodic: "<<max_periodic <<std::endl;
+        // }
+        // max_inBuf = 0;
+        // //std::cout << "Received Value: "<<accum<<std::endl;
+        // ++i;
+        // if(i > 5000){
+        //     i = 0;
+        //     max_periodic = 0;
+        // }
 
-        }
-        if(!(i%20)){
-            std::cout<<(int)accum*SCALE_ACC;
-            for (i=0; i < (int)accum*SCALE_ACC; i++){
-                std::cout << "#";
-            }
-           std::cout<<std::endl;
-            // std::cout<< i <<": ";
-        //std::cout<< "Max in buf: "<<max_inBuf <<std::endl;
-        //std::cout<< "Max in total"<< max_total <<std::endl;
-        // std::cout << "Max in Periodic: "<<max_periodic <<std::endl;
-        }
-        max_inBuf = 0;
-        //std::cout << "Received Value: "<<accum<<std::endl;
-        ++i;
-        if(i > 5000){
-            i = 0;
-            max_periodic = 0;
-        }
+        rx_stream->recv(testbuf, RBUF_SIZE, md, 3.0, false);
+        std::cout<<energy_detection(testbuf, RBUF_SIZE)<<std::endl;
     }
     else 
         numLoops = 5000;
