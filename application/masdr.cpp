@@ -178,7 +178,45 @@ void Masdr::shutdown_uhd() {
 }
 
 /******************************************************************************/
-/************************************OTHER*************************************/
+/************************************SAMPLE************************************/
+/******************************************************************************/
+
+void Masdr::begin_sampling() {
+    // Initialize new sampling stream
+    uhd::stream_cmd_t stream_cmd(
+        uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS);
+    stream_cmd.num_samps = size_t(0);
+    stream_cmd.stream_now = true;
+    stream_cmd.time_spec = uhd::time_spec_t(); // Holds the time.
+    rx_stream->issue_stream_cmd(stream_cmd);   // Initialize the stream
+    // Set current buffer to head
+    curr_recv_buf = &recv_head;
+}
+
+/******************************************************************************/
+void Masdr::stop_sampling() {
+    uhd::stream_cmd_t stream_cmd(
+        uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
+    rx_stream->issue_stream_cmd(stream_cmd);
+    // Clear linked list
+    delete recv_head.next;
+    recv_head.next = NULL;
+}
+
+/******************************************************************************/
+/********************************PROCESSING************************************/
+/******************************************************************************/
+void Masdr::begin_processing() {
+
+    //while data structure is null, energy detect current buffer,
+    bool hasEnergy = energy_detection(curr_recv_buf->recv_buf,RBUF_SIZE);
+    if(hasEnergy) {
+     //   run_fft(curr_recv_buf->recv_buf);
+     //   match_filt();
+      //  localize();
+    }
+}
+
 /******************************************************************************/
 bool Masdr::energy_detection(std::complex<float> *sig_in, int size){
     float acc=0,max=0, mag;
@@ -205,48 +243,7 @@ bool Masdr::energy_detection(std::complex<float> *sig_in, int size){
 }
 
 /******************************************************************************/
-void Masdr::begin_sampling() {
-    // Initialize new sampling stream
-    uhd::stream_cmd_t stream_cmd(
-        uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS);
-    stream_cmd.num_samps = size_t(0);
-    stream_cmd.stream_now = true;
-    stream_cmd.time_spec = uhd::time_spec_t(); // Holds the time.
-    rx_stream->issue_stream_cmd(stream_cmd);   // Initialize the stream
-    // Set current buffer to head
-    curr_recv_buf = &recv_head;
-}
-
-/******************************************************************************/
-void Masdr::stop_sampling() {
-    uhd::stream_cmd_t stream_cmd(
-        uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
-    rx_stream->issue_stream_cmd(stream_cmd);
-    // Clear linked list
-    delete recv_head.next;
-    recv_head.next = NULL;
-}
-
-/******************************************************************************/
-void Masdr::begin_processing() {
-
-    //while data structure is null, energy detect current buffer,
-    bool hasEnergy = energy_detection(curr_recv_buf->recv_buf,RBUF_SIZE);
-    if(hasEnergy) {
-     //   run_fft(curr_recv_buf->recv_buf);
-     //   match_filt();
-      //  localize();
-    }
-}
-
-/******************************************************************************/
-void Masdr::transmit(std::complex<float> *msg, int len) { 
-    uhd::tx_metadata_t md;
-    md.start_of_burst = false;
-    md.end_of_burst = false;
-    tx_stream->send(msg, len * sizeof(std::complex<float>), md);
-}
-
+/*********************************TRANSMISSION*********************************/
 /******************************************************************************/
 void Masdr::transmit_data() {
     if (trans_head == NULL) {
@@ -343,6 +340,15 @@ void Masdr::transmit_data() {
 
     std::cout << "Done with transmit" << std::endl;
 }
+/******************************************************************************/
+
+void Masdr::transmit(std::complex<float> *msg, int len) { 
+    uhd::tx_metadata_t md;
+    md.start_of_burst = false;
+    md.end_of_burst = false;
+    tx_stream->send(msg, len * sizeof(std::complex<float>), md);
+}
+
 /******************************************************************************/
 /************************************TESTS*************************************/
 /******************************************************************************/
