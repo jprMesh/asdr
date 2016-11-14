@@ -25,7 +25,7 @@ Masdr::Masdr() {
     //Initialize FFTW
     fft_in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
     fft_out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
-    fft_p = fftw_plan_dft_1d(N_FFT, fft_in, fft_out, FFTW_FORWARD, FFTW_MEASURE); //Should be FFTW_ESTIMATE
+    fft_p = fftw_plan_dft_1d(N_FFT, fft_in, fft_out, FFTW_FORWARD, FFTW_MEASURE);
 
     initialize_peripherals();
     initialize_uhd();
@@ -37,7 +37,8 @@ Masdr::Masdr() {
 Masdr::~Masdr() {
     //Shutdown fftw
     fftw_destroy_plan(fft_p);
-    fftw_free(fft_in); fftw_free(fft_out);
+    fftw_free(fft_in); 
+    fftw_free(fft_out);
     shutdown_uhd();
     delete recv_head.next;
     delete trans_head;
@@ -488,35 +489,35 @@ void Masdr::transmit_data_test(){
 }
 /******************************************************************************/
 void Masdr::fft_test(){
-   int i, numTests = 100, max_index = 0, real_index;
-   int freq = 3000000;
-   int freq_scale = 25000000;
-   double max_mag = 0, magnitude;
-   fftw_plan p2;
+    int i, numTests = 100, max_index = 0, real_index;
+    int freq = 3000000;
+    int freq_scale = 25000000;
+    double max_mag = 0, magnitude;
+    fftw_plan p2;
+    fftw_complex *fft_in2 = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
+    p2 = fftw_plan_dft_1d(N_FFT, fft_out, fft_in2, FFTW_BACKWARD, FFTW_MEASURE);
 
-    p2 = fftw_plan_dft_1d(N_FFT, fft_out, fft_in, FFTW_BACKWARD, FFTW_MEASURE);
 
-
-   for(i = 0; i <N_FFT; i++){
+    for(i = 0; i <N_FFT; i++){
         // in[0][i] = cos(2 * PI * freq * i / freq_scale);
         fft_in[0][i] = 1;
         fft_in[1][i] = 0;
-   }
+    }
 
 
-         std::cout<< "Test Forward"<<std::endl<<std::endl;
-        fftw_execute(fft_p); /* repeat as needed */   
-        for (i = 0; i < N_FFT; i++){
-            magnitude =sqrt(fft_out[0][i]*fft_out[0][i] + fft_out[1][i]*fft_out[1][i]);
-            if(magnitude > max_mag){
-                max_mag = magnitude;
-                max_index = i;
-            }
-            std::cout <<magnitude <<std::endl; 
+    std::cout<< "Test Forward"<<std::endl<<std::endl;
+    fftw_execute(fft_p); /* repeat as needed */   
+    for (i = 0; i < N_FFT; i++){
+        magnitude =sqrt(fft_out[0][i]*fft_out[0][i] + fft_out[1][i]*fft_out[1][i]);
+        if(magnitude > max_mag){
+            max_mag = magnitude;
+            max_index = i;
         }
+        std::cout << "Real: "<<fft_out[0][i]<< "\tImaginary: " << fft_out[1][i]<<std::endl;
+    }
 
-        std::cout << "Max Magnitude: "<<max_mag<< " at index: " << max_index<<std::endl;
-        std::cout << "Bucket represents " <<max_index * freq_scale /2/ N_FFT <<std::endl;
+        // std::cout << "Max Magnitude: "<<max_mag<< " at index: " << max_index<<std::endl;
+        // std::cout << "Bucket represents " <<max_index * freq_scale /2/ N_FFT <<std::endl;
     
     std::cout<< "Test Backward" <<std::endl<<std::endl;    
     // for(i = 0; i < N_FFT; i++){
@@ -527,13 +528,13 @@ void Masdr::fft_test(){
     max_mag = 0;
    fftw_execute(p2);
    for (i = 0; i < N_FFT; i++){
-            magnitude =sqrt(fft_in[0][i]*fft_in[0][i] + fft_in[1][i]*fft_in[1][i])/N_FFT;
+            magnitude =sqrt(fft_in2[0][i]*fft_in2[0][i] + fft_in2[1][i]*fft_in2[1][i]);
             if(magnitude > max_mag){
                 max_mag = magnitude;
                 max_index = i;
             }
-            std::cout << magnitude/N_FFT <<std::endl; 
-        }
+        std::cout << "Real: "<<fft_in2[0][i]<< "\tImaginary: " << fft_in2[1][i]<<std::endl; 
+    }   
 
 
         std::cout << "Max Magnitude: "<<max_mag/N_FFT<< " at index: " << max_index<<std::endl;
