@@ -40,6 +40,7 @@ Masdr::~Masdr() {
     fftw_free(fft_in); fftw_free(fft_out);
     shutdown_uhd();
     delete recv_head.next;
+    delete trans_head;
 }
 
 /******************************************************************************/
@@ -355,6 +356,7 @@ void Masdr::transmit_data() {
     delete trans_head;
     // set to null for checking when filling in the linkedlist
     trans_head = NULL;
+    curr_trans_buf = NULL;
     
     // TESTING
     // for(i = 0; i < TBUF_SIZE; i++) {
