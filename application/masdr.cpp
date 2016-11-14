@@ -554,13 +554,13 @@ void Masdr::fft_test(){
         std::cout << "Real: "<<fft_out[i][0]<< "\tImaginary: " << fft_out[i][1]<<std::endl;
     }
 
-        // std::cout << "Max Magnitude: "<<max_mag<< " at index: " << max_index<<std::endl;
-        // std::cout << "Bucket represents " <<max_index * freq_scale /2/ N_FFT <<std::endl;
+    std::cout << "Max Magnitude: "<<max_mag<< " at index: " << max_index<<std::endl;
+    std::cout << "Bucket represents " <<max_index * freq_scale /2/ N_FFT <<std::endl;
     
     std::cout<< "Test Backward" <<std::endl<<std::endl;    
     // for(i = 0; i < N_FFT; i++){
-    //     out[0][i] = 0;
-    //     out[1][i] = 0;
+    //     out[i][0] = 0;
+    //     out[i][1] = 0;
     // } 
     // out[0][N_FFT/2] = 1;
     max_mag = 0;
