@@ -211,9 +211,11 @@ void Masdr::begin_processing() {
     //while data structure is null, energy detect current buffer,
     bool hasEnergy = energy_detection(curr_recv_buf->recv_buf,RBUF_SIZE);
     if(hasEnergy) {
-       run_fft(curr_recv_buf->recv_buf);
-     //   match_filt();
-      //  localize();
+        run_fft(curr_recv_buf->recv_buf);
+        bool has_wifi =  match_filt();
+        if(has_wifi){
+          localize();
+        }
     }
 }
 
@@ -246,10 +248,33 @@ bool Masdr::energy_detection(std::complex<float> *sig_in, int size){
 void  Masdr::run_fft(std::complex<float> *buff_in){
     int i;
     for(i = 0; i < N_FFT;i++){
-        fft_in[0][i] = buff_in[i].real();
-        fft_in[1][i] = buff_in[i].imag();
+        fft_in[i][0] = buff_in[i].real();
+        fft_in[i][1] = buff_in[i].imag();
     }
     fftw_execute(fft_p);
+}
+
+/******************************************************************************/
+bool Masdr::match_filt(){
+    //Match filter.
+    int i, j;
+    float match_val = 0, re, im;
+    for(i = 0; i < N_FFT; i++) {
+        re = fft_out[i][0] * ofdm_head[i][0];
+        im = fft_out[i][1] * ofdm_head[i][1];
+        match_val += sqrt(re*re + im*im);
+    }
+    if(match_val >THRESH_MATCH)
+        return 1;
+    else
+        return 0;
+}
+
+/******************************************************************************/
+float * Masdr::localize(){
+    //Calculate distance from RSS
+    //calculate angle from distance
+    return NULL;
 }
 
 /******************************************************************************/
@@ -546,7 +571,7 @@ void Masdr::fft_test(){
         }
 
 
-        std::cout << "Max Magnitude: "<<max_mag/N_FFT<< " at index: " << max_index<<std::endl;
+        std::cout << "Max Magnitude: "<<max_mag<< " at index: " << max_index<<std::endl;
         std::cout << "Bucket represents " <<max_index * freq_scale /2/ N_FFT <<std::endl;
         
 }

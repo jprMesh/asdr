@@ -177,11 +177,22 @@ private:
      * @brief Detect if there's any energy detected on the bandwidth being measured.
      */
     bool energy_detection(std::complex<float> *sig_in, int size);
+    
     /**
      * @brief Transfer buffer to fft_in, and run FFT.
      */
     void run_fft(std::complex<float> *);
+    
+    /**
+     * @brief Look for OFDM header.
+     */
+    bool match_filt();
+    
 
+    /**
+     * @brief Locate signal. Returns x,y coordinates based on GPS.
+     */
+    float * localize();
 
     /**
      * @brief Command the SDR to stop taking samples.
@@ -218,6 +229,7 @@ private:
     TransNode* trans_head; ///< Head node in linked list buffer for transmitting
     TransNode* curr_trans_buf; ///< Used to add more values at the end of the buffer
     fftw_plan fft_p; ///< FFTW Plan
+    fftw_complex ofdm_head[N_FFT]; //< Expected OFDM Header. 
     fftw_complex *fft_in, *fft_out; ///< Buffers for FFT.
     bool process_done; ///< Set when data processing has completed
     bool transmit_done; ///< Set when data transmission has completed

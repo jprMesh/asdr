@@ -31,7 +31,8 @@
                         //on our packet size 5 floats (32*5) + (33*2) start/end
 
 
-#define THRESH_E 0.1 ///11/3/16 MHLI: currently arbitrarily picked
+#define THRESH_E 0.1 ///11/14/16 MHLI: Picked based on received information.
+#define THRESH_MATCH 1 //11/14/16 MHLI: Currently an arbitrary number
 #define PI 3.14159265359
 // Defining standard bits for bit manipulation
 #define BIT0    0x00000001
