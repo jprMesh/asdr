@@ -42,7 +42,8 @@ Masdr::~Masdr() {
     delete recv_head.next;
     delete trans_head;
 }
-
+/******************************************************************************/
+/***************************STATE TRANSITIONS**********************************/
 /******************************************************************************/
 void Masdr::update_status() {
     // update phy_status from peripherals
@@ -102,26 +103,7 @@ void Masdr::repeat_action() {
 }
 
 /******************************************************************************/
-void Masdr::RecvNode_test() {
-    std::cout << "Begin testing" << std::endl;
-    recv_head.heading = 180;
-    curr_recv_buf = &recv_head;
-    for (int i=0; i<400; ++i) {
-        RecvNode *newnode = new RecvNode;
-        newnode->heading = int(curr_recv_buf->heading + 10) % 360;
-        curr_recv_buf->next = newnode;
-        curr_recv_buf = curr_recv_buf->next;
-    }
-    std::cout << "Done filling list" << std::endl;
-    std::cout << recv_head.next->heading << std::endl;
-    std::cout << recv_head.next->next->heading << std::endl;
-    std::cout << recv_head.next->next->next->heading << std::endl;
-    delete recv_head.next;
-    recv_head.next = NULL;
-    std::cout << "Done freeing list" << std::endl;
-    std::cout << recv_head.next << std::endl;
-}
-
+/**************************INITIALIZATIONS*************************************/
 /******************************************************************************/
 void Masdr::initialize_peripherals() {
 
@@ -196,6 +178,8 @@ void Masdr::shutdown_uhd() {
 }
 
 /******************************************************************************/
+/************************************OTHER*************************************/
+/******************************************************************************/
 bool Masdr::energy_detection(std::complex<float> *sig_in, int size){
     float acc=0,max=0, mag;
     int i;
@@ -245,20 +229,14 @@ void Masdr::stop_sampling() {
 
 /******************************************************************************/
 void Masdr::begin_processing() {
-    // FFT
-    // fftw_complex in[FFT_N], out[FFT_N];
-    // fftw_plan p = fftw_create_plan(FFT_N, FFTW_FORWARD, FFTW_ESTIMATE);
-    // fftw_one(p, in, out);
-    // fftw_destroy_plan(p);
 
     //while data structure is null, energy detect current buffer,
     bool hasEnergy = energy_detection(curr_recv_buf->recv_buf,RBUF_SIZE);
-    //if(hasEnergy){
-        //fftw_one(p, current->Recv_buf, fft_sig)
-        //match_filt(fft_sig);
-        //localize(fft_sig);
-    //}
-
+    if(hasEnergy) {
+     //   run_fft(curr_recv_buf->recv_buf);
+     //   match_filt();
+      //  localize();
+    }
 }
 
 /******************************************************************************/
@@ -469,6 +447,26 @@ void Masdr::mag_test() {
         usleep(4000000);
     }
         
+}
+/******************************************************************************/
+void Masdr::RecvNode_test() {
+    std::cout << "Begin testing" << std::endl;
+    recv_head.heading = 180;
+    curr_recv_buf = &recv_head;
+    for (int i=0; i<400; ++i) {
+        RecvNode *newnode = new RecvNode;
+        newnode->heading = int(curr_recv_buf->heading + 10) % 360;
+        curr_recv_buf->next = newnode;
+        curr_recv_buf = curr_recv_buf->next;
+    }
+    std::cout << "Done filling list" << std::endl;
+    std::cout << recv_head.next->heading << std::endl;
+    std::cout << recv_head.next->next->heading << std::endl;
+    std::cout << recv_head.next->next->next->heading << std::endl;
+    delete recv_head.next;
+    recv_head.next = NULL;
+    std::cout << "Done freeing list" << std::endl;
+    std::cout << recv_head.next << std::endl;
 }
 
 /******************************************************************************/
