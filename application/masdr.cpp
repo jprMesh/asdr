@@ -211,7 +211,7 @@ void Masdr::begin_processing() {
     //while data structure is null, energy detect current buffer,
     bool hasEnergy = energy_detection(curr_recv_buf->recv_buf,RBUF_SIZE);
     if(hasEnergy) {
-     //   run_fft(curr_recv_buf->recv_buf);
+       run_fft(curr_recv_buf->recv_buf);
      //   match_filt();
       //  localize();
     }
@@ -240,6 +240,16 @@ bool Masdr::energy_detection(std::complex<float> *sig_in, int size){
         return true;
     else
         return false;
+}
+
+/******************************************************************************/
+void  Masdr::run_fft(std::complex<float> *buff_in){
+    int i;
+    for(i = 0; i < N_FFT;i++){
+        fft_in[0][i] = buff_in[i].real();
+        fft_in[1][i] = buff_in[i].imag();
+    }
+    fftw_execute(fft_p);
 }
 
 /******************************************************************************/

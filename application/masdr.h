@@ -177,6 +177,10 @@ private:
      * @brief Detect if there's any energy detected on the bandwidth being measured.
      */
     bool energy_detection(std::complex<float> *sig_in, int size);
+    /**
+     * @brief Transfer buffer to fft_in, and run FFT.
+     */
+    void run_fft(std::complex<float> *);
 
 
     /**
