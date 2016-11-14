@@ -500,20 +500,20 @@ void Masdr::fft_test(){
 
     for(i = 0; i <N_FFT; i++){
         // in[0][i] = cos(2 * PI * freq * i / freq_scale);
-        fft_in[0][i] = 1;
-        fft_in[1][i] = 0;
+        fft_in[i][0] = 1;
+        fft_in[i][1] = 0;
     }
 
 
     std::cout<< "Test Forward"<<std::endl<<std::endl;
     fftw_execute(fft_p); /* repeat as needed */   
     for (i = 0; i < N_FFT; i++){
-        magnitude =sqrt(fft_out[0][i]*fft_out[0][i] + fft_out[1][i]*fft_out[1][i]);
+        magnitude =sqrt(fft_out[i][0]*fft_out[i][0] + fft_out[i][1]*fft_out[i][1]);
         if(magnitude > max_mag){
             max_mag = magnitude;
             max_index = i;
         }
-        std::cout << "Real: "<<fft_out[0][i]<< "\tImaginary: " << fft_out[1][i]<<std::endl;
+        std::cout << "Real: "<<fft_out[i][0]<< "\tImaginary: " << fft_out[i][1]<<std::endl;
     }
 
         // std::cout << "Max Magnitude: "<<max_mag<< " at index: " << max_index<<std::endl;
@@ -528,12 +528,12 @@ void Masdr::fft_test(){
     max_mag = 0;
    fftw_execute(p2);
    for (i = 0; i < N_FFT; i++){
-            magnitude =sqrt(fft_in2[0][i]*fft_in2[0][i] + fft_in2[1][i]*fft_in2[1][i]);
+            magnitude =sqrt(fft_in2[i][0]*fft_in2[i][0] + fft_in2[i][1]*fft_in2[i][1]);
             if(magnitude > max_mag){
                 max_mag = magnitude;
                 max_index = i;
             }
-        std::cout << "Real: "<<fft_in2[0][i]<< "\tImaginary: " << fft_in2[1][i]<<std::endl; 
+        std::cout << "Real: "<<fft_in2[i][0]<< "\tImaginary: " << fft_in2[i][1]<<std::endl; 
     }   
 
 
