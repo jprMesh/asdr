@@ -461,7 +461,10 @@ void Masdr::tx_test() {
     std::cout << "Entered tx_test" << std::endl;
 
     //Initialize test buffer.
-    memset(testbuf, 0, 100 * sizeof(std::complex<float>));
+    for (i = 0; i <100; i++) {
+        testbuf[i] = std::complex<float> (1,0);
+    }
+    
     i = 0;
 
 
@@ -473,7 +476,7 @@ void Masdr::tx_test() {
     tx_stream->send(testbuf, 100, md);
     std::cout << "First Buff done" << std::endl;
         
-    while (i < 5000) {
+    while (1) {
         tx_stream->send(testbuf, 100, md);
         ++i;
     }
