@@ -50,9 +50,10 @@
     #define SCALE_ACC 0
 #endif
 
-#define N_FFT 16384
-//#define N_FFT 128 ///for testing FFT, REMOVE LATER
-
+    ///11/16/16 MHLI: At a sample rate of 45MHz, OFDM transmitted 360 samps.
+#define N_FFT 1024  ///11/16/16 MHLI: 16384 is a bit overkill, 
+                    ///considering the ofdm carrier is binned w/ 64 bin fft.
+                    ///Going to use 1024 for now.
 /**
  * @brief MASDR Application Class
  * 

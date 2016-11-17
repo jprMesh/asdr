@@ -27,6 +27,41 @@ Masdr::Masdr() {
     fft_out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
     fft_p = fftw_plan_dft_1d(N_FFT, fft_in, fft_out, FFTW_FORWARD, FFTW_MEASURE);
 
+    //Intialize OFDM Match Filter head
+    //OFDM HEAD DETAILS:
+        //Ignore first and last 174 buckets.
+        //Each OFDM bucket is 16 fft buckets.
+        //They are located at 254-270, 480-415, 640-615,864-880
+    int i;
+    for(i=0;i<N_FFT;i++){
+        int ratio = N_FFT/64; //Number of fft bins in an OFDM bin.
+
+        //Account for the fact that only middle 52 OFDM bins are used.
+        if (i < 6 * ratio || i > 58 * ratio){
+            ofdm_head[i][0] = 0;
+            ofdm_head[i][1] = 0;
+        }
+        else if(i >= (6+6) * ratio && i < (6+7) * ratio){
+            ofdm_head[i][0] = 1;
+            ofdm_head[i][1] = 1;
+        }
+        else if(i >= (12+14) * ratio && i < (12+15) * ratio) {
+            ofdm_head[i][0] = 1;
+            ofdm_head[i][1] = 1;
+        }
+        else if(i >= (26+14) * ratio && i < (26+15) * ratio) {
+            ofdm_head[i][0] = 1;
+            ofdm_head[i][1] = 1;
+        }
+        else if(i >= (40+14) * ratio && i < (40 + 15) * ratio){
+            ofdm_head[i][0] = 1;
+            ofdm_head[i][1] = 1;
+        }
+        else {
+            ofdm_head[i][0] = 0;
+            ofdm_head[i][1] = 0;
+        }
+    }
     initialize_peripherals();
     initialize_uhd();
     update_status();
@@ -112,11 +147,9 @@ void Masdr::initialize_peripherals() {
 
 /******************************************************************************/
 void Masdr::initialize_uhd() {
-    /// 10/07/16 MHLI: Currently only going to config for rx.
-
     uhd::set_thread_priority_safe();
 
-    int rate = 25e6;
+    int rate = 45e6;//To deal with the 20MHz bandwidth we have.
     float freq_rx = 2.4e9; //Set rx frequency to 2.4 GHz
     //float freq_rx = 700e6; //11/6/16 MHLI: TEST, for when we only have 900 MHz Ant
     
@@ -128,8 +161,9 @@ void Masdr::initialize_uhd() {
     int setup_time = 1.0; //sec setup
 
     //int bw =10e6; ///10/31/16 MHLI: UP to 56e6
-    int rx_bw = 20e6;
-    int tx_bw = 0;
+    //Only care about 16.6 MHz of the 20 (or 8.3MHz of 10)
+    int rx_bw = 20e6; //11/16/16 MHLI: Should this be 10e6 and will it do half above half below?
+    int tx_bw = 0; 
     //Create USRP object
     uhd::usrp::multi_usrp::sptr usrp = uhd::usrp::multi_usrp::make((std::string)"");
     //Lock mboard clocks
