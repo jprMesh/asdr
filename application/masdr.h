@@ -33,7 +33,7 @@
 #define G_DEBUG 1
 #if G_DEBUG
     #define DEBUG_THRESH 0
-    #define DEBUG_ENERGY 0
+    #define DEBUG_MATCH 0
     #define DEBUG_TX 1
     #define DEBUG_MAG 0
     #define DEBUG_FFT 0
@@ -42,7 +42,7 @@
 
 #else
     #define DEBUG_THRESH 0
-    #define DEBUG_ENERGY 0
+    #define DEBUG_MATCH 0
     #define DEBUG_TX 0
     #define DEBUG_MAG 0
     #define DEBUG_FFT 0
@@ -125,9 +125,9 @@ public:
     void RecvNode_test();
     
     /**
-     * @brief Test the energy detection amount. REMOVE LATER
+     * @brief Test the match filter amount. REMOVE LATER
      */
-    void energy_test();
+    void match_test();
 
     /**
      * @brief Test the transmit data. REMOVE LATER
@@ -187,7 +187,7 @@ private:
     /**
      * @brief Look for OFDM header.
      */
-    bool match_filt();
+    float match_filt();
     
 
     /**

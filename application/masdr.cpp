@@ -250,8 +250,8 @@ void Masdr::begin_processing() {
     bool hasEnergy = energy_detection(curr_recv_buf->recv_buf,RBUF_SIZE);
     if(hasEnergy) {
         run_fft(curr_recv_buf->recv_buf);
-        bool has_wifi =  match_filt();
-        if(has_wifi){
+        float has_wifi =  match_filt();
+        if(has_wifi != -1){
           localize();
         }
     }
@@ -293,7 +293,7 @@ void  Masdr::run_fft(std::complex<float> *buff_in){
 }
 
 /******************************************************************************/
-bool Masdr::match_filt(){
+float Masdr::match_filt(){
     //Match filter.
     int i, j;
     float match_val = 0, re, im;
@@ -302,10 +302,10 @@ bool Masdr::match_filt(){
         im = fft_out[i][1] * ofdm_head[i][1];
         match_val += sqrt(re*re + im*im);
     }
-    if(match_val >THRESH_MATCH)
-        return 1;
+    if(match_val > THRESH_MATCH)
+        return match_val;
     else
-        return 0;
+        return -1;
 }
 
 /******************************************************************************/
@@ -552,9 +552,15 @@ void Masdr::RecvNode_test() {
 }
 
 /******************************************************************************/
-void Masdr::energy_test(){
-    //Test energy detection stuff.
-    std::cout<<"Energy test done." <<std::endl<<std::endl;
+void Masdr::match_test(){
+    //Test match filt stuff.
+    float test_val;
+    for(1) {
+        test_val = match_filt();
+        std::cout<< "Match Val: "<<test_val<<std::endl;
+    }
+
+    std::cout<<"Match filter test done." <<std::endl<<std::endl;
 }
 /******************************************************************************/
 void Masdr::transmit_data_test(){
@@ -625,7 +631,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
     if(G_DEBUG){
         if(DEBUG_THRESH) masdr.rx_test();
         if(DEBUG_TX) masdr.tx_test();
-        if(DEBUG_ENERGY)masdr.energy_test();
+        if(DEBUG_MATCH)masdr.match_test();
         if(DEBUG_MAG)masdr.mag_test();
         if(DEBUG_FFT) masdr.fft_test();
         if(DEBUG_TX_DATA) masdr.transmit_data_test();
