@@ -34,10 +34,10 @@
 #if G_DEBUG
     #define DEBUG_THRESH 0
     #define DEBUG_MATCH 0
-    #define DEBUG_TX 1
+    #define DEBUG_TX 0
     #define DEBUG_MAG 0
     #define DEBUG_FFT 0
-    #define DEBUG_TX_DATA 0
+    #define DEBUG_TX_DATA 1
     #define SCALE_ACC 1
 
 #else
@@ -219,7 +219,7 @@ private:
      * Transmit sampling location and directions for signals to ground station.
      */
     void transmit_data();
-
+    std::complex<float> testbuf[RBUF_SIZE]; ///< Testing if structure is too big.
     uhd::rx_streamer::sptr rx_stream; ///< The UHD rx streamer
     uhd::tx_streamer::sptr tx_stream; ///< The UHD tx streamer
     uhd::rx_metadata_t md; ///< UHD Metadata

@@ -22,17 +22,22 @@
 // Boost libraries
 #include <boost/format.hpp>
 #include <boost/thread.hpp>
+
 //Magnotometer driver
 //#include "lsm303dlhc.h"
 //#include "lsm303dlhc_mag.c"
 // Buffer sizes
+
+// #define RBUF_SIZE 1024 /// Temp not 16384
 #define RBUF_SIZE 16384
+
 #define TBUF_SIZE 226   //11/6/16 NARUT: dependent 
                         //on our packet size 5 floats (32*5) + (33*2) start/end
 
 
 #define THRESH_E 0.1 ///11/14/16 MHLI: Picked based on received information.
-#define THRESH_MATCH 1 //11/14/16 MHLI: Currently an arbitrary number
+#define THRESH_MATCH 20 //11/14/16 MHLI: 20,25 would work probably, especially in 
+//#define THRESH_MATCH 0
 #define PI 3.14159265359
 // Defining standard bits for bit manipulation
 #define BIT0    0x00000001

@@ -17,7 +17,7 @@
 Masdr::Masdr() {
     process_done = false;
     transmit_done = false;
-
+    soft_status = IDLE;
     // Initialize linked list of received buffer.
     recv_head.heading = 0;
     recv_head.next = NULL;
@@ -95,25 +95,30 @@ void Masdr::update_status() {
 
 /******************************************************************************/
 void Masdr::state_transition() {
-    if (soft_status == IDLE && phy_status.is_stat_and_rot) {
+    /// 11/17/16 MHLI: Commented out to test sampling.
+    if(soft_status != SAMPLE){
         begin_sampling();
-        soft_status = SAMPLE;
-
-    } else if (soft_status == SAMPLE && !phy_status.is_stat_and_rot) {
-        stop_sampling();
-        begin_processing();
-        soft_status = PROCESS;
-
-    } else if (soft_status == PROCESS && process_done) {
-        process_done = false;
-        transmit_data();
-        soft_status = TRANSMIT;
-
-    } else if (soft_status == TRANSMIT && transmit_done) {
-        transmit_done = false;
-        // Notify ground station of idleness
-        soft_status = IDLE;
     }
+    soft_status = SAMPLE;
+    // if (soft_status == IDLE && phy_status.is_stat_and_rot) {
+    //     begin_sampling();
+    //     soft_status = SAMPLE;
+
+    // } else if (soft_status == SAMPLE && !phy_status.is_stat_and_rot) {
+    //     stop_sampling();
+    //     begin_processing();
+    //     soft_status = PROCESS;
+
+    // } else if (soft_status == PROCESS && process_done) {
+    //     process_done = false;
+    //     transmit_data();
+    //     soft_status = TRANSMIT;
+
+    // } else if (soft_status == TRANSMIT && transmit_done) {
+    //     transmit_done = false;
+    //     // Notify ground station of idleness
+    //     soft_status = IDLE;
+    // }
 }
 
 /******************************************************************************/
@@ -170,7 +175,7 @@ void Masdr::initialize_uhd() {
     usrp->set_clock_source("internal"); //internal, external, mimo
     //set rates.
     usrp->set_rx_rate(rate);
-    usrp->set_tx_rate(rate);
+    // usrp->set_tx_rate(rate);
     //Set frequencies. 
     uhd::tune_request_t tune_request_rx(freq_rx);
     usrp->set_rx_freq(tune_request_rx); 
@@ -290,6 +295,7 @@ void  Masdr::run_fft(std::complex<float> *buff_in){
         fft_in[i][1] = buff_in[i].imag();
     }
     fftw_execute(fft_p);
+
 }
 
 /******************************************************************************/
@@ -298,14 +304,15 @@ float Masdr::match_filt(){
     int i, j;
     float match_val = 0, re, im;
     for(i = 0; i < N_FFT; i++) {
-        re = fft_out[i][0] * ofdm_head[i][0];
-        im = fft_out[i][1] * ofdm_head[i][1];
+        re = fft_out[i][0] * ofdm_head[i][0] - fft_out[i][1] * ofdm_head[i][1];
+        im = fft_out[i][0] * ofdm_head[i][1] + fft_out[i][1] * ofdm_head[i][0];
         match_val += sqrt(re*re + im*im);
     }
+
     if(match_val > THRESH_MATCH)
         return match_val;
     else
-        return -1;
+        return 0;
 }
 
 /******************************************************************************/
@@ -334,6 +341,7 @@ void Masdr::transmit_data() {
         int output;
     } data;
 
+    /*
     std::cout << "Starting packaging" << std::endl;
     while (trans_temp != NULL) {
         //packing 33 start bits
@@ -405,14 +413,23 @@ void Masdr::transmit_data() {
     // set to null for checking when filling in the linkedlist
     trans_head = NULL;
     curr_trans_buf = NULL;
+    */
     
-    // TESTING
-    // for(i = 0; i < TBUF_SIZE; i++) {
-    //     transmitBuffer[i] = std::complex<float>(1,0);
-    // }
+    //TESTING
+    std::cout << "Start transmit" << std::endl;
+    for(i = 0; i < TBUF_SIZE; i++) {
+        transmitBuffer[i] = std::complex<float>(1,0);
+    }
+        uhd::tx_metadata_t md;
+    md.start_of_burst = false;
+    md.end_of_burst = false;
+    while(1) {
+        //transmit(transmitBuffer, TBUF_SIZE);
+        tx_stream->send(transmitBuffer, TBUF_SIZE, md);
 
+    }
     std::cout << "Done with transmit" << std::endl;
-}
+}   
 /******************************************************************************/
 
 void Masdr::transmit(std::complex<float> *msg, int len) { 
@@ -555,9 +572,30 @@ void Masdr::RecvNode_test() {
 void Masdr::match_test(){
     //Test match filt stuff.
     float test_val;
-    for(1) {
+    int i, k=0;
+    begin_sampling();
+    while(1) {
+        begin_sampling();
+        rx_stream->recv(testbuf,RBUF_SIZE,md,3.0,false);
+        // stop_sampling();
+        // std::cout<<"Rec'd"<<std::endl;
+        // std::cout<< testbuf[500].real();
+        // std::cout<<std::endl;
+       
+        run_fft(testbuf);
+        // std::cout<<"FFT'd"<<std::endl;
+        // std::cout<< fft_out[500][0]<<std::endl;
         test_val = match_filt();
-        std::cout<< "Match Val: "<<test_val<<std::endl;
+        std::cout<<test_val;
+        for(i = 0; i < (int)test_val; i++)
+            std::cout<<'#';
+        std::cout<<std::endl;
+        // if(!(k%50000))
+        //     std::cout<<match_filt()<<std::endl;
+
+        // if(k > 1000000)
+        //     k = 0;
+         // std::cout<< match_filt()<<std::endl;
     }
 
     std::cout<<"Match filter test done." <<std::endl<<std::endl;
@@ -636,12 +674,15 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
         if(DEBUG_FFT) masdr.fft_test();
         if(DEBUG_TX_DATA) masdr.transmit_data_test();
     }
-    /// 11/6/16 MHLI: Commented out while we test energy functions
+
     else{
         while(1) {
+            // if(G_DEBUG) std::cout<<"Entered While"<<std::endl;
             masdr.update_status();
+            // if(G_DEBUG) std::cout<< "While has looped once" <<std::endl;
             masdr.state_transition();
             masdr.repeat_action();
+
         }
     }
 
