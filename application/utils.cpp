@@ -13,7 +13,7 @@
 #include "utils.h"
 #include <math.h>
 int i2cHandle = 0;
-bool stop_signal_called = false; ///< Global for keyboard interrupts
+static bool stop_signal_called=false; ///< Global for keyboard interrupts
 
 /******************************************************************************/
 bool check_locked_sensor(std::vector<std::string> sensor_names,

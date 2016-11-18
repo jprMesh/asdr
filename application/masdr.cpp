@@ -427,7 +427,7 @@ void Masdr::transmit_data() {
         uhd::tx_metadata_t md;
     md.start_of_burst = false;
     md.end_of_burst = false;
-    while(1) {
+    while(1) { //!stop_signal_called)
         //transmit(transmitBuffer, TBUF_SIZE);
         tx_stream->send(transmitBuffer, TBUF_SIZE, md);
 
@@ -544,7 +544,7 @@ void Masdr::tx_test() {
 void Masdr::mag_test() {
     float deg;
     init_mag();
-    while(1){
+    while(1){ //!stop_signal_called)
         deg=read_mag();
         std::cout<< "Mag Reading: "<<deg <<std::endl;
         usleep(4000000);
@@ -578,7 +578,7 @@ void Masdr::match_test(){
     float test_val;
     int i, k=0;
     begin_sampling();
-    while(1) {
+    while(1) { //!stop_signal_called)
         begin_sampling();
         rx_stream->recv(testbuf,RBUF_SIZE,md,3.0,false);
         // stop_sampling();
@@ -680,7 +680,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
     }
 
     else{
-        while(1) {
+        while(1) { //!stop_signal_called)
             // if(G_DEBUG) std::cout<<"Entered While"<<std::endl;
             masdr.update_status();
             // if(G_DEBUG) std::cout<< "While has looped once" <<std::endl;

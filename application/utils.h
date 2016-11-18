@@ -154,6 +154,8 @@ typedef struct {
     double strength; ///< Strength of detected signal.
 } TxHit;
 
+
+
 /**
  * @brief Handle a SIGINT nicely.
  */
