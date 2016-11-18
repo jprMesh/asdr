@@ -22,6 +22,64 @@ cmake_minimum_required(VERSION 2.8)
 # probably need some special care!)
 # Set this to ON in order to link a static build of UHD:
 option(UHD_USE_STATIC_LIBS OFF)
+SET(FFTW_INC_SEARCHPATH
+
+ /usr/include
+
+ /usr/include/fftw
+
+ /usr/local/include
+
+ /usr/local/include/fftw
+
+ )
+
+ SET(FFTW_LIB_SEARCHPATH
+
+ /usr/lib
+
+ /usr/lib/fftw
+
+ /usr/local/lib
+
+ /usr/local/lib/fftw
+
+ )
+ FIND_PATH(FFTW_INCLUDE_PATH fftw3.h ${FFTW_INC_SEARCHPATH})
+
+ IF(FFTW_INCLUDE_PATH)
+
+ SET(FFTW_INCLUDE ${FFTW_INCLUDE_PATH})
+
+ ENDIF (FFTW_INCLUDE_PATH)
+
+ FIND_LIBRARY(FFTW_LIB_PATH fftw3 ${FFTW_LIB_SEARCHPATH})
+
+ IF(FFTW_LIB_PATH)
+ SET(FFTW_LIB ${FFTW_LIB_PATH})
+
+ ENDIF (FFTW_LIB_PATH)
+
+ IF(FFTW_INCLUDE)
+
+ IF(FFTW_LIB)
+
+ SET(FFTW_FOUND 1)
+ ENDIF (FFTW_LIB)
+ ENDIF(FFTW_INCLUDE)
+
+ IF(FFTW_FOUND)
+message(status "Found FFTW")
+ INCLUDE_DIRECTORIES( ${FFTW_INCLUDE})
+
+ LINK_LIBRARIES( ${FFTW_LIB} ) # modification
+
+ ADD_DEFINITIONS(-DUSE_FFTW)
+
+ SET(FFTW_DIR .)
+ ENDIF (FFTW_FOUND)
+ 
+MARK_AS_ADVANCED(FFTW_INCLUDE_PATH FFTW_LIB_PATH)
 
 # This example also requires Boost:
 set(BOOST_REQUIRED_COMPONENTS

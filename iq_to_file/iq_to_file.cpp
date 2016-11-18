@@ -27,8 +27,15 @@
 #include <fstream>
 #include <csignal>
 #include <complex>
+#include <fftw3.h>
 
+#define N_FFT 1024
 namespace po = boost::program_options;
+
+fftw_complex *fft_in, *fft_out; ///< Buffers for FFT.
+fftw_plan fft_p;
+fftw_complex ofdm_head[N_FFT]; //< Expected OFDM Header.    
+float match_val[2] = {0,0}, match_mag, re, im;
 
 static bool stop_signal_called = false;
 void sig_int_handler(int){stop_signal_called = true;}
@@ -47,6 +54,7 @@ template<typename samp_type> void recv_to_file(
     bool enable_size_map = false,
     bool continue_on_bad_packet = false
 ){
+    int i;
     unsigned long long num_total_samps = 0;
     //create a receive streamer
     uhd::stream_args_t stream_args(cpu_format,wire_format);
@@ -121,6 +129,22 @@ template<typename samp_type> void recv_to_file(
 
         if (outfile.is_open())
             outfile.write((const char*)&buff.front(), num_rx_samps*sizeof(samp_type));
+        
+        ///11/18/16 MHLI:  
+        //Copy buff.front() into an FFT
+        //Execute FFT
+        fftw_execute(fft_p);
+        //Match filter.
+        for(i = 0; i < N_FFT; i++) {
+            re = fft_out[i][0] * ofdm_head[i][0] - fft_out[i][1] * ofdm_head[i][1];
+            im = fft_out[i][0] * ofdm_head[i][1] + fft_out[i][1] * ofdm_head[i][0];
+            match_val[0] += re;
+            match_val[1] += im;
+        }
+        match_mag = sqrt(match_val[0]*match_val[0]+match_val[1]*match_val[1]);
+        //Log Match filter result.
+
+
 
         if (bw_summary) {
             last_update_samps += num_rx_samps;
@@ -212,6 +236,42 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
     std::string args, file, type, ant, subdev, ref, wirefmt;
     size_t total_num_samps, spb;
     double rate, freq, gain, bw, total_time, setup_time;
+
+    //Initialize OFDM_head
+   int i;
+    for(i=0;i<N_FFT;i++){
+        int ratio = N_FFT/64; //Number of fft bins in an OFDM bin.
+
+        //Account for the fact that only middle 52 OFDM bins are used.
+        if (i < 6 * ratio || i > 58 * ratio){
+            ofdm_head[i][0] = 0;
+            ofdm_head[i][1] = 0;
+        }
+        else if(i >= (6+6) * ratio && i < (6+7) * ratio){
+            ofdm_head[i][0] = 1;
+            ofdm_head[i][1] = 1;
+        }
+        else if(i >= (12+14) * ratio && i < (12+15) * ratio) {
+            ofdm_head[i][0] = 1;
+            ofdm_head[i][1] = 1;
+        }
+        else if(i >= (26+14) * ratio && i < (26+15) * ratio) {
+            ofdm_head[i][0] = 1;
+            ofdm_head[i][1] = 1;
+        }
+        else if(i >= (40+14) * ratio && i < (40 + 15) * ratio){
+            ofdm_head[i][0] = 1;
+            ofdm_head[i][1] = 1;
+        }
+        else {
+            ofdm_head[i][0] = 0;
+            ofdm_head[i][1] = 0;
+        }
+    }
+    //Initialize FFT.
+        fft_in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT); 
+    fft_out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
+    fft_p = fftw_plan_dft_1d(N_FFT, fft_in, fft_out, FFTW_FORWARD, FFTW_MEASURE);   
 
     //setup the program options
     po::options_description desc("Allowed options");
