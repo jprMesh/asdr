@@ -35,7 +35,7 @@ namespace po = boost::program_options;
 fftw_complex *fft_in, *fft_out; ///< Buffers for FFT.
 fftw_plan fft_p;
 fftw_complex ofdm_head[N_FFT]; //< Expected OFDM Header.    
-float match_val[2] = {0,0}, match_mag, re, im;
+
 
 static bool stop_signal_called = false;
 void sig_int_handler(int){stop_signal_called = true;}
@@ -54,12 +54,14 @@ template<typename samp_type> void recv_to_file(
 ){
     int i;
     unsigned long long num_total_samps = 0;
+    float match_val[2] = {0,0}, re, im;
+    std::complex<samp_type> match_mag;
     //create a receive streamer
     uhd::stream_args_t stream_args(cpu_format,wire_format);
     uhd::rx_streamer::sptr rx_stream = usrp->get_rx_stream(stream_args);
 
     uhd::rx_metadata_t md;
-    samp_type buff[samps_per_buff];
+    std::complex<samp_type> buff[samps_per_buff + 1];
     std::ofstream outfile;
     if (not null)
         outfile.open(file.c_str(), std::ofstream::binary);
@@ -102,7 +104,7 @@ template<typename samp_type> void recv_to_file(
                     "  Dropped samples will not be written to the file.\n"
                     "  Please modify this example for your purposes.\n"
                     "  This message will not appear again.\n"
-                ) % (usrp->get_rx_rate()*sizeof(samp_type)/1e6);
+                ) % (usrp->get_rx_rate()*sizeof(std::complex<samp_type>)/1e6);
             }
             continue;
         }
@@ -120,6 +122,10 @@ template<typename samp_type> void recv_to_file(
         
         ///11/18/16 MHLI:  
         //Copy buff.front() into an FFT
+        for(i = 0; i < N_FFT; i++){
+            fft_in[i][0] = buff[i].real();
+            fft_in[i][0] = buff[i].imag();
+        }
         //Execute FFT
         fftw_execute(fft_p);
         //Match filter.
@@ -129,10 +135,12 @@ template<typename samp_type> void recv_to_file(
             match_val[0] += re;
             match_val[1] += im;
         }
-        match_mag = sqrt(match_val[0]*match_val[0]+match_val[1]*match_val[1]);
+
+        match_mag = std::complex<samp_type>(sqrt(match_val[0]*match_val[0]+match_val[1]*match_val[1]),0);
         //Log Match filter result.
+        buff[samps_per_buff] = match_mag;
         if (outfile.is_open())
-            outfile.write((const char*)buff, num_rx_samps*sizeof(samp_type));
+            outfile.write((const char*)buff, num_rx_samps*sizeof(std::complex<samp_type>));
 
         ticks_diff = now - start;
         if (ticks_requested > 0){
@@ -236,7 +244,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
         }
     }
     //Initialize FFT.
-        fft_in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT); 
+    fft_in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT); 
     fft_out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
     fft_p = fftw_plan_dft_1d(N_FFT, fft_in, fft_out, FFTW_FORWARD, FFTW_MEASURE);   
 
@@ -250,7 +258,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
     
     short       total_num_samps = 0,        \
                 total_time = 0,             \
-                spb=1024,                   \
+                spb=N_FFT,                   \
                 setup_time=1,               \
                 gain=40;
     
@@ -261,8 +269,6 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
             null = 0,                       \
             continue_on_bad_packet = 0;
 
-
-    //variables to be set by po
     
     //create a usrp device
     uhd::usrp::multi_usrp::sptr usrp = uhd::usrp::multi_usrp::make(args);
@@ -288,7 +294,6 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
 
     //set the antenna
     usrp->set_rx_antenna(ant);
-
     boost::this_thread::sleep(boost::posix_time::seconds(setup_time)); //allow for some setup time
 
     //check Ref and LO Lock detect
@@ -304,9 +309,9 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
 #define recv_to_file_args(format) \
     (usrp, format, wirefmt, file, spb, total_num_samps, total_time, stats, null, continue_on_bad_packet)
     //recv to file
-    if (type == "double") recv_to_file<std::complex<double> >recv_to_file_args("fc64");
-    else if (type == "float") recv_to_file<std::complex<float> >recv_to_file_args("fc32");
-    else if (type == "short") recv_to_file<std::complex<short> >recv_to_file_args("sc16");
+    if (type == "double") recv_to_file<double >recv_to_file_args("fc64");
+    else if (type == "float") recv_to_file<float>recv_to_file_args("fc32");
+    else if (type == "short") recv_to_file<short>recv_to_file_args("sc16");
     else throw std::runtime_error("Unknown type " + type);
 
     //finished
