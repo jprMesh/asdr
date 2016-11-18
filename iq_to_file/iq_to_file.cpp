@@ -245,6 +245,18 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
     po::store(po::parse_command_line(argc, argv, desc), vm);
     po::notify(vm);
 
+    file = "usrp_samples.dat";
+    type = "short";
+    total_num_samps = 0;
+    total_time = 0;
+    spb = 10000;
+    rate = 1e5;
+    freq=2.4e9;
+    ant = "RX2";
+    ref = "internal";
+    wirefmt = "sc16";
+    setup_time = 1;
+
     //print the help message
     if (vm.count("help")) {
         std::cout << boost::format("UHD RX samples to file %s") % desc << std::endl;
@@ -260,9 +272,6 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
     bool null = vm.count("null") > 0;
     bool enable_size_map = vm.count("sizemap") > 0;
     bool continue_on_bad_packet = vm.count("continue") > 0;
-
-    if (enable_size_map)
-        std::cout << "Packet size tracking enabled - will only recv one packet at a time!" << std::endl;
 
     //create a usrp device
     std::cout << std::endl;

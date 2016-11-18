@@ -168,7 +168,7 @@ void Masdr::initialize_uhd() {
     //int bw =10e6; ///10/31/16 MHLI: UP to 56e6
     //Only care about 16.6 MHz of the 20 (or 8.3MHz of 10)
     int rx_bw = 20e6; //11/16/16 MHLI: Should this be 10e6 and will it do half above half below?
-    int tx_bw = 0; 
+    int tx_bw = 300e3; 
     //Create USRP object
     uhd::usrp::multi_usrp::sptr usrp = uhd::usrp::multi_usrp::make((std::string)"");
     //Lock mboard clocks
@@ -302,15 +302,18 @@ void  Masdr::run_fft(std::complex<float> *buff_in){
 float Masdr::match_filt(){
     //Match filter.
     int i, j;
-    float match_val = 0, re, im;
+    float match_val[2] = {0,0}, match_mag, re, im;
     for(i = 0; i < N_FFT; i++) {
         re = fft_out[i][0] * ofdm_head[i][0] - fft_out[i][1] * ofdm_head[i][1];
         im = fft_out[i][0] * ofdm_head[i][1] + fft_out[i][1] * ofdm_head[i][0];
-        match_val += sqrt(re*re + im*im);
-    }
+        match_val[0] += re;
+        match_val[1] += im;
 
-    if(match_val > THRESH_MATCH)
-        return match_val;
+    }
+    match_mag = sqrt(match_val[0]*match_val[0]+match_val[1]*match_val[1]);
+
+    if(match_mag > THRESH_MATCH)
+        return match_mag;
     else
         return 0;
 }
@@ -418,7 +421,8 @@ void Masdr::transmit_data() {
     //TESTING
     std::cout << "Start transmit" << std::endl;
     for(i = 0; i < TBUF_SIZE; i++) {
-        transmitBuffer[i] = std::complex<float>(1,0);
+            transmitBuffer[i] = std::complex<float>(1,0);
+
     }
         uhd::tx_metadata_t md;
     md.start_of_burst = false;
@@ -587,7 +591,7 @@ void Masdr::match_test(){
         // std::cout<< fft_out[500][0]<<std::endl;
         test_val = match_filt();
         std::cout<<test_val;
-        for(i = 0; i < (int)test_val; i++)
+        for(i = 0; i < (int)test_val*5; i++)
             std::cout<<'#';
         std::cout<<std::endl;
         // if(!(k%50000))
@@ -663,7 +667,7 @@ void Masdr::fft_test(){
 
 /******************************************************************************/
 int UHD_SAFE_MAIN(int argc, char *argv[]) {
-    signal(SIGINT, handle_sigint);
+    std::signal(SIGINT, handle_sigint);
     Masdr masdr;
 
     if(G_DEBUG){

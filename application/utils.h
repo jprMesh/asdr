@@ -36,7 +36,7 @@
 
 
 #define THRESH_E 0.1 ///11/14/16 MHLI: Picked based on received information.
-#define THRESH_MATCH 20 //11/14/16 MHLI: 20,25 would work probably, especially in 
+#define THRESH_MATCH 0 //11/14/16 MHLI: 20,25 would work probably, especially in 
 //#define THRESH_MATCH 0
 #define PI 3.14159265359
 // Defining standard bits for bit manipulation
