@@ -29,6 +29,7 @@
 #include <complex>
 #include <fftw3.h>
 
+
 #define N_FFT 1024
 namespace po = boost::program_options;
 
@@ -135,8 +136,8 @@ template<typename samp_type> void recv_to_file(
             match_val[0] += re;
             match_val[1] += im;
         }
-
-        match_mag = std::complex<samp_type>(sqrt(match_val[0]*match_val[0]+match_val[1]*match_val[1]),0);
+        //Imaginary value of 100 to make it easy to find in post processing.
+        match_mag = std::complex<samp_type>(sqrt(match_val[0]*match_val[0]+match_val[1]*match_val[1]),100);
         //Log Match filter result.
         buff[samps_per_buff] = match_mag;
         if (outfile.is_open())
