@@ -56,13 +56,13 @@ template<typename samp_type> void recv_to_file(
     int i;
     unsigned long long num_total_samps = 0;
     float match_val[2] = {0,0}, re, im;
-    std::complex<samp_type> match_mag;
+    std::complex<samp_type> match_mag, lat_val, long_val, time_val;
     //create a receive streamer
     uhd::stream_args_t stream_args(cpu_format,wire_format);
     uhd::rx_streamer::sptr rx_stream = usrp->get_rx_stream(stream_args);
 
     uhd::rx_metadata_t md;
-    std::complex<samp_type> buff[samps_per_buff + 1];
+    std::complex<samp_type> buff[samps_per_buff + 4]; // extra size for match filt value, latitude, longitude, time
     std::ofstream outfile;
     if (not null)
         outfile.open(file.c_str(), std::ofstream::binary);
@@ -136,10 +136,17 @@ template<typename samp_type> void recv_to_file(
             match_val[0] += re;
             match_val[1] += im;
         }
-        //Imaginary value of 100 to make it easy to find in post processing.
-        match_mag = std::complex<samp_type>(sqrt(match_val[0]*match_val[0]+match_val[1]*match_val[1]),100);
+        //Imaginary value of 1000 to make it easy to find in post processing.
+        match_mag = std::complex<samp_type>(sqrt(match_val[0]*match_val[0]+match_val[1]*match_val[1]),1000);
+        lat_val = std::complex<samp_type>(0,2000);
+        long_val = std::complex<samp_type>(0,3000);
+        time_val = std::complex<samp_type>(0,4000);
         //Log Match filter result.
         buff[samps_per_buff] = match_mag;
+        buff[samps_per_buff+1] = lat_val;
+        buff[samps_per_buff+2] = long_val;
+        buff[samps_per_buff+3] = time_val;
+        
         if (outfile.is_open())
             outfile.write((const char*)buff, num_rx_samps*sizeof(std::complex<samp_type>));
 
@@ -251,7 +258,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
 
     //Initialize USRP
     std::string file = "usrp_samples.dat",  \
-                type = "short",             \
+                type = "float",             \
                 ant = "RX2",                \
                 ref = "internal",           \
                 wirefmt = "sc16",           \
