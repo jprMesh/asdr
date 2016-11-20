@@ -149,6 +149,7 @@ template<typename samp_type> void recv_to_file(
 ){
     int i;
     unsigned long long num_total_samps = 0;
+    double lat_in, long_in,time_in;   
     float match_val[2] = {0,0}, re, im;
     std::complex<samp_type> match_mag, lat_val, long_val, time_val;
     //create a receive streamer
@@ -231,10 +232,11 @@ template<typename samp_type> void recv_to_file(
             match_val[1] += im;
         }
         //Imaginary value of 1000 to make it easy to find in post processing.
+        get_gps_data(&lat_in,&long_in,&time_in);
         match_mag = std::complex<samp_type>(sqrt(match_val[0]*match_val[0]+match_val[1]*match_val[1]),1000);
-        lat_val = std::complex<samp_type>(0,2000);
-        long_val = std::complex<samp_type>(0,3000);
-        time_val = std::complex<samp_type>(0,4000);
+        lat_val = std::complex<samp_type>((samp_type)lat_in,2000);
+        long_val = std::complex<samp_type>((samp_type)long_in,3000);
+        time_val = std::complex<samp_type>((samp_type)time_in,4000);
         //Log Match filter result.
         buff[samps_per_buff] = match_mag;
         buff[samps_per_buff+1] = lat_val;
