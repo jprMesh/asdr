@@ -70,7 +70,7 @@ SET(FFTW_INC_SEARCHPATH
  ENDIF(FFTW_INCLUDE)
 
  IF(FFTW_FOUND)
-message(status "Found FFTW")
+message(STATUS "Found FFTW")
  INCLUDE_DIRECTORIES( ${FFTW_INCLUDE})
  LINK_LIBRARIES( ${FFTW_LIB} ) # modification
 
@@ -146,6 +146,7 @@ MARK_AS_ADVANCED(
   GPS_INCLUDE_DIR
   GPS_LIBRARY_OPTIMIZED
 )
+
 
 ################################################################################
 ### Configure Compiler ########################################################
