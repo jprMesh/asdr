@@ -11,9 +11,17 @@
 // Sponsor: Gryphon Sensors
 
 #include "utils.h"
-#include <math.h>
-int i2cHandle = 0;
 static bool stop_signal_called=false; ///< Global for keyboard interrupts
+
+int gps_running = 1; // flag to start/stop gps polling 
+                     // need to recall poll_gps after setting flag back to 1
+double gps_buff[GPS_BUF_SIZE][3]; //GPS data buffer. 
+                                 //0 is latitude 
+                                 //1 is longitude 
+                                 //2 is timestamp                                 
+volatile int gps_buf_head = 0; //current gps buffer head
+struct gps_data_t gps_data__;    //GPS struct
+
 
 /******************************************************************************/
 bool check_locked_sensor(std::vector<std::string> sensor_names,
@@ -70,6 +78,69 @@ void handle_sigint(int) {
 }
 
 /******************************************************************************/
+int init_gps(){
+    int rc,x;
+    if ((rc = gps_open("localhost", "2947", &gps_data__)) == -1) {
+        printf("code: %d, reason: %s\n", rc, gps_errstr(rc));
+        return 0;
+    }
+
+    //set gps stream to watch JSON
+    gps_stream(&gps_data__, WATCH_ENABLE | WATCH_JSON, NULL);
+
+    //initialize gps buffer to 0s
+    for(rc=0; rc<GPS_BUF_SIZE; rc++){
+        for(x=0; x<3; x++){
+            gps_buff[rc][x] = 0;
+        }
+    }
+    return 1;
+}
+
+
+/******************************************************************************/
+int poll_gps(){
+    int rc;
+    while (gps_running) {
+        // wait for 2 seconds to receive data
+        if (gps_waiting (&gps_data__, 2000000)) {
+            /* read data */
+            if ((rc = gps_read(&gps_data__)) == -1) {
+                printf("error occured reading gps data. code: %d, reason: %s\n", 
+                       rc, gps_errstr(rc));
+            } else {
+
+                // Write data from the GPS receiver
+                if ((gps_data__.status == STATUS_FIX) && 
+                  (gps_data__.fix.mode == MODE_2D || gps_data__.fix.mode == MODE_3D) &&
+                  !isnan(gps_data__.fix.latitude) && !isnan(gps_data__.fix.longitude)) {
+
+                    gps_buff[gps_buf_head][0] = gps_data__.fix.latitude;
+                    gps_buff[gps_buf_head][1] = gps_data__.fix.longitude;
+                    gps_buff[gps_buf_head][2] = gps_data__.fix.time;
+                    //Loop buffer
+                    gps_buf_head = (gps_buf_head + 1) % GPS_BUF_SIZE;
+
+                } else {
+                    printf("no GPS data available\n");
+                }
+            }
+        }
+    }
+}
+
+/******************************************************************************/
+
+void get_gps_data(double *lat, double *longitude, double *time){
+    int pos = (gps_buf_head - 1) % GPS_BUF_SIZE;
+    *lat  = gps_buff[pos][0];
+    *longitude = gps_buff[pos][1];
+    *time = gps_buff[pos][2];
+    return;
+}
+
+
+/******************************************************************************/
 void init_mag(){
 
     int opResult = 0; // for error checking of operations
@@ -92,6 +163,7 @@ void init_mag(){
 
   
 }
+
 
 /******************************************************************************/
 float read_mag(){

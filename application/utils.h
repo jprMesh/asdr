@@ -23,9 +23,11 @@
 #include <boost/format.hpp>
 #include <boost/thread.hpp>
 
-//Magnotometer driver
-//#include "lsm303dlhc.h"
-//#include "lsm303dlhc_mag.c"
+//GPS libraries
+#include <gps.h>
+#include <unistd.h>
+#include <math.h>
+
 // Buffer sizes
 
 // #define RBUF_SIZE 1024 /// Temp not 16384
@@ -33,6 +35,11 @@
 
 #define TBUF_SIZE 226   //11/6/16 NARUT: dependent 
                         //on our packet size 5 floats (32*5) + (33*2) start/end
+
+//GPS constants
+
+#define GPS_BUF_SIZE 60  // Hold the past 6 seconds of samples
+
 
 
 #define THRESH_E 0.1 ///11/14/16 MHLI: Picked based on received information.
