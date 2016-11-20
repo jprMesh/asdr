@@ -44,6 +44,7 @@ fftw_complex ofdm_head[N_FFT]; //< Expected OFDM Header.
 static bool stop_signal_called = false;
 void sig_int_handler(int){stop_signal_called = true;}
 
+pthread_t gps_thread;
 
 
 //GPS constants
@@ -152,12 +153,17 @@ template<typename samp_type> void recv_to_file(
     double lat_in, long_in,time_in;   
     float match_val[2] = {0,0}, re, im;
     std::complex<samp_type> match_mag, lat_val, long_val, time_val;
+    boost::this_thread::sleep(boost::posix_time::seconds(2)); //allow for some setup time
+    std::cout<<"DEBUG flag"<<std::endl;
+
     //create a receive streamer
     uhd::stream_args_t stream_args(cpu_format,wire_format);
     uhd::rx_streamer::sptr rx_stream = usrp->get_rx_stream(stream_args);
 
     uhd::rx_metadata_t md;
+
     std::complex<samp_type> buff[samps_per_buff + 4]; // extra size for match filt value, latitude, longitude, time
+        
     std::ofstream outfile;
     if (not null)
         outfile.open(file.c_str(), std::ofstream::binary);
@@ -181,7 +187,7 @@ template<typename samp_type> void recv_to_file(
 
     typedef std::map<size_t,size_t> SizeMap;
     SizeMap mapSizes;
-
+    std::cout<< "enter while loop"<<std::endl;
     while(not stop_signal_called and (num_requested_samples != num_total_samps or num_requested_samples == 0)) {
         boost::system_time now = boost::get_system_time();
 
@@ -410,14 +416,18 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
         std::cout << "Press Ctrl + C to stop streaming..." << std::endl;
     }
 
-    pthread_t gps_thread;
+    std::cout<<"Init GPS"<<std::endl;
+
     int rc;
-    rc = pthread_create(&gps_thread, NULL, poll_gps, (void*) rc);
+    void * temp;
+    init_gps();
+    rc = pthread_create(&gps_thread, NULL, poll_gps, temp);
     
     if (rc){
         std::cout << "Error:unable to create thread," << rc << std::endl;
     }
-    
+    boost::this_thread::sleep(boost::posix_time::seconds(2)); //allow for some setup time   
+    std::cout<< "Ready!" <<std::endl;
 #define recv_to_file_args(format) \
     (usrp, format, wirefmt, file, spb, total_num_samps, total_time, stats, null, continue_on_bad_packet)
     //recv to file
