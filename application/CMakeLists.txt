@@ -72,7 +72,6 @@ SET(FFTW_INC_SEARCHPATH
  IF(FFTW_FOUND)
 message(status "Found FFTW")
  INCLUDE_DIRECTORIES( ${FFTW_INCLUDE})
-
  LINK_LIBRARIES( ${FFTW_LIB} ) # modification
 
  ADD_DEFINITIONS(-DUSE_FFTW)
@@ -81,6 +80,7 @@ message(status "Found FFTW")
  ENDIF (FFTW_FOUND)
  
 MARK_AS_ADVANCED(FFTW_INCLUDE_PATH FFTW_LIB_PATH)
+#############################################################################
 
 # This example also requires Boost:
 set(BOOST_REQUIRED_COMPONENTS
@@ -104,31 +104,7 @@ find_package(UHD "3.8.0" REQUIRED)
 # To specify an exact version:
 #find_package(UHD 3.8.1 EXACT REQUIRED)
 
-###########################################################WHY DOESN'T THIS WORK
-find_path (FFTW_INCLUDES fftw3.h)
-
-if (FFTW_INCLUDES)
-  # Already in cache, be silent
-  set (FFTW_FIND_QUIETLY TRUE)
-endif (FFTW_INCLUDES)
-find_library (FFTW_LIBRARIES NAMES fftw3)
-
-# handle the QUIETLY and REQUIRED arguments and set FFTW_FOUND to TRUE if
-# all listed variables are TRUE
-include (FindPackageHandleStandardArgs)
-find_package_handle_standard_args (FFTW DEFAULT_MSG FFTW_LIBRARIES FFTW_INCLUDES)
-
-mark_as_advanced (FFTW_LIBRARIES FFTW_INCLUDES)
-################################################################################
-### Configure Compiler ########################################################
-include_directories(
-    ${Boost_INCLUDE_DIRS}
-    ${UHD_INCLUDE_DIRS}
-)
-
-link_directories(${Boost_LIBRARY_DIRS})
-
-
+###############################GPS#############################################
 INCLUDE(FindPackageHandleStandardArgs)
 #INCLUDE(HandleLibraryTypes)
 
@@ -151,6 +127,10 @@ FIND_LIBRARY(GPS_LIBRARY_OPTIMIZED
   PATHS ${GPS_LibrarySearchPaths}
 )
 
+ INCLUDE_DIRECTORIES( ${GPS_INCLUDE_DIR})
+ LINK_LIBRARIES( ${GPS_LIBRARY_OPTIMIZED} ) # modification
+ message("Included GPS Libraries")
+
 # Handle the REQUIRED argument and set the <UPPERCASED_NAME>_FOUND variable
 # The package is found if all variables listed are TRUE
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(GPS "Could NOT find gps/gpsd library. Install using sudo apt-get install gpsd libgps-dev. Read Ubuntu installation instructions at http://pixhawk.ethz.ch/software/installation/ubuntu"
@@ -167,6 +147,14 @@ MARK_AS_ADVANCED(
   GPS_LIBRARY_OPTIMIZED
 )
 
+################################################################################
+### Configure Compiler ########################################################
+include_directories(
+    ${Boost_INCLUDE_DIRS}
+    ${UHD_INCLUDE_DIRS}
+)
+
+link_directories(${Boost_LIBRARY_DIRS})
 
 ### Make the executable #######################################################
 set(SOURCES_MASDR
