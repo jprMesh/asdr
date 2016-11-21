@@ -154,7 +154,8 @@ void Masdr::initialize_peripherals() {
 void Masdr::initialize_uhd() {
     uhd::set_thread_priority_safe();
 
-    int rate = 45e6;//To deal with the 20MHz bandwidth we have.
+    int rx_rate = 45e6;//To deal with the 20MHz bandwidth we have.
+    int tx_rate = 175e3; //4 samples per symbol at 700kHz
     float freq_rx = 2.4e9; //Set rx frequency to 2.4 GHz
     //float freq_rx = 700e6; //11/6/16 MHLI: TEST, for when we only have 900 MHz Ant
     
@@ -174,8 +175,8 @@ void Masdr::initialize_uhd() {
     //Lock mboard clocks
     usrp->set_clock_source("internal"); //internal, external, mimo
     //set rates.
-    usrp->set_rx_rate(rate);
-    // usrp->set_tx_rate(rate);
+    usrp->set_rx_rate(rx_rate);
+     usrp->set_tx_rate(tx_rate);
     //Set frequencies. 
     uhd::tune_request_t tune_request_rx(freq_rx);
     usrp->set_rx_freq(tune_request_rx); 
