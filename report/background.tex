@@ -3,17 +3,17 @@ This section will introduce various fundamental topics that were taken into cons
 
 \section{Spectrum}
 \subsection{Spectrum Usage}
-The spectrum of radio frequencies used for wireless communications is managed by the government to promote efficient use and net social benefit. The National Telecommunications and Information Administration (NTIA) and the Federal Communications Commission (FCC) regulates the allocation of these frequencies in the United States as shown in Figure \ref{fig:freq_chart} below (A larger diagram can be located at the Appendix). \ref{FCC}
+The spectrum of radio frequencies used for wireless communications is managed by the government to promote efficient use and net social benefit. The National Telecommunications and Information Administration (NTIA) and the Federal Communications Commission (FCC) regulates the allocation of these frequencies in the United States as shown in Figure \ref{fig:freq_chart} below (A larger diagram can be located in Appendix \textbf{WHATEVER THE APPENDIX IS}). \ref{FCC}
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/the_radio_spectrum.jpg}
 \caption{United States Frequency Allocation Chart}
 \label{fig:freq_chart}
 \end{figure}
-As seen from the figure above, the spectrum is divided into smaller chunks where only specified entities can utilize legally. The usage of each chunk is determined by whether the NTIA and FCC require a license to use the band or not. Only operators with a license from the government can operate in the licensed bands, with uses that include AM broadcasting, FM broadcasting, and cellular communication. However, unlicensed bands are open to any entity that wants to utilize them, but they must still follow certain guidelines for usage. Technologies that use unlicensed bands include microwave, bluetooth, and WiFi.
+As seen from the figure above, the spectrum is divided into smaller chunks where only specified entities can utilize legally. The usage of each chunk is determined by whether the NTIA and FCC require a license to use the band or not. Only operators with a license from the government can operate in the licensed bands, with uses that include AM broadcasting, FM broadcasting, and cellular communication. However, unlicensed bands are open to any entity that wants to utilize them, but they must still follow certain guidelines for usage. Technologies that use unlicensed bands include microwave, bluetooth, and WiFi. \textbf{Maybe talk about the history of this a little, why it's split up like this and why the certain bands were unlicensed}
 
 \subsection{Cellular}
-The initial goal of this MQP was to look at transmissions in the cellular band in the United States. This band, regulated by the FCC, ranges from 824MHz - 896MHz and 1850MHz - 1990MHz. The United States is divided into 734 geographic markets called Cellular Market Areas (CMAs). To operate at a certain frequency in a CMA, mobile operators must place bids on each area individually. These frequencies all use various modes for communication including Analog, Digital, TDMA, CDMA, and GSM. However, the most popular mode now is LTE telecommunications.\ref{cellular_book}
+The initial goal of this MQP was to look at transmissions in the cellular band in the United States. This band, regulated by the FCC, ranges from 824MHz - 896MHz and 1850MHz - 1990MHz. The United States is divided into 734 geographic markets called Cellular Market Areas (CMAs). To operate at a certain frequency in a CMA, mobile operators must place bids on each area individually. These frequencies all use various modes for communication including Analog, Digital, TDMA, CDMA, and GSM. However, the most popular mode now is LTE telecommunications.\textbf{THIS MOST LIKELY NEEDS EXPANSION. I would probably guess on usage somehow lemme think about it -Max}\ref{cellular_book}
 
 \subsection{Wi-Fi}
 Wi-Fi first came about in 1985, when the FCC decided to open up several bands of wireless spectrum for use without a government license. In the early 1990s, the Institute of Electrical and Electronics Engineers (IEEE) realized that wireless communications needed to be standardized. A committee was formed that focused on providing a reliable, fast and robust wireless solution that would be able to scale for years to come. Thus the 802.11 standard was created in order to assure these things. Since then, there has been multiple iterations of the standard, and five sub-standards have been established for wireless communications called:802.11a, 802.11b, 802.11g, 802.11n, and 802.11ac. The spectral signature of these protocols depend on the protocol that is used. Wifi traffic can be transmitted using a bandwidth of 20 MHz, 40 MHz or 80 MHz on either the 2.4GHz band or the 5GHz band. This is dependant upon the protocols shown in Figure \ref{fig:wifi_table} below:
@@ -32,9 +32,11 @@ These transmissions can vary when it comes to the entire frames information. How
 \label{fig:wifi_preamble}
 \end{figure}\par
 The preamble is useful to detect the start of a wifi transmission. In addition to the preamble, you could also decode the information from the Data fields, however, all of that data is usually encrypted so that it prevents any unauthorized user from accessing it. \cite{wifi_book}
+\\ \textbf{Talk about the lsig header here, how it's a legacy field for 802.11a, etc, how the ofdm is 64 bins(52 effective bins), which bins we are looking for}
 
 \subsubsection{MAVLink}
 MAVLink is a wireless communication protocol similar to wifi that is used on small unmanned aerial vehicles. The protocol was designed to be a lightweight, header-only message marshaling library, and is used by many drones as a communication protocol between the drone and the controller. MAVlink utilizes the 2.4 GHz band along with WiFi, therefore the only way to differentiate between the two signals is by comparing the frames of the two protocols. This can be done by demodulating the GFSK signal and decoding the frame which is shown in Figure \ref{fig:MAVlink_frame}. The red STX frame signifies the start of a transmission. This frame will always be an 8 bit code of 0xFE. The rest of the frame is described in Table \ref{fig:MAVlink_frame_table}.
+\\ \textbf{TALK A BIT MORE ABOUT HISTORY, ETC} 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/mavlink-packet.png}
@@ -43,7 +45,7 @@ MAVLink is a wireless communication protocol similar to wifi that is used on sma
 \end{figure}
 \begin{figure}[ht]
 \centering
-\includegraphics[width=0.70\textwidth]{img/MAVLink-Packet-Table.png}
+\includegraphics[width=0.70\textwidth]{img/MAVLink-Packet-Table.PNG}
 \caption{MAVLink Frame Descriptor}
 \label{fig:MAVlink_frame_table}
 \end{figure}
