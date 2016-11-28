@@ -154,8 +154,9 @@ void Masdr::initialize_peripherals() {
 void Masdr::initialize_uhd() {
     uhd::set_thread_priority_safe();
 
-    int rx_rate = 45e6;//To deal with the 20MHz bandwidth we have.
-    int tx_rate = 175e3; //4 samples per symbol at 700kHz
+    int rx_rate = 42e6;//To deal with the 20MHz bandwidth we have.
+    int tx_rate = 900e3; //4 samples per symbol at 700kHz
+    int master_rate = 42e6;
     float freq_rx = 2.4e9; //Set rx frequency to 2.4 GHz
     //float freq_rx = 700e6; //11/6/16 MHLI: TEST, for when we only have 900 MHz Ant
     
@@ -169,14 +170,17 @@ void Masdr::initialize_uhd() {
     //int bw =10e6; ///10/31/16 MHLI: UP to 56e6
     //Only care about 16.6 MHz of the 20 (or 8.3MHz of 10)
     int rx_bw = 20e6; //11/16/16 MHLI: Should this be 10e6 and will it do half above half below?
-    int tx_bw = 300e3; 
+    //int tx_bw = 300e3; 
+    int tx_bw = 0;
     //Create USRP object
     uhd::usrp::multi_usrp::sptr usrp = uhd::usrp::multi_usrp::make((std::string)"");
     //Lock mboard clocks
     usrp->set_clock_source("internal"); //internal, external, mimo
+    usrp->set_master_clock_rate(master_rate);
     //set rates.
     usrp->set_rx_rate(rx_rate);
      usrp->set_tx_rate(tx_rate);
+
     //Set frequencies. 
     uhd::tune_request_t tune_request_rx(freq_rx);
     usrp->set_rx_freq(tune_request_rx); 
@@ -420,6 +424,7 @@ void Masdr::transmit_data() {
     */
     
     //TESTING
+    //Use DBPSK in transmission ASSUME NO CHANGE IS 0.
     std::cout << "Start transmit" << std::endl;
     for(i = 0; i < TBUF_SIZE; i++) {
             transmitBuffer[i] = std::complex<float>(1,0);
