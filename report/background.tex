@@ -106,7 +106,7 @@ In the distance-based localization techniques, each stationary node knows the un
 By plugging in the locations and calculated distance for each stationary node, a system of equations is created, making it possible to solve for the location of the unknown node.
 
 \subsection{Time Distance of Arrival}
-One method of localization is Timed Difference of Arrival (TDoA). In this method, the unknown node a signal over radio frequencies. Using the difference in the timestamp and actual time of receiving the signal, the stationary nodes can calculate the distance between each stationary node and the unknown node, using the equation \( d = c*(t_{actual} - t_{expected}) \), where c is the speed of light.
+One method of localization is Timed Difference of Arrival (TDoA)\cite{local_conf}. In this method, the unknown node transmits a signal over radio frequencies. Using the difference in the timestamp and actual time of receiving the signal, the stationary nodes can calculate the distance between each stationary node and the unknown node, using the equation \( d = c*(t_{actual} - t_{expected}) \), where c is the speed of light.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/tdoa_node_table.png}
@@ -116,22 +116,22 @@ One method of localization is Timed Difference of Arrival (TDoA). In this method
 This method of localization is dependent on three things: the synchronization of the nodes involved, the participation of the unknown node, and the existence of three or more stationary nodes. In the use case presented by this MQP, the most difficult part about this implementation is the participation of the unknown node. Since the aerial platform has no communication with the object being localized, this method is impractical.
 
 \subsection{Time of Arrival}
-Using the Time of Arrival (or ToA) approach is similar to TDoA in concept\cite{local_conf}. Each of the stationary nodes sends a signal at a specific time, known to the unknown node. Using the difference in the known time and the time that the base receives the signal, the unknown node calculates the time the signal was in the air, and uses the speed of an electromagnetic wave to determine the distance to the stationary node, as described above. With three of these, the location of the unknown node can be triangulated.
+Using the Time of Arrival (or ToA) approach is similar to TDoA in concept\cite{local_conf}. Each of the stationary nodes sends a signal at a specific time, known to the unknown node, $t_0$. Using the difference in $t_0$ and the time that the base receives the signal, or $t_1$, the unknown node calculates the time the signal was in the air, and uses the speed of an electromagnetic wave to determine the distance to the stationary node, as described above. With three of these calculations, the location of the unknown node can be triangulated.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/toa_node_table.png}
 \caption{ToA Node Identification}
 \label{fig:toa_node_identification}
 \end{figure}\par
-Like TDoA, ToA requires the synchronization of the nodes involved. In most implementations, this is done using digital timestamps. It also requires the participation of the unknown node. SImilarly to TDoA, these requirements make ToA an impractical fit for this MQP.
+Like TDoA, ToA requires the synchronization of the nodes involved\cite{local_conf}. In most implementations, this is done using digital timestamps. It also requires the participation of the unknown node. SImilarly to TDoA, these requirements make ToA an impractical fit for this MQP.
 
 \subsection{Received Signal Strength Localization}
-Unlike the previous two methods, which depend on knowing the time a signal was sent, received signal strength localization uses the strength of a received signal to localize the unknown node\cite{local_conf}. Each of the stationary nodes receives the signal being output by the unknown node. Using the equation shown below\cite{rss_calc}, the stationary nodes can calculate the distance to the unknown node.
+Unlike the previous two methods, which depend on knowing the time a signal was sent, received signal strength localization uses the strength of a received signal to localize the unknown node\cite{local_conf}. Each of the stationary nodes receives the signal being output by the unknown node. Using the equation shown below\cite{rss_calc}, the stationary nodes can calculate the distance to the unknown node. From this, they can triangulate the location as described before.
 \[Pr = \frac{P_t G_t G_r}{4πr^2} \]\par
 Because RSSI localization depends on the measurement of the signal strength, it is adversely affected by sources of noise and interference, like channel fading and multipath interference\cite{local_conf}. This makes the technique have lower accuracy. The effects of noise and shifting channels can be somewhat mitigated by averaging the RSS data.
 
 \subsection{Angle of Arrival}
-Unlike the previously described methods, ome localization techniques use the angle that the signal arrives at relative to a reference direction, or the Angle of Arrival (AoA)\cite{local_aoa}. To use this method, antenna arrays or directional antennas are used to determine the angle at which the signal arrived at. Similarly to TDoA, the stationary nodes wait for a signal from the unknown node. Using the directional antenna or the antenna array, the AoA is calculated at each stationary node. From each of these nodes, a ray can be drawn originating from the node that follows the angle of arrival. The unknown node is located based on where the rays intersect.
+Unlike the previously described methods, some localization techniques use the angle that the signal arrives at relative to a reference direction, or the Angle of Arrival (AoA)\cite{local_aoa}. To use this method, antenna arrays or directional antennas are used to determine the angle at which the signal arrived at. Similarly to TDoA, the stationary nodes wait for a signal from the unknown node. Using the directional antenna or the antenna array, the AoA is calculated at each stationary node. From each of these nodes, a ray can be drawn originating from the node that follows the angle of arrival. The unknown node is located based on where the rays intersect.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/path4188.png}
