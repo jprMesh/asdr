@@ -62,24 +62,25 @@ The process of spectrum sensing is made more complicated by uncertainties in the
 As the types of signals to be sensed are split into non-cooperative and cooperative systems, so too are the methods of sensing. As the present MQP involves passive sensing of the spectrum, only the methods concerning the former will be discussed.
 
 \subsection{Energy Detection}
-The most fundamental method of non-cooperative sensing is energy detection. In this approach, the power spectral density (or PSD) of the received signal is taken. The power spectral density represents the measure of a signal’s intensity in the frequency domain computed through the fast fourier transform of a signal. This is then bandpass filtered to contain only the frequency bands being watched. These frequency bands are then integrated, to determine how much energy is present in the band. If this passes a certain threshold, the frequency band is marked as occupied.
+The most fundamental method of non-cooperative sensing is energy detection. In this approach, the power spectral density (or PSD) of the received signal is taken. \textbf{DESCIBE PSD BETTER, more equations}The power spectral density represents the measure of a signal’s intensity in the frequency domain computed through the fast fourier transform of a signal. This is then bandpass filtered to contain only the frequency bands being watched. These frequency bands are then integrated, to determine how much energy is present in the band. If this passes a certain threshold, the frequency band is marked as occupied.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/energy_detection.png}
 \caption{Energy Detection}
 \label{fig:energy_detection}
 \end{figure}\par
+\textbf{Can write this as more mathematical hypothesis testing if we want.}
 This method of detection is the most fundamentally simple, as it does not require information about the signal ignoring key aspects of signals such as modulation method and pulse shaping. Because of this, it is the simplest detection method to implement. However, the fundamental assumption made in using energy detection is that the signals being searched for have significantly more power than the noise and interference of the channel. This does not always prove to be true. In addition to this, energy detection cannot be used to distinguish signals using the frequencies measured, as no pulse shape information is determined.
 
 \subsection{Match Filter}
-Another approach to spectrum sensing is through the use of match filters. Match filters are designed to maximize the signal to noise ratio given an input signal. To operate signal sensing through match filtering, prior knowledge of the reference signal to be detected must be known. The reference signal will be correlated with the incoming signal, which means that the two signals are overlapped to determine whether any distinct similarities exist between those signals.
+Another approach to spectrum sensing is through the use of match filters. Match filters are designed to maximize the signal to noise ratio given an input signal. To operate signal sensing through match filtering, prior knowledge of the reference signal to be detected must be known. The reference signal will be correlated with the incoming signal, which means that the two signals are overlapped to determine whether any distinct similarities exist between those signals. \textbf{Probably want to discuss this more mathematically as well. Show sums and stuff}
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/match_filter.png}
 \caption{Match Filter}
 \label{fig:match_filter}
 \end{figure}\par
-Match filters fundamentally relies on prior knowledge of the characteristics of signals to be detected, otherwise this method will not perform with accuracy. The prior knowledge constraint limits the use of signal detection when unexpected signals are involved. Furthermore, match filter detection is optimal with stationary gaussian noise to hinder distortion. This will limit the real world applications for signal detection with match filtering as a significant portion of signal emitting devices are mobile.
+Match filters fundamentally rely on prior knowledge of the characteristics of signals to be detected, otherwise this method will not be accurate. The prior knowledge constraint limits the use of signal detection when unexpected signals are involved. Furthermore, match filter detection is optimal with stationary gaussian noise to hinder distortion. This will limit the real world applications for signal detection with match filtering as most channels are time-varying and non-gaussian\cite{channel_fade}\textbf{probably will want more detail here}\sout{a significant portion of signal emitting devices are mobile} \textbf{That's not what stationary means lmao}.
 
 \subsection{Cyclostationary Feature Detection}
 Cyclostationary Feature Detection (or CFD) depends on the fact that all communication schemes have some sort of signal repetition as a core aspect. A signal with this kind of repetition is called a Cyclostationary Process\cite{cyclostat_journal}. Because of this property, when you correlate the signal with itself (or autocorrelation), there will be repeated peaks. The periodic nature of the signal also means that the autocorrelation will be periodic as well. This allows it to be expressed as a Fourier Series, called the Cyclic Autocorrelation Function (CAF) and denoted by $R_x^\alpha(\tau)$.\par 
@@ -93,7 +94,7 @@ One of the major benefits of CFD is that it is not nearly as affected by noise. 
 
 The primary downside to Cyclostationary Feature Detection is the complexity and time required to properly utilize it. The complexity lies in the number of integrals and correlations that need to be computed in order to implement CFD. In addition, the system needs to listen for signal long enough for the Cyclostationary Process to repeat. Because of these downsides, it is not common to be used on embedded systems. \par
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%I'm up to here - Max
 \section{Localization}
 Once a signal has been identified on a measured frequency, the next step is localization. Localization refers to the act of determining the location of a transmitted signal \cite{local_conf}. There are many different methods for localization. However, a lot of them become impractical for mobile passive sensing. In the following section, a variety of localization techniques will be discussed, as well as the practicality of implementing each of them.\par
 For each of the techniques discussed below, the same basic concept is used. Three different receivers are placed around the transmitter being located. They will be called stationary nodes and the unknown node, respectively. Each stationary node gets information about its location relative to the unknown node simultaneously. For Time Difference of Arrival (TDoA), Time of Arrival (ToA), and Received Signal Strength (RSS) Localization, each stationary node calculates the distance to the unknown node. This information is used with the known locations of the stationary nodes to localize the unknown node.
