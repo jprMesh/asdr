@@ -10,25 +10,30 @@ The spectrum of radio frequencies used for wireless communications is managed by
 \caption{United States Frequency Allocation Chart}
 \label{fig:freq_chart}
 \end{figure}
-As seen from the figure above, the spectrum is divided into smaller chunks where only specified entities can utilize legally. The usage of each chunk is determined by whether the NTIA and FCC require a license to use the band or not. Only operators with a license from the government can operate in the licensed bands, with uses that include AM broadcasting, FM broadcasting, and cellular communication. However, unlicensed bands are open to any entity that wants to utilize them, but they must still follow certain guidelines for usage. Technologies that use unlicensed bands include microwave, bluetooth, and WiFi. \textbf{Maybe talk about the history of this a little, why it's split up like this and why the certain bands were unlicensed}
+As seen from the figure above, the spectrum is divided into smaller chunks which only specified entities can utilize legally. The usage of each chunk is determined by whether the NTIA and FCC require a license to use the band or not. Only operators with a license from the government can operate in the licensed bands, with uses that include AM broadcasting, FM broadcasting, and cellular communication. However, unlicensed bands are open to any entity that wants to utilize them, but they must still follow certain guidelines for usage. Technologies that use unlicensed bands include microwave, bluetooth, and WiFi. \textbf{Maybe talk about the history of this a little, why it's split up like this and why the certain bands were unlicensed}
 
 \subsection{Cellular}
 The initial goal of this MQP was to look at transmissions in the cellular band in the United States. This band, regulated by the FCC, ranges from 824MHz - 896MHz and 1850MHz - 1990MHz. The United States is divided into 734 geographic markets called Cellular Market Areas (CMAs). To operate at a certain frequency in a CMA, mobile operators must place bids on each area individually. These frequencies all use various modes for communication including Analog, Digital, TDMA, CDMA, and GSM. However, the most popular mode now is LTE telecommunications.\textbf{THIS MOST LIKELY NEEDS EXPANSION. I would probably guess on usage somehow lemme think about it -Max}\ref{cellular_book}
 
 \subsection{Wi-Fi}
-Wi-Fi first came about in 1985, when the FCC decided to open up several bands of wireless spectrum for use without a government license. In the early 1990s, the Institute of Electrical and Electronics Engineers (IEEE) realized that wireless communications needed to be standardized. A committee was formed that focused on providing a reliable, fast and robust wireless solution that would be able to scale for years to come. Thus the 802.11 standard was created in order to assure these things. Since then, there has been multiple iterations of the standard, and five sub-standards have been established for wireless communications called:802.11a, 802.11b, 802.11g, 802.11n, and 802.11ac. The spectral signature of these protocols depend on the protocol that is used. Wifi traffic can be transmitted using a bandwidth of 20 MHz, 40 MHz or 80 MHz on either the 2.4GHz band or the 5GHz band. This is dependant upon the protocols shown in Figure \ref{fig:wifi_table} below:
-% table
-\begin{figure}[ht]
-\centering
-\includegraphics[width=0.70\textwidth]{img/wifi_table.png}
-\caption{Wifi Table}
-\label{fig:wifi_table}
-\end{figure}\par
+Wi-Fi first came about in 1985, when the FCC decided to open up several bands of wireless spectrum for use without a government license. In the early 1990s, the Institute of Electrical and Electronics Engineers (IEEE) realized that wireless communications needed to be standardized. A committee was formed that focused on providing a reliable, fast and robust wireless solution that would be able to scale for years to come. Thus the 802.11 standard was created in order to assure these things. Since then, there has been multiple iterations of the standard, and five sub-standards have been established for wireless communications called:802.11a, 802.11b, 802.11g, 802.11n, and 802.11ac. The spectral signature of these protocols depend on the protocol that is used. WiFi traffic can be transmitted using a bandwidth of 20 MHz, 40 MHz or 80 MHz on either the 2.4GHz band or the 5GHz band. This is dependant upon the protocols shown in Table \ref{table:wifi_protocols} below:
+\begin{table}[ht]
+\caption{WiFi Protocols}
+\label{table:wifi_protocols}
+\begin{tabular}{|l|l|l|l|}
+  Interface & Bandwidth (MHz) & Frequency Spectrum & Modulation \\ \hline
+          a &              20 &                  5 &       OFDM \\
+          b &              20 &                2.4 &       DSSS \\
+          g &              20 &                2.4 &       OFDM \\
+          n &          20, 40 &            2.4 / 5 &  MIMO-OFDM \\
+         ac &      20, 40, 80 &                  5 &  MIMO-OFDM \\
+\end{tabular}
+\end{table}\par
 These transmissions can vary when it comes to the entire frames information. However, each standard has a preamble that signifies the start of a transmission, shown in Figure \ref{fig:wifi_preamble}.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/ofdm_preamble.jpg}
-\caption{Wifi Transmission Packet Preamble}
+\caption{WiFi Transmission Packet Preamble}
 \label{fig:wifi_preamble}
 \end{figure}\par
 The preamble is useful to detect the start of a wifi transmission. In addition to the preamble, you could also decode the information from the Data fields, however, all of that data is usually encrypted so that it prevents any unauthorized user from accessing it. \cite{wifi_book}
@@ -172,7 +177,7 @@ The inspiration behind this MQP was to discover how much information could be gl
 \subsection{Kites}
 A kite is a passive structure tethered to the ground that stays airborne by catching wind. There are many different styles of kite, including parafoil, rokkaku, delta, and sled, but they all rely on the same principle to fly.\cite{kite_iqp} Kites have near unlimited flight time and high payload capacity when operated in favorable conditions, but in exchange they sacrifice control, reliability, and maneuverability.\par
 \textbf{I know how useless this seems rn but probably want to go into some details about differences in kite types}\\
-\texbf{Also maybe a picture?}\\
+\textbf{Also maybe a picture?}\\
 Since kites are powered by the natural wind in the atmosphere, they do not require any power to stay aloft. Depending on the style of kite however, they do require specific conditions to fly. Almost all kites need at least 2-3 mph of wind to get up into the air, and delta and rokkaku are limited to a maximum of 12-16 mph.\cite{kite_iqp} Parafoils can fly in wind up to 20 mph, but can be unstable\cite{kite_iqp}.\par
 The only control a user has over a kite in flight is changing its height by letting out or reeling in more of the tether cord. Different styles of kite have different flying angles, which impacts the amount of weight they can carry. Some kites, such as the rokkaku and delta styles, can be modified during assembly to change their angle of flight, where higher angles produce more lift. While parafoils can inherently carry more weight, they also have a low flying angle, which can be problematic in some scenarios. The preparation for flight involves assembling the kite, normally by inserting cross-bars, and unreeling the tether in an open space that allows the kite to take off.\par
 Kites are, by necessity, constructed of very light materials and cannot support much extra weight in light wind situations. Again, the style of kite affects the carrying capacity: deltas can carry a moderate amount of weight, but need higher winds to stay aloft. Parafoil and rokkaku kites can carry more weight, with 10 lbs being on the low end. All things considered, kites have great flight time and payload capacity, but they are susceptible to poor weather and have little to no maneuverability or user control over movement.
