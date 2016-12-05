@@ -2,13 +2,14 @@
 This chapter will introduce various fundamental topics that were taken into consideration in the design of the aerial software defined radio platform developed in this MQP. The topics proposed include \sout{but are not limited to,} spectrum allocation, energy detection, wireless transmitter localization, software defined radio, and aerial flight platform.
 
 \section{Spectrum}
-Wireless communications are transmitted through the use of the electromagnetic spectrum. The spectrum consists of a multitude of frequency bands that have been allocated for specific uses.\textbf{May need to be expanded on but seems like a good introduction into spectrum usage! -Narut}
+Wireless communications are transmitted through the use of the electromagnetic spectrum. The spectrum consists of a multitude of frequency bands that have been allocated for specific uses.
+
 \subsection{Spectrum Usage}
 The spectrum of radio frequencies used for wireless communications is managed by the government to promote efficient use and net social benefit. The National Telecommunications and Information Administration (NTIA) and the Federal Communications Commission (FCC) regulates the allocation of these frequencies in the United States as shown in Figure \ref{fig:freq_chart} \cite{FCC_Info}. 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/the_radio_spectrum.jpg}
-\caption{United States Frequency Allocation Chart \textbf{cite this chart}}
+\caption{United States Frequency Allocation Chart \cite{FCC_Info}}
 \label{fig:freq_chart}
 \end{figure}
 As seen from the figure, the spectrum is divided into smaller chunks where only specified entities can utilize legally. The usage of each chunk is determined by whether the NTIA and FCC require a license to use the band or not. Only operators with a license from the government can operate in the licensed bands, with uses that include AM broadcasting, FM broadcasting, and cellular communication. However, unlicensed bands are open to any entity that wants to utilize them, but they must still follow certain guidelines for usage. Technologies that use unlicensed bands include microwave, bluetooth, and WiFi. \textbf{Maybe talk about the history of this a little, why it's split up like this and why the certain bands were unlicensed}
@@ -23,12 +24,12 @@ WiFi first came about in 1985, when the FCC decided to open up several bands of 
 \caption{WiFi Protocols}
 \label{table:wifi_protocols}
 \begin{tabular}{|l|l|l|l|}
-  Interface & Bandwidth (MHz) & Frequency Spectrum & Modulation \\ \hline
-          a &              20 &                  5 &       OFDM \\
-          b &              20 &                2.4 &       DSSS \\
-          g &              20 &                2.4 &       OFDM \\
-          n &          20, 40 &            2.4 / 5 &  MIMO-OFDM \\
-         ac &      20, 40, 80 &                  5 &  MIMO-OFDM \\
+	\hline Interface & Bandwidth (MHz) & Frequency Spectrum & Modulation \\ \hline
+     		       a &              20 &                  5 &       OFDM \\
+     		       b &              20 &                2.4 &       DSSS \\
+     		       g &              20 &                2.4 &       OFDM \\
+     		       n &          20, 40 &            2.4 / 5 &  MIMO-OFDM \\
+     		      ac &      20, 40, 80 &                  5 &  MIMO-OFDM \\ \hline
 \end{tabular}
 \end{table}\par
 These transmissions can vary when it comes to the entire frames information. However, each standard has a preamble that signifies the start of a transmission, shown in Figure \ref{fig:wifi_preamble}.
@@ -93,16 +94,11 @@ Another approach to spectrum sensing is through the use of matched filters. Matc
 \end{figure}\par
 Matched filters rely on prior knowledge of the characteristics of signals to be detected, otherwise this method will not be accurate. The prior knowledge constraint limits the use of signal detection when unexpected signals are involved. Furthermore, matched filter detection is optimal with stationary gaussian noise to hinder distortion. This will limit the real world applications for signal detection with matched filtering as most channels are time-varying and non-gaussian \cite{channel_fade}\
 
-<<<<<<< HEAD
-\subsection{Cyclostationary Feature Detection}
-Cyclostationary Feature Detection (or CFD) depends on the fact that all communication schemes have some sort of signal repetition as a core aspect. A signal with this kind of repetition is called a Cyclostationary Process \cite{cyclostat_journal}. Because of this property, when you correlate the signal with itself (or autocorrelation), there will be repeated peaks. The periodic nature of the signal also means that the autocorrelation will be periodic as well. This allows it to be expressed as a Fourier Series, called the Cyclic Autocorrelation Function (CAF) and denoted by $R_x^\alpha(\tau)$ \cite{cyclostat_text}.\par 
-=======
 \subsection{Cyclostationary Feature Detection} \label{Cyclostationary Feature Detection}
 Cyclostationary Feature Detection (or CFD) depends on the fact that all communication schemes have some sort of signal repetition as a core aspect. A signal with this kind of repetition is called a Cyclostationary Process\cite{cyclostat_journal}. Because of this property, when you correlate the signal with itself (or autocorrelation), there will be repeated peaks. The periodic nature of the signal also means that the autocorrelation will be periodic as well. This allows it to be expressed as a Fourier Series, called the Cyclic Autocorrelation Function (CAF) and denoted by $R_x^\alpha(\tau)$\cite{cyclostat_text}.\par 
->>>>>>> fd39c1039bab134e021356b4057348f38b1ef987
-\[R_x^\alpha(\tau)=lim(t->\infty) \frac{1}{T} \int_-T/2^T/2 R_x(t,\tau)exp(-j2\pi\alpha t dt)\] \textbf{tried to fix the equation, check if correct -Narut}
+\[R_x^\alpha(\tau)=lim(t->\infty) \frac{1}{T} \int_-T/2^T/2 R_x(t,\tau)exp(-j2\pi\alpha t dt)\]
 Where $R_x(t,\tau)$ is the autocorrelation function of x at t with x at $\tau$. This function gives us an understanding of the times when the signal repeats, but is missing vital information of the repeated frequencies. By taking the fourier transform of $R_x^\alpha(\tau)$, we can get a better understanding of the frequencies in the Cyclostationary Process. This is denoted as $S_x^\alpha(f)$, and is equal to \cite{cyclostat_text}:  \par
-\[ S_x^\alpha(f)=\int{-\infty}^{\infty} R_x^\alpha(\tau)exp(-j2\pi f\tau d\tau) \] \textbf{tried to fix the equation, check if correct -Narut}
+\[ S_x^\alpha(f)=\int{-\infty}^{\infty} R_x^\alpha(\tau)exp(-j2\pi f\tau d\tau) \]
 This is called the Spectral Correlation Function (SCF). When it is normalized, it becomes the Spectral Coherence Function (SOF) \cite{cyclostat_text}:
 \[C_x^\alpha(f) = \frac{ S_x^\alpha(f)}{ (S_x^\alpha(f+\alpha/2) S_x^\alpha(f-\alpha/2))^{1/2}} \]
 The SOF is from between 0 and 1, and represents the strength of the periodicity at that point. By plotting this value, the unique response of the Cyclostationary Process can be found, allowing for it to be categorized.\par
