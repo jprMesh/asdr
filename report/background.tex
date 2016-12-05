@@ -69,13 +69,14 @@ The process of spectrum sensing is made more complicated by uncertainties in the
 As the types of signals to be sensed are split into non-cooperative and cooperative systems, so too are the methods of sensing. The present MQP involves passive sensing of the spectrum, where only the methods concerning the former will be discussed.
 
 \subsection{Energy Detection \textbf{Please delve into this some more w/ a step-by-step MATLAB example -Narut}}
-The most fundamental method of non-cooperative sensing is energy detection. In this approach, the power spectral density (or PSD) of the received signal is taken\cite{sensing_energy}. \textbf{DESCIBE PSD BETTER, more equations} The PSD represents the measure of a signal’s intensity in the frequency domain computed through the fast fourier transform of a signal. This is then bandpass filtered to contain only the frequency bands being watched. These frequency bands are then integrated, to determine how much energy is present in the band. If this passes a certain threshold, the frequency band is marked as occupied.
+The most fundamental method of non-cooperative sensing is energy detection. In this approach, the power spectral density (or PSD) of the received signal is taken\cite{sensing_energy}. \textbf{DESCIBE PSD BETTER, more equations} The PSD represents the measure of a signal’s intensity in the frequency domain computed through the fast fourier transform of a signal. This is then bandpass filtered to contain only the frequency bands being watched. These frequency bands are then integrated, to determine how much energy is present in the band. If this passes a certain threshold, the frequency band is marked as occupied. A MATLAB example of Energy Detection works is provided in Appendix \textbf{PUT APPENDIX HERE}.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/energy_detection.png}
 \caption{Energy Detection \textbf{Needs 2-3 sentences -Narut}}
 \label{fig:energy_detection}
 \end{figure}\par
+
 \textbf{Can write this as more mathematical hypothesis testing if we want}
 This method of detection is the most simple as it does not require information about the signal ignoring key aspects of signals such as modulation method and pulse shaping. Because of this, it is the simplest detection method to implement. However, the fundamental assumption made in using energy detection is that the signals being searched for have significantly more power than the noise and interference of the channel. This does not always prove to be true. In addition to this, energy detection cannot be used to distinguish signals using the frequencies measured, as no pulse shape information is determined.
 \textbf{The matlab example will have a randn signal and a sine wave at a certain frequency. FFT will be taken,and then will either sum the energy of a few bins or just use one.}
