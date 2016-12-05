@@ -101,7 +101,13 @@ Where $R_x(t,\tau)$ is the autocorrelation function of x at t with x at $\tau$. 
 \[ S_x^\alpha(f)=\int{-\infty}^{\infty} R_x^\alpha(\tau)exp(-j2\pi f\tau d\tau) \] \textbf{tried to fix the equation, check if correct -Narut}
 This is called the Spectral Correlation Function (SCF). When it is normalized, it becomes the Spectral Coherence Function (SOF)\cite{cyclostat_text}:
 \[C_x^\alpha(f) = \frac{ S_x^\alpha(f)}{ (S_x^\alpha(f+\alpha/2) S_x^\alpha(f-\alpha/2))^{1/2}} \]
-The SOF is from between 0 and 1, and represents the strength of the periodicity at that point. By plotting this value, the unique response of the Cyclostationary Process can be found, allowing for it to be categorized. \textbf{Example/Sample categorization needed here. cyclostat journal could probably help.}\par
+The SOF is from between 0 and 1, and represents the strength of the periodicity at that point. By plotting this value, the unique response of the Cyclostationary Process can be found, allowing for it to be categorized.\par
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.70\textwidth]{img/cyclic_scf.png}
+\caption{\textbf{Needs to be 2-3 sentences -Narut}}
+\label{fig:cyclic_scf}
+\end{figure}
 One of the major benefits of CFD is that it is not nearly as affected by noise. Under the generally held assumption that noise is white and Gaussian, there is no periodic response, and as such noise is not factored into CFD. A block diagram of an implementation of CFD is shown in Figure \ref{fig:cyclo_detection} below. \par
 
 The primary downside to Cyclostationary Feature Detection is the complexity and time required to properly utilize it. The complexity lies in the number of integrals and correlations that need to be computed in order to implement CFD. In addition, the system needs to listen for signal long enough for the Cyclostationary Process to repeat. Because of these downsides, it is not common to be used on embedded systems. \par
