@@ -431,8 +431,11 @@ void Masdr::transmit_data() {
             else
                 transmitBuffer_rrc[i] = 0;
         }
+        
         //Convolve w/ root raised cosine.
+        for(i=0; i < SPS*TBUF_SIZE;i++){
 
+        }
 
         /*
         std::cout << "Transmitting..." << std::endl;
