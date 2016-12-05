@@ -39,7 +39,6 @@
     #define DEBUG_FFT 0
     #define DEBUG_TX_DATA 1
     #define SCALE_ACC 1
-
 #else
     #define DEBUG_THRESH 0
     #define DEBUG_MATCH 0

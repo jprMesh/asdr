@@ -729,6 +729,3 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
     return EXIT_SUCCESS;
 }
 
-
-
-
