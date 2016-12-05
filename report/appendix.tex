@@ -1,7 +1,9 @@
 \appendix
-\chapter{Appendix A: MATLAB Examples}
+\chapter{MATLAB Examples}
 \section{Energy Detection Example}
+\label{app:energy_detection}
 \begin{verbatim}
+
 clear all;
 close all;
 N = 10000; % N is length of Signal 
@@ -22,7 +24,7 @@ figure(1);
 title('FFT Bin Values, Signal');
 \end{verbatim}
 \section{Matched Filter Example}
-
+\label{app:matched_filter}
 \begin{verbatim}
 clear all;
 close all;
@@ -38,3 +40,157 @@ end
 %filter noise_signal
 %Do this actually in matlab
 \end{verbatim}
+
+\chapter{Design Configurations}
+\section{Approach One}
+\begin{table}[ht]
+\centering
+\caption{Approach One Design Configuration}
+\label{table:approach_one}
+\begin{tabular}{|l|l|}
+    \hline  \textbf{Hardware Design}              & \textbf{Description}                      \\ \hline
+            Drone                                 & 3DR Solo                                  \\
+            SDR                                   & B-200 Mini                                \\
+            Antenna                               & Alfa APA-M25                              \\
+            Flight Time                           & 25 min                                    \\
+            Flight Speed                          & 5-10 mph                                  \\
+            SBC (Computer)                        & Up Board                                  \\
+            Compute Battery                       & 12V 800mAh stepped down to 5V             \\
+            Payload                               & 700 grams                                 \\
+            Storage                               & 32 GB flash drive                         \\
+            Antenna Configuration                 & Antenna pointed down                      \\
+    \hline  \textbf{Communications Design}        & \textbf{Description}                      \\ \hline
+            Drone operation                       & Human Controlled                          \\
+            Environment to Drone Frequency        & 2.4 GHz                                   \\
+            Controller to Drone TX Frequency      & 5.7 GHz                                   \\
+            Controller to Drone TX Period         & Instantaneous (Drone dependent)           \\
+            Controller to Drone TX Content        & Control                                   \\
+            Drone to Base TX Frequency            & 900 MHz                                   \\
+            Drone to Base TX Period               & 2 Hz (Every time drone stops)             \\
+            Drone to Base TX Content              & Location and power level if detected      \\
+    \hline  \textbf{Signal Processing Design}     & \textbf{Description}                      \\ \hline
+            Onboard Computer Processing           & Sensing                                   \\
+            Offboard Computer Processing          & Localization                              \\
+            SDR FPGA Processing                   & Available if needed                       \\
+            Real Time Localization                & No                                        \\
+            Sampling Technique                    & User controlled, record bursts of data    \\
+            Sampling Space Distance               & User Controlled                           \\
+            Number of Samples per Location        & Bursts every half second                  \\
+            Localization Method                   & RSS Triangulation (Average RSS over time) \\
+            Energy Sensing Technique              & Filter and energy detection               \\ \hline
+\end{tabular}
+\end{table}\par
+\section{Approach Two}
+\begin{table}[ht]
+\centering
+\caption{Approach Two Design Configuration}
+\label{table:approach_two}
+\begin{tabular}{|l|l|}
+    \hline  \textbf{Hardware Design}              & \textbf{Description}                      \\ \hline
+            Drone                                 & DJI S1000                                 \\
+            SDR                                   & B-200 Mini                                \\
+            Antenna                               & Alfa APA-M25                              \\
+            Flight Time                           & 25 min                                    \\
+            Flight Speed                          & 5-10 mph                                  \\
+            SBC (Computer)                        & Up Board                                  \\
+            Compute Battery                       & 12V 800mAh stepped down to 5V             \\
+            Payload                               & 2000 grams                                \\
+            Storage                               & 32 GB flash drive                         \\
+            Antenna Configuration                 & Antenna pointed down                      \\
+    \hline  \textbf{Communications Design}        & \textbf{Description}                      \\ \hline
+            Drone operation                       & Human Controlled                          \\
+            Environment to Drone Frequency        & 2.4 GHz                                   \\
+            Controller to Drone TX Frequency      & 900 MHz                                   \\
+            Controller to Drone TX Period         & Instantaneous (Drone dependent)           \\
+            Controller to Drone TX Content        & Control                                   \\
+            Drone to Base TX Frequency            & 5.7 GHz                                   \\
+            Drone to Base TX Period               & 2 Hz (Every time drone stops)             \\
+            Drone to Base TX Content              & Location and power level if detected      \\
+    \hline  \textbf{Signal Processing Design}     & \textbf{Description}                      \\ \hline
+            Onboard Computer Processing           & Sensing                                   \\
+            Offboard Computer Processing          & Localization                              \\
+            SDR FPGA Processing                   & Available if needed                       \\
+            Real Time Localization                & No                                        \\
+            Sampling Technique                    & User controlled, record bursts of data    \\
+            Sampling Space Distance               & User Controlled                           \\
+            Number of Samples per Location        & Bursts every half second                  \\
+            Localization Method                   & RSS Triangulation (Average RSS over time) \\
+            Energy Sensing Technique              & Filter and energy detection               \\ \hline
+\end{tabular}
+\end{table}\par
+\section{Approach Three}
+\begin{table}[ht]
+\centering
+\caption{Approach Three Design Configuration}
+\label{table:approach_three}
+\begin{tabular}{|l|l|}
+    \hline  \textbf{Hardware Design}              & \textbf{Description}                      \\ \hline
+            Drone                                 & 3DR Solo                                  \\
+            SDR                                   & B-200 Mini                                \\
+            Antenna                               & Alfa APA-M25                              \\
+            Flight Time                           & 25 min                                    \\
+            Flight Speed                          & 5-10 mph                                  \\
+            SBC (Computer)                        & Up Board                                  \\
+            Compute Battery                       & 12V 800mAh stepped down to 5V             \\
+            Payload                               & 700 grams                                 \\
+            Storage                               & 32 GB flash drive                         \\
+            Antenna Configuration                 & Antenna pointed down                      \\
+    \hline  \textbf{Communications Design}        & \textbf{Description}                      \\ \hline
+            Drone operation                       & Human Controlled                          \\
+            Environment to Drone Frequency        & 2.4 GHz                                   \\
+            Controller to Drone TX Frequency      & N/A                                       \\
+            Controller to Drone TX Period         & N/A                                       \\
+            Controller to Drone TX Content        & Kill/Return home signal                   \\
+            Drone to Base TX Frequency            & 900 MHz                                   \\
+            Drone to Base TX Period               & 2 Hz (Every time drone stops)             \\
+            Drone to Base TX Content              & Location and power level if detected      \\
+    \hline  \textbf{Signal Processing Design}     & \textbf{Description}                      \\ \hline
+            Onboard Computer Processing           & Sensing, localization, drone control      \\
+            Offboard Computer Processing          & None                                      \\
+            SDR FPGA Processing                   & Available if needed                       \\
+            Real Time Localization                & Yes                                       \\
+            Sampling Technique                    & Sample at one spot, move to next spot     \\
+            Sampling Space Distance               & User Controlled                           \\
+            Number of Samples per Location        & Bursts every half second                  \\
+            Localization Method                   & RSS Triangulation (Average RSS over time) \\
+            Energy Sensing Technique              & Filter and energy detection               \\ \hline
+\end{tabular}
+\end{table}\par
+\section{Approach Four}
+\begin{table}[ht]
+\centering
+\caption{Approach Four Descriptionign Configuration}
+\label{table:approach_four}
+\begin{tabular}{|l|l|}
+    \hline  \textbf{Hardware Design}              & \textbf{Description}                      \\ \hline
+            Drone                                 & 3DR Solo                                  \\
+            SDR                                   & B-200 Mini                                \\
+            Antenna                               & Alfa APA-M25                              \\
+            Flight Time                           & 25 min                                    \\
+            Flight Speed                          & 5-10 mph                                  \\
+            SBC (Computer)                        & Up Board                                  \\
+            Compute Battery                       & 12V 800mAh stepped down to 5V             \\
+            Payload                               & 700 grams                                 \\
+            Storage                               & 32 GB flash drive                         \\
+            Antenna Configuration                 & Sheilding around sensing antenna          \\
+    \hline  \textbf{Communications Design}        & \textbf{Description}                      \\ \hline
+            Drone operation                       & Human Controlled                          \\
+            Environment to Drone Frequency        & 2.4 GHz                                   \\
+            Controller to Drone TX Frequency      & 2.4 GHz                                   \\
+            Controller to Drone TX Period         & Instantaneous (Drone dependent)           \\
+            Controller to Drone TX Content        & Control                                   \\
+            Drone to Base TX Frequency            & 900 MHz                                   \\
+            Drone to Base TX Period               & 2 Hz (Every time drone stops)             \\
+            Drone to Base TX Content              & Location and power level if detected      \\
+    \hline  \textbf{Signal Processing Design}     & \textbf{Description}                      \\ \hline
+            Onboard Computer Processing           & Sensing                                   \\
+            Offboard Computer Processing          & Localization                              \\
+            SDR FPGA Processing                   & Available if needed                       \\
+            Real Time Localization                & No                                        \\
+            Sampling Technique                    & User controlled, record bursts of data    \\
+            Sampling Space Distance               & User Controlled                           \\
+            Number of Samples per Location        & Bursts every half second                  \\
+            Localization Method                   & RSS Triangulation (Average RSS over time) \\
+            Energy Sensing Technique              & Filter and energy detection               \\ \hline
+\end{tabular}
+\end{table}\par

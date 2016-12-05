@@ -69,8 +69,8 @@ As described in the previous section, the electromagnetic radio spectrum is beco
 The process of spectrum sensing is made more complicated by uncertainties in the received data, including channel uncertainty and noise uncertainty. With channel uncertainty, the received signal strength can fluctuate based on characteristics of the channel, such as channel fading or shadowing. Noise uncertainty refers to the fact that the power of the noise is unknown to the receiver, making it difficult to achieve a specific sensitivity \cite{spectrum_sense_methods}. In order to have a functioning CR, both uncertainties need to be addressed. \par
 As the types of signals to be sensed are split into non-cooperative and cooperative systems, so too are the methods of sensing. The present MQP involves passive sensing of the spectrum, where only the methods concerning the former will be discussed.
 
-\subsection{Energy Detection \textbf{Please delve into this some more w/ a step-by-step MATLAB example -Narut}}
-The most fundamental method of non-cooperative sensing is energy detection. In this approach, the power spectral density (or PSD) of the received signal is taken\cite{sensing_energy}. \textbf{DESCIBE PSD BETTER, more equations} The PSD represents the measure of a signal’s intensity in the frequency domain computed through the fast fourier transform of a signal. This is then bandpass filtered to contain only the frequency bands being watched. These frequency bands are then integrated, to determine how much energy is present in the band. If this passes a certain threshold, the frequency band is marked as occupied. A MATLAB example of Energy Detection works is provided in Appendix \textbf{PUT APPENDIX HERE}.
+\subsection{Energy Detection}
+The most fundamental method of non-cooperative sensing is energy detection. In this approach, the power spectral density (or PSD) of the received signal is taken\cite{sensing_energy}. \textbf{DESCIBE PSD BETTER, more equations} The PSD represents the measure of a signal’s intensity in the frequency domain computed through the fast fourier transform of a signal. This is then bandpass filtered to contain only the frequency bands being watched. These frequency bands are then integrated, to determine how much energy is present in the band. If this passes a certain threshold, the frequency band is marked as occupied. A MATLAB example of Energy Detection is provided in Appendix \ref{app:energy_detection}.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/energy_detection.png}
@@ -82,7 +82,7 @@ The most fundamental method of non-cooperative sensing is energy detection. In t
 This method of detection is the most simple as it does not require information about the signal ignoring key aspects of signals such as modulation method and pulse shaping. Because of this, it is the simplest detection method to implement. However, the fundamental assumption made in using energy detection is that the signals being searched for have significantly more power than the noise and interference of the channel. This does not always prove to be true. In addition to this, energy detection cannot be used to distinguish signals using the frequencies measured, as no pulse shape information is determined.
 \textbf{The matlab example will have a randn signal and a sine wave at a certain frequency. FFT will be taken,and then will either sum the energy of a few bins or just use one.}
 
-\subsection{Matched Filter \textbf{Please delve into this some more w/ a step-by-step MATLAB example -Narut}}
+\subsection{Matched Filter}
 Another approach to spectrum sensing is through the use of matched filters. Matched filters are designed to maximize the signal to noise ratio (SNR) given an input signal, which we will call $s_{in}$ \cite{sensing_energy}. To operate signal sensing through matched filtering, prior knowledge of the reference signal (or $s_{ref}$) to be detected must be known. \sout{The reference signal will be correlated with the incoming signal, which means that the two signals are overlapped to determine whether any distinct similarities exist between those signals.}\textbf{More mathematical, explain what this actually means not in vague words} This process is described in equation \ref{fig:match_filter} below. N represents the length of the reference signal, in samples. 
 \textbf{The matlab example will have a randn signal and a BPSK pattern. Match filter}
 \[m = \sum_{k = 0}^{N}s_{in}[t-k]s_ref[N-k]\]
@@ -92,7 +92,7 @@ Another approach to spectrum sensing is through the use of matched filters. Matc
 \caption{Match Filter \textbf{Needs to be 2-3 sentences -Narut}}
 \label{fig:match_filter}
 \end{figure}\par
-Matched filters rely on prior knowledge of the characteristics of signals to be detected, otherwise this method will not be accurate. The prior knowledge constraint limits the use of signal detection when unexpected signals are involved. Furthermore, matched filter detection is optimal with stationary gaussian noise to hinder distortion. This will limit the real world applications for signal detection with matched filtering as most channels are time-varying and non-gaussian \cite{channel_fade}\
+Matched filters rely on prior knowledge of the characteristics of signals to be detected, otherwise this method will not be accurate. The prior knowledge constraint limits the use of signal detection when unexpected signals are involved. Furthermore, matched filter detection is optimal with stationary gaussian noise to hinder distortion. This will limit the real world applications for signal detection with matched filtering as most channels are time-varying and non-gaussian \cite{channel_fade}. A MATLAB example of Energy Detection is provided in Appendix \ref{app:matched_filter}.
 
 \subsection{Cyclostationary Feature Detection} \label{Cyclostationary Feature Detection}
 Cyclostationary Feature Detection (or CFD) depends on the fact that all communication schemes have some sort of signal repetition as a core aspect. A signal with this kind of repetition is called a Cyclostationary Process\cite{cyclostat_journal}. Because of this property, when you correlate the signal with itself (or autocorrelation), there will be repeated peaks. The periodic nature of the signal also means that the autocorrelation will be periodic as well. This allows it to be expressed as a Fourier Series, called the Cyclic Autocorrelation Function (CAF) and denoted by $R_x^\alpha(\tau)$\cite{cyclostat_text}.\par 
@@ -122,7 +122,7 @@ For each of the techniques discussed below, the same basic concept is used. Thre
 \label{table:local_methods}
 \begin{tabular}{|l|l|l|l|}
     \hline
-  Localization methods  & & &  \\ \hline
+  Localization methods  & & & \\ \hline
          TDoA           & & & \\
           ToA           & & & \\
           RSS           & & & \\
