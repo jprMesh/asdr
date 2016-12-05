@@ -23,6 +23,9 @@
 #include <boost/format.hpp>
 #include <boost/thread.hpp>
 
+//Using pthread for GPS
+#include <pthread.h>
+
 //GPS libraries
 #include <gps.h>
 #include <unistd.h>
@@ -186,8 +189,39 @@ bool check_locked_sensor(std::vector<std::string> sensor_names,
                          const char* sensor_name,
                          get_sensor_fn_t get_sensor_fn,
                          double setup_time);
+/**
+ * Initializes GPS
+ */
+int init_gps();
+
+
+/**
+ * Reads latitude, longitude, and time from GPS and puts it in FIFO
+ */
+void *poll_gps();
+
+
+/**
+ * Read data from GPS FIFO
+ */
+void get_gps_data(double *latitude, double *longitude, double *time);
+
+
+/**
+ * Shuts down GPS
+ */
+int rem_gps();
+
+
+/**
+ * Initializes Magnetometer
+ */
 void init_mag();
 
+
+/**
+ * Reads data from  Magnetometer
+ */
 float read_mag();
 
 #endif // __utils_h__
