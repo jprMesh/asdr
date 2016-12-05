@@ -74,14 +74,17 @@ bool check_locked_sensor(std::vector<std::string> sensor_names,
 /******************************************************************************/
 void handle_sigint(int) {
     stop_signal_called = true;
+    rem_gps();
     exit(0);
 }
 
 /******************************************************************************/
 int init_gps(){
     int rc,x;
+    gps_running =1;
     if ((rc = gps_open("localhost", "2947", &gps_data__)) == -1) {
         printf("code: %d, reason: %s\n", rc, gps_errstr(rc));
+        gps_running = 0;
         return 0;
     }
 
@@ -99,7 +102,7 @@ int init_gps(){
 
 
 /******************************************************************************/
-int poll_gps(){
+void *poll_gps(void *unused){
     int rc;
     while (gps_running) {
         // wait for 2 seconds to receive data
@@ -127,16 +130,26 @@ int poll_gps(){
             }
         }
     }
+    pthread_exit(NULL);
 }
 
 /******************************************************************************/
 
-void get_gps_data(double *lat, double *longitude, double *time){
+void get_gps_data(double *latitude, double *longitude, double *time){
     int pos = (gps_buf_head - 1) % GPS_BUF_SIZE;
-    *lat  = gps_buff[pos][0];
+    *latitude  = gps_buff[pos][0];
     *longitude = gps_buff[pos][1];
-    *time = gps_buff[pos][2];
+    *time      = gps_buff[pos][2];
     return;
+}
+
+
+/******************************************************************************/
+
+void rem_gps(){
+    gps_running = 0;
+    gps_stream(&gps_data, WATCH_DISABLE, NULL);
+    gps_close (&gps_data);
 }
 
 

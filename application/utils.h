@@ -23,6 +23,9 @@
 #include <boost/format.hpp>
 #include <boost/thread.hpp>
 
+//Using pthread for GPS
+#include <pthread.h>
+
 //GPS libraries
 #include <gps.h>
 #include <unistd.h>
@@ -35,7 +38,7 @@
 
 #define TBUF_SIZE 226   //11/6/16 NARUT: dependent 
                         //on our packet size 5 floats (32*5) + (33*2) start/end
-
+#define SPS 4 //4 samples per symbol.
 //GPS constants
 
 #define GPS_BUF_SIZE 60  // Hold the past 6 seconds of samples
@@ -186,8 +189,39 @@ bool check_locked_sensor(std::vector<std::string> sensor_names,
                          const char* sensor_name,
                          get_sensor_fn_t get_sensor_fn,
                          double setup_time);
+/**
+ * Initializes GPS
+ */
+int init_gps();
+
+
+/**
+ * Reads latitude, longitude, and time from GPS and puts it in FIFO
+ */
+void *poll_gps();
+
+
+/**
+ * Read data from GPS FIFO
+ */
+void get_gps_data(double *latitude, double *longitude, double *time);
+
+
+/**
+ * Shuts down GPS
+ */
+int rem_gps();
+
+
+/**
+ * Initializes Magnetometer
+ */
 void init_mag();
 
+
+/**
+ * Reads data from  Magnetometer
+ */
 float read_mag();
 
 #endif // __utils_h__

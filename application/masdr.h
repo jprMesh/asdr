@@ -54,6 +54,8 @@
 #define N_FFT 1024  ///11/16/16 MHLI: 16384 is a bit overkill, 
                     ///considering the ofdm carrier is binned w/ 64 bin fft.
                     ///Going to use 1024 for now.
+
+#define N_RRC 1024 /// 12/4/16 MHLI: Currently not the right number
 /**
  * @brief MASDR Application Class
  * 
@@ -220,6 +222,7 @@ private:
      */
     void transmit_data();
     std::complex<float> testbuf[RBUF_SIZE]; ///< Testing if structure is too big.
+    std::complex<float>  rrcBuf[N_RRC];///4 samples per symbol, 
     uhd::rx_streamer::sptr rx_stream; ///< The UHD rx streamer
     uhd::tx_streamer::sptr tx_stream; ///< The UHD tx streamer
     uhd::rx_metadata_t md; ///< UHD Metadata
