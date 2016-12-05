@@ -175,34 +175,93 @@ A typical transmitter will pass a modulated signal to the DAC which will take th
 While it is currently not possible to directly transmit from the ADC, future technological advances may make this possible. An ADC and DAC having the ability to convert the signal without the need for up or downconversion would allow for the direct connection of the ADC or DAC to the antenna. This would allow for wide band reception capability and tolerance to varying input power levels.\cite{soprano_sdr}
 
 \section{Aerial Platforms}
-The inspiration behind this MQP was to discover how much information could be gleaned from the wireless spectrum when observed from the air. To facilitate this, three main mobile methods of elevating the sensory unit were considered: kites, fixed-wing aircraft, and multicopters, each of which will be described in detail below.
+The inspiration behind this MQP was to discover how much information could be gathered from the wireless spectrum when observed from the air. To facilitate this, three main mobile methods of elevating the sensory unit were considered: kites, fixed-wing aircraft, and multicopters, each of which will be described in detail below.
 
 \subsection{Kites}
-A kite is a passive structure tethered to the ground that stays airborne by catching wind. There are many different styles of kite, including parafoil, rokkaku, delta, and sled, but they all rely on the same principle to fly.\cite{kite_iqp} Kites have near unlimited flight time and high payload capacity when operated in favorable conditions, but in exchange they sacrifice control, reliability, and maneuverability.\par
-\textbf{I know how useless this seems rn but probably want to go into some details about differences in kite types}\\
-\textbf{Also maybe a picture?}\\
-Since kites are powered by the natural wind in the atmosphere, they do not require any power to stay aloft. Depending on the style of kite however, they do require specific conditions to fly. Almost all kites need at least 2-3 mph of wind to get up into the air, and delta and rokkaku are limited to a maximum of 12-16 mph.\cite{kite_iqp} Parafoils can fly in wind up to 20 mph, but can be unstable\cite{kite_iqp}.\par
-The only control a user has over a kite in flight is changing its height by letting out or reeling in more of the tether cord. Different styles of kite have different flying angles, which impacts the amount of weight they can carry. Some kites, such as the rokkaku and delta styles, can be modified during assembly to change their angle of flight, where higher angles produce more lift. While parafoils can inherently carry more weight, they also have a low flying angle, which can be problematic in some scenarios. The preparation for flight involves assembling the kite, normally by inserting cross-bars, and unreeling the tether in an open space that allows the kite to take off.\par
-Kites are, by necessity, constructed of very light materials and cannot support much extra weight in light wind situations. Again, the style of kite affects the carrying capacity: deltas can carry a moderate amount of weight, but need higher winds to stay aloft. Parafoil and rokkaku kites can carry more weight, with 10 lbs being on the low end. All things considered, kites have great flight time and payload capacity, but they are susceptible to poor weather and have little to no maneuverability or user control over movement.
+A kite is a passive structure tethered to the ground that stays airborne by catching wind.\cite{kite_book} There are many different styles of kite, including parafoil, rokkaku, delta, and sled, but they all rely on the same principle to fly.\cite{kite_book}\cite{kite_iqp} Kites have near unlimited flight time and high payload capacity when operated in favorable conditions, but in exchange they sacrifice control, reliability, and maneuverability.\par
+Since kites are powered by the natural wind in the atmosphere, they do not require any power to stay aloft. However, depending on the style of kite, they do require specific conditions to fly. Almost all kites need at least 2-3 mph of wind to get up into the air, and delta and rokkaku are limited to a maximum of 12-16 mph.\cite{kite_iqp} Parafoils can fly in wind up to 20 mph, but can be unstable.\par
+The only control a user has over a kite in flight is changing its height by letting out or reeling in more of the tether cord. Different styles of kite have different flying angles, which impacts the amount of weight they can carry. Some kites, such as the rokkaku and delta (example in Figure \ref{fig:delta_kite}) styles, can be modified during assembly to change their angle of flight, where higher angles produce more lift. While parafoils can inherently carry more weight, they also have a low flying angle, which can be problematic in some scenarios. The preparation for flight involves assembling the kite, normally by inserting cross-bars, and unreeling the tether in an open space that allows the kite to take off.\par
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.70\textwidth]{img/delta-kite.jpg}
+\caption{A delta style kite. Delta style kites can be configured to fly at high angles, allowing them to be flown in laterally constrained locations.}
+\label{fig:delta_kite}
+\end{figure}\par
+Kites are, by necessity, constructed of very light materials and cannot support much extra weight in light wind situations. Again, the style of kite affects the carrying capacity: deltas can carry a moderate amount of weight, but need higher winds to stay aloft. Parafoil and rokkaku kites can carry more weight, with 10 lbs being on the low end.\par
+One application of kites that concerns the carrying capacity is kite aerial photography, which consists of a camera mounted to a kite as a low-cost way to take aerial pictures. Varying flying conditions force photographers to mount cameras to many different types of kites with differing angles of flight, payload capacity, and stability. Advanced photographers also utilize mounting rigs to stabilize and sometimes rotate the cameras in flight.\cite{kite_iqp}\par
+The pros and cons of a kite as a platform for the SDR system are enumerated in Table \ref{table:kite_pc}.
+\begin{table}[ht]
+\centering
+\caption{Kite Pros and Cons}
+\label{table:kite_pc}
+\begin{tabular}{l|l}
+  Pros & Cons \\ \hline
+  cost & maneuverability \\
+  flight time & deployment time \\
+  payload capacity & \\
+\end{tabular}
+\end{table}\par
 
 \subsection{Fixed-wing Aircraft}
-A fixed-wing aircraft is a rigid structure with one or more rotors oriented forward that gains lift from the flow of air over its wings. An aircraft’s movement is controlled by servos onboard that move flaps to change the surface of the aircraft, in turn changing the dynamics of flight and causing the plane to respond. They are very efficient in terms of the ratio of flight time to power used because the lift comes from the shape of the wings, not the speed of the motor. Since the lift comes from the wings, fixed-wing aircraft have a moderate flying time and can carry a moderate amount of weight, but the plane’s motion is very linear so its maneuverability is limited.\par
-\textbf{A picture of fixed wing aircraft maybe?} \\
-The flight time of most battery powered remote-control fixed-wing aircraft is around half an hour assuming some aerobatics. In a surveying role, with the plane flying low circles, the flight time would likely increase slightly. There are also gasoline powered aircraft with small engines onboard to power the main propeller. Gasoline has a very high energy density, so it’s possible to fly for multiple hours with a gasoline powered aircraft.\par
+A fixed-wing aircraft is a rigid structure with one or more rotors oriented forward that gains lift from the flow of air over its wings.\cite{airplane_book} A diagram showing this lift mechanism can be found in Figure \ref{fig:airfoil_lift}. This section will focus on radio controlled (RC) aircraft since they are the type being considered for use in this MQP. An RC aircraft’s movement is typically controlled by servos onboard that move flaps to change the surface of the aircraft, in turn changing the dynamics of flight and causing the plane to respond. RC aircraft are very efficient in terms of flight time to power used because the lift comes from the shape of the wings, not the speed of the motor.\cite{airplane_site} Since the lift comes from the wings, fixed-wing aircraft have a moderate flying time and can carry a moderate amount of weight, but the plane’s motion is very linear so its maneuverability is limited.\par
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.70\textwidth]{img/airfoil_lift.png}
+\caption{Airfoil lift generation. As air flows past the airfoil, it is forced downward, in return forcing the aircraft upward.}
+\label{fig:airfoil_lift}
+\end{figure}\par
+The flight time of most battery powered RC fixed-wing aircraft is around half an hour assuming some aerobatics.\cite{airplane_book} In a surveying role, with the plane flying low circles, the flight time would likely increase slightly. There are also gasoline powered aircraft with small engines onboard to power the main propeller. Gasoline has a very high energy density, so it’s possible to fly for multiple hours with a gasoline powered aircraft.\par
 Fixed-wing aircraft have a fairly lenient payload capacity. One thing to consider about adding payloads to fixed-wing aircraft is that since the aircraft’s flight is so heavily impacted by the body shape, any payload will need to be incorporated into the body of the aircraft to minimize airflow disturbance. To get more lift, and thus carry more weight, the plane simply needs to fly faster to force more air over the wings. This has drawbacks however, as spinning the propeller faster will drain the power source faster and decrease maneuverability.\par
-A fixed-wing aircraft is able to cover large distances flying laterally, but it is not able to stop mid-flight and hover in place. Its turning radius is often quite large, and it must not drop below a certain speed to remain airborne. While fixed-wing aircraft are mobile, they are not very agile. Most fixed-wing aircraft require a long flat runway to takeoff and land on, limiting the number of locations in which they could reasonably launch. In addition, fixed-wing aircraft are much larger and are commonly disassembled for transport. All things considered, fixed-wing aircraft have a lot of conditions that inhibit their usefulness even though they have fairly good flight time and payload capacity.
+Fixed-wing RC aircraft have been used in the past for similar tasks. In one example, a group of students at WPI developed a search and rescue platform using a fixed-wing RC aircraft.\cite{airplane_iqp} An example of a fixed-wing RC aircraft is shown in Figure \ref{fig:fixed_wing}.
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.70\textwidth]{img/fixed-wing.jpg}
+\caption{A fixed-wing RC aircraft}
+\label{fig:fixed_wing}
+\end{figure}\par
+A fixed-wing aircraft is able to cover large distances flying laterally, but it is not able to stop mid-flight and hover in place.\cite{airplane_book} Its turning radius is often quite large, and it must not drop below a certain speed to remain airborne. While fixed-wing aircraft are mobile, they are not very agile. Most fixed-wing aircraft require a long flat runway to takeoff and land on, limiting the number of locations in which they could reasonably launch. In addition, fixed-wing aircraft are much larger and are commonly disassembled for transport.\par
+The pros and cons of a fixed-wing aircraft as a platform for the SDR system are enumerated in Table \ref{table:wing_pc}.
+\begin{table}[ht]
+\centering
+\caption{Fixed-Wing Aircraft Pros and Cons}
+\label{table:wing_pc}
+\begin{tabular}{l|l}
+  Pros & Cons \\ \hline
+  flight time & maneuverability \\
+  payload capacity & cost \\
+   & deployment time \\
+\end{tabular}
+\end{table}\par
 
 \subsection{Multicopters}
-A multicopter, sometimes also called a drone, is a flying device with two or more upward oriented rotors. A typical multicopter structure will have an even number of fixed-pitch propellers (often 4, 6, or 8), powered by electric motors placed equidistant from the center of mass. To have full control over the movement of the quadcopter, at least 3 rotors are needed. By controlling the speed at which the rotors spin, the multicopter can be controlled and flown. The least mechanically complex of the three devices investigated here, multicopters rely solely on software control of the rotors for lift and control. The principles behind multicopter flight lead them to be highly maneuverable, but at the cost of flight time and payload capacity.
+A multicopter, sometimes also called a drone, is a flying device with two or more upward oriented rotors. A typical multicopter structure will have an even number of fixed-pitch propellers (often 4, 6, or 8), powered by electric motors placed equidistant from the center of mass.\cite{multicopter_background} To have full control over the movement of the quadcopter, at least 3 rotors are needed.\cite{multicopter_dynamics_2} The least mechanically complex of the three devices investigated here, multicopters rely solely on software control of the rotors for lift and control. A diagram of the forces acting upon the multicopter can be found in Figure \ref{fig:quad_diagram}, and an example picture of a multicopter with 6 rotors is included in Figure \ref{fig:multicopter_hex}.\par
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.70\textwidth]{img/quad_force_diagram.jpg}
+\caption{Quadcopter force diagram. Motors and propellors alternate in direction of rotation so that the drone is stable around the vertical axis. The torque generated by each propellor is cancelled by the propellor opposite it.\cite{multicopter_dynamics_3}}
+\label{fig:quad_diagram}
+\end{figure}\par
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/hexacopter.jpg}
-\caption{A multicopter with 6 rotors}
+\caption{A multicopter with 6 rotors. The brushless DC motors allow for very high speeds and a high degree of control.}
 \label{fig:multicopter_hex}
 \end{figure}\par
-The primary concern when using a multicopter is the flight time. Most commercial multirotors quote flight times in the 10-20 minute range with the best performing drones topping out around 30 minutes (cite). This is because the power required to spin the electric motors fast enough to get lift can be immense, drgawing up to 60 amps on takeoff. Ascending from a stationary position draws much more energy than hovering or lateral flying, so multiple takeoffs and landings in one flight will hamper the battery even more. The high current draw of the electric motors necessitates the use of Lithium Polymer (LiPo) batteries that can discharge large amounts of power very quickly. LiPo batteries have another benefit for use in multicopters and that is their low weight.\par
+Multicopters use fixed-pitch propellors to correlate rotor speed with force produced. Lift can be controlled by uniformly increasing or decreasing rotor speed across all rotors. To effect a roll or pitch, one side's rotors are spun up and the other side's are spun down so that the net lift remains the same but the craft tilts to the side with less thrust. Multicopters also have the unique ability to yaw in place by spinning alternating rotors faster and slower. Since the rotors alternate in direction of rotation, spinning one set faster creates an imbalance of torque, which makes the whole platform rotate in place.\cite{multicopter_dynamics_2}\par
+Multicopters are thus highly maneuverable, but at the cost of flight time and payload capacity. The primary concern when using a multicopter is the flight time. Most commercial multirotors quote flight times in the 10-20 minute range with the best performing drones topping out around 30 minutes.\cite{multicopter_comparison} This is because the power required to spin the electric motors fast enough to get lift can be immense, drawing up to 60 amps on takeoff.\cite{multicopter_long_range_mqp} Ascending from a stationary position draws much more energy than hovering or lateral flying, so multiple takeoffs and landings in one flight will hamper the battery even more. The high current draw of the electric motors necessitates the use of Lithium Polymer (LiPo) batteries that can discharge large amounts of power very quickly. LiPo batteries have another benefit for use in multicopters and that is their low weight.\par
 Weight is a very important factor in the operation of a multicopter because the amount of weight to be lifted directly corresponds to the speed the motors must be driven at to achieve lift. Multicopters in general have low payload capacities because any extra weight equates to more power that must be provided by the rotors. In effect, the more weight the drone is carrying, the less flight time it will have. This correlation forces a choice to be made over whether to prioritize flight time or amount of payload supported.\par
 The most advantageous aspect of multicopters is their maneuverability. The nature of their control means it is possible to stop and start, hover in place, rotate in place, and quickly change directions and altitudes. In particular, the ability to stop at a point and rotate at a fixed rate is especially unique. To rotate in place, the multicopter increases the speed of all rotors spinning one direction and decreases speed of the other rotors such that the overall lift stays constant, but the torque changes, forcing the whole platform to yaw.\cite{multicopter_dynamics} Deployment of a multicopter is very fast as well: there is nothing that needs assembly prior to flight, and there is no need to find a long open space to takeoff. All that is required procedurally  is powering on the device and setting it on the ground, as multicopters are capable of vertical takeoff and landing (VTOL). The high maneuverability and ease of deployment make for an easy user experience, since control of a drone (with good software) is simple and very responsive. All things considered, the multicopter is a platform that has very good maneuverability, but must sacrifice payload capacity and flight time.
+\begin{table}[ht]
+\centering
+\caption{Multicopter Pros and Cons}
+\label{table:multi_pc}
+\begin{tabular}{l|l}
+  Pros & Cons \\ \hline
+  maneuverability & flight time \\
+  deployment time & cost \\
+   & payload capacity \\
+\end{tabular}
+\end{table}\par
 
 \section{Conclusion}
 In this section, background information was provided on the topics of spectrum utilization, spectrum sensing, and localization. In addition, software defined radios and flight platforms were also discussed.  By providing this information, the design decisions made are put into context, and the implementation will be simpler to follow.
