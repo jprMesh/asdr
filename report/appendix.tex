@@ -1,5 +1,40 @@
 \appendix
-\chapter{More to say}
+\chapter{Appendix A: MATLAB Examples}
+\section{Energy Detection Example}
+\begin{verbatim}
+clear all;
+close all;
+N = 10000; % N is length of Signal 
 
-\section{A section within an appendix.}
-This is an appendix.
+t = 1:N;
+f = 1e6;
+noise = n(N,1);
+sig = cos(2*PI*f * t);
+
+% Do FFT on time, noise.
+
+figure(1);
+% Hist values in bins, randn.
+title('FFT Bin Values, Noise');
+
+figure(1);
+% Hist values in bins, cos.
+title('FFT Bin Values, Signal');
+\end{verbatim}
+\section{Matched Filter Example}
+
+\begin{verbatim}
+clear all;
+close all;
+
+toMatch = [1 -1 -1 -1 1 1 -1 1];
+noise = randn(400,1);
+noise_signal = noise;
+
+for i=50:length(toMatch) + 50
+    noise_signal = noise(i) + toMatch(i-49);
+end
+
+%filter noise_signal
+%Do this actually in matlab
+\end{verbatim}
