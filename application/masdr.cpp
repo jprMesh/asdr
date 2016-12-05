@@ -62,6 +62,18 @@ Masdr::Masdr() {
             ofdm_head[i][1] = 0;
         }
     }
+    /// 12/4/16 MHLI: Still have to figure out what omega, Ts, N_RRC should be.
+    int time;
+    float Ts;
+    float omega; 
+    for(i=0; i < N_RRC;i++){
+        if(i = N_RRC/2)
+            rrcBuf[i] = 1;
+        else{
+            time = i - N_RRC/2;
+            rrcBuf[i] = sin(omega*time*Ts)/(omega*time*Ts)*cos(0.4*PI * time)/(1-0.16 * time * time);
+        }
+    }
     initialize_peripherals();
     initialize_uhd();
     update_status();
@@ -410,7 +422,19 @@ void Masdr::transmit_data() {
         for(i = 0; i < 33; i++) {
             transmitBuffer[i+bias] = std::complex<float>(-1,0);
         }
-        
+        */
+        /// 12/4/15 MHLI:Deal with root raised cosine.
+        std::complex<float> transmitBuffer_rrc[SPS*TBUF_SIZE];
+        for(i = 0; i < SPS*TBUF_SIZE; i++){
+            if(!i%SPS)
+                transmitBuffer_rrc[i] = transmitBuffer[i/SPS];
+            else
+                transmitBuffer_rrc[i] = 0;
+        }
+        //Convolve w/ root raised cosine.
+
+
+        /*
         std::cout << "Transmitting..." << std::endl;
         transmit(transmitBuffer, TBUF_SIZE);
         trans_temp = trans_temp->next;
