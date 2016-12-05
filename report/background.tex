@@ -70,6 +70,7 @@ As the types of signals to be sensed are split into non-cooperative and cooperat
 
 \subsection{Energy Detection \textbf{Please delve into this some more w/ a step-by-step MATLAB example -Narut}}
 The most fundamental method of non-cooperative sensing is energy detection. In this approach, the power spectral density (or PSD) of the received signal is taken\cite{sensing_energy}. \textbf{DESCIBE PSD BETTER, more equations} The PSD represents the measure of a signal’s intensity in the frequency domain computed through the fast fourier transform of a signal. This is then bandpass filtered to contain only the frequency bands being watched. These frequency bands are then integrated, to determine how much energy is present in the band. If this passes a certain threshold, the frequency band is marked as occupied. A MATLAB example of Energy Detection works is provided in Appendix \textbf{PUT APPENDIX HERE}.
+
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/energy_detection.png}
