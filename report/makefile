@@ -1,4 +1,4 @@
-all:
+report:
 	pdflatex -output-directory=build masdr
 	cp references.bib build
 	cd build && bibtex masdr
