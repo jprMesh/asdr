@@ -211,7 +211,7 @@ void get_gps_data(double *latitude, double *longitude, double *time);
 /**
  * Shuts down GPS
  */
-int rem_gps();
+void rem_gps();
 
 
 /**
