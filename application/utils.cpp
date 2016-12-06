@@ -148,8 +148,8 @@ void get_gps_data(double *latitude, double *longitude, double *time){
 
 void rem_gps(){
     gps_running = 0;
-    gps_stream(&gps_data, WATCH_DISABLE, NULL);
-    gps_close (&gps_data);
+    gps_stream(&gps_data__, WATCH_DISABLE, NULL);
+    gps_close (&gps_data__);
 }
 
 

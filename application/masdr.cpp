@@ -63,18 +63,32 @@ Masdr::Masdr() {
         }
     }
     /// 12/4/16 MHLI: Still have to figure out what omega, Ts, N_RRC should be.
-    int time;
-    float Ts;
-    float omega; 
+
+    //     The RRC impulse response is given by:
+    // h(t) =     pi^2      4at cos(t(a+b))+pi sin(t(b-a))
+    //        ----------- * ------------------------------
+    //         pi(a-b)-4a         t(16t^2 a^2 - pi^2)
+    // where b= 2 pi f   (f is usually half of your symbol rate)
+    // and   a= 2 pi excess bandwidth
+
+    float time;
+    //Maybe internal freq should be 905e6,idk
+    int freq = (870e3/4)/2; //Currently 1/2 symbol rate
+    float excess=0.2, b = 2*PI * freq, a = 2*PI*excess;
+    float Ts = 1/freq;
+    // float omega=2*PI*freq_tx; //2pif
+
     for(i=0; i < N_RRC;i++){
         if(i = N_RRC/2)
             rrcBuf[i] = 1;
         else{
-            time = i - N_RRC/2;
-            rrcBuf[i] = sin(omega*time*Ts)/(omega*time*Ts)*cos(0.4*PI * time)/(1-0.16 * time * time);
+            time = (i - N_RRC/2)*Ts;
+            rrcBuf[i] = PI*PI/(PI*(a-b)-4*a) * 
+                        4*a*time*cos(time*(a+b))+ PI *sin(time*(b-a)) /
+                            time*(16 * time * time * a * a - PI * PI);
         }
     }
-    initialize_peripherals();
+        initialize_peripherals();
     initialize_uhd();
     update_status();
     
@@ -425,16 +439,26 @@ void Masdr::transmit_data() {
         */
         /// 12/4/15 MHLI:Deal with root raised cosine.
         std::complex<float> transmitBuffer_rrc[SPS*TBUF_SIZE];
+        std::complex<float> transmitBuffer_final[SPS*TBUF_SIZE];
         for(i = 0; i < SPS*TBUF_SIZE; i++){
             if(!i%SPS)
                 transmitBuffer_rrc[i] = transmitBuffer[i/SPS];
             else
                 transmitBuffer_rrc[i] = 0;
         }
-        
+
+        int j,k;
+        float accum = 0;
         //Convolve w/ root raised cosine.
         for(i=0; i < SPS*TBUF_SIZE;i++){
-
+            for(j=0; j < N_RRC;j++){
+                k = i-j;
+                if(!k)
+                    accum += 0;
+                else
+                    accum += transmitBuffer_rrc[k].real()*rrcBuf[j];
+            }
+            transmitBuffer_final[i] = {accum,0};
         }
 
         /*
