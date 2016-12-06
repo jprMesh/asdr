@@ -162,7 +162,10 @@ Like TDoA, ToA requires the synchronization of the nodes involved \cite{local_co
 
 %RSSi Localization
 Unlike the previous two methods, which depend on knowing the time a signal was sent, received signal strength localization uses the strength of a received signal to localize the unknown node \cite{local_conf}. Each of the stationary nodes receives the signal being output by the unknown node. Using the equation shown below \cite{rss_calc}, the stationary nodes can calculate the distance to the unknown node. From this, they can triangulate the location as described before.
-\[Pr = \frac{P_t G_t G_r}{4πr^2} \]\par
+\[RSSI = 10\alpha log(d)\] 
+\[d = 10^{(RSSI-RSSI_{calibration})(-10\alpha)} + d_{calibration}\]
+
+\par
 Because RSSI localization depends on the measurement of the signal strength, it is adversely affected by sources of noise and interference, like channel fading and multipath interference \cite{local_conf}. This makes the technique have lower accuracy. The effects of noise and shifting channels can be somewhat mitigated by averaging the RSS data.
 
 %Angle of Arrival.
