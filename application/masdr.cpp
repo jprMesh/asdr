@@ -552,7 +552,7 @@ void Masdr::rx_test() {
         // }
 
         rx_stream->recv(testbuf, RBUF_SIZE, md, 3.0, false);
-        std::cout << energy_detection(testbuf, RBUF_SIZE) << std::endl;
+        //std::cout << energy_detection(testbuf, RBUF_SIZE) << std::endl;
     }
 
     stop_sampling();
