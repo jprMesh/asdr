@@ -1,5 +1,5 @@
 \chapter{Digital Communications and Spectrum Sensing Overview}
-This chapter will introduce various fundamental topics that were taken into consideration in the design of the aerial software defined radio platform developed in this MQP. The topics proposed include \sout{but are not limited to,} spectrum allocation, energy detection, wireless transmitter localization, software defined radio, and aerial flight platform.
+This chapter will introduce various fundamental topics that were taken into consideration in the design of the aerial software defined radio platform developed in this MQP. The topics proposed include spectrum allocation, energy detection, wireless transmitter localization, software defined radio, and aerial flight platform.
 
 \section{Spectrum}
 Wireless communications are transmitted through the use of the electromagnetic spectrum. The spectrum consists of a multitude of frequency bands that have been allocated for specific uses.
@@ -14,52 +14,58 @@ The spectrum of radio frequencies used for wireless communications is managed by
 \end{figure}
 As seen from the figure, the spectrum is divided into smaller chunks where only specified entities can utilize legally. The usage of each chunk is determined by whether the NTIA and FCC require a license to use the band or not. Only operators with a license from the government can operate in the licensed bands, with uses that include AM broadcasting, FM broadcasting, and cellular communication. However, unlicensed bands are open to any entity that wants to utilize them, but they must still follow certain guidelines for usage. Technologies that use unlicensed bands include microwave, bluetooth, and WiFi. \textbf{Maybe talk about the history of this a little, why it's split up like this and why the certain bands were unlicensed}
 
-\subsection{Cellular Communications}
-The initial goal of this MQP was to look at transmissions in the cellular band in the United States. This band, regulated by the FCC, ranges from 824MHz - 849MHz and 869MHz - 894Hz \cite{cellular_coms}. The United States is divided into 734 geographic markets called Cellular Market Areas (CMAs). To operate at a certain frequency in a CMA, mobile operators must place bids on each area individually. These frequencies all use various modes for communication including Analog, Digital, TDMA, CDMA, and GSM. However, the most popular mode now is LTE telecommunications \cite{cellular_book}.\textbf{THIS MOST LIKELY NEEDS EXPANSION. I would probably guess on usage somehow lemme think about it -Max, Wyglinski wants more insight on cellular, 2G, 3G, 4G, their characterisitics and PSOs -Narut}
-
 \subsection{WiFi}
-WiFi first came about in 1985, when the FCC decided to open up several bands of wireless spectrum for use without a government license. In the early 1990s, the Institute of Electrical and Electronics Engineers (IEEE) realized that wireless communications needed to be standardized. A committee was formed that focused on providing a reliable, fast and robust wireless solution that would be able to scale for years to come. Thus the 802.11 standard was created in order to assure these things. Since then, there has been multiple iterations of the standard, and five sub-standards have been established for wireless communications called:802.11a, 802.11b, 802.11g, 802.11n, and 802.11ac. The spectral signature of these protocols depend on the protocol that is used. WiFi traffic can be transmitted using a bandwidth of 20 MHz, 40 MHz or 80 MHz on either the 2.4GHz band or the 5GHz band. This is dependant upon the protocols shown in Table \ref{table:wifi_protocols} below:
+WiFi first came about in 1985, when the FCC decided to open up several bands of wireless spectrum for use without a government license. In the early 1990s, the Institute of Electrical and Electronics Engineers (IEEE) realized that wireless communications needed to be standardized. A committee was formed that focused on providing a reliable, fast and robust wireless solution that would be able to scale for years to come. Therefore, the IEEE made an addition to its 802 standard which is used for local area networks, and thus the 802.11 standard was created in order to assure these things. Since then, there has been multiple iterations of the standard, and five sub-standards have been established for wireless communications called:802.11a, 802.11b, 802.11g, 802.11n, and 802.11ac. \ref{bergieee}
+
+The first creation of the standard was 802.11 which was origionally created in 1997. The data rate was capped at 2 Mbps and transmitters transmitted on a frequency from 2.4 to 2.483 GHz. These transmitters used time-division duplexing which allows them to send uplink and downlink wireless traffic on the same RF channel. The transmitters also use interference mitigation techniques such as DSSS and FHSS which are protocols that switch wireless channels when there is other wireless interference present on that channel.
+
+In addition to this, all the wireless standards also use a media access layer which is also known as the MAC layer.  This layer is used to assist the transmission by providing frame synchronization, and ecrypyion.  802.11 uses ecryption by using Wired Equivalent Privacy or WEP.  WEP consists of a 40 bit key that is used in order to access communication with a Wi-Fi transceiver.
+
+WEP encryption, dynamic frequency selection, and the OFDM preamble are all have all been carried on from one standard to the next.  However, WiFi traffic can be transmitted using a variety of bandwidths dependant on their respective 802.11 standard.  Wi-Fi traffic can transmit using a 20 MHz, 40 MHz or 80 MHz bandwidth dependant on their 802.11 standard. 
 \begin{table}[ht]
 \centering
-\caption{WiFi Protocols}
+\caption{WiFi Protocols.  This table outlines the bandwidth, frequency spectrum and modulation type of each corresponding 802.11 interface. As the wifi protocols become newer from starting with 802.11a and ending with 802.11ac as the most recent, the protocols utilize wider bandwidths for communication, and offer a range of operating frequencies. MIMO-OFDM was also developed for later 802.11 protocols such as 802.11n and 802.11ac in order to support multipath propagation.}
 \label{table:wifi_protocols}
 \begin{tabular}{|l|l|l|l|}
-	\hline Interface & Bandwidth (MHz) & Frequency Spectrum & Modulation \\ \hline
-     		       a &              20 &                  5 &       OFDM \\
-     		       b &              20 &                2.4 &       DSSS \\
-     		       g &              20 &                2.4 &       OFDM \\
-     		       n &          20, 40 &            2.4 / 5 &  MIMO-OFDM \\
-     		      ac &      20, 40, 80 &                  5 &  MIMO-OFDM \\ \hline
+  Interface & Bandwidth (MHz) & Frequency Spectrum (GHz) & Modulation \\ \hline
+          802.11a &              20 &                  5 &       OFDM \\
+          802.11b &              20 &                2.4 &       DSSS \\
+          802.11g &              20 &                2.4 &       OFDM \\
+          802.11n &          20, 40 &            2.4 / 5 &  MIMO-OFDM \\
+         802.11ac &      20, 40, 80 &                  5 &  MIMO-OFDM \\
 \end{tabular}
 \end{table}\par
-These transmissions can vary when it comes to the entire frames information. However, each standard has a preamble that signifies the start of a transmission, shown in Figure \ref{fig:wifi_preamble}.
-\begin{figure}[ht]
-\centering
-\includegraphics[width=0.70\textwidth]{img/ofdm_preamble.jpg}
-\caption{WiFi Transmission Packet Preamble \textbf{Needs 2-3 sentences descriptor for each caption -Narut}}
-\label{fig:wifi_preamble}
-\end{figure}\par
-The preamble is useful to detect the start of a WiFi transmission. In addition to the preamble, you could also decode the information from the Data fields, however, all of that data is usually encrypted so that it prevents any unauthorized user from accessing it \cite{wifi_book}.
-\\ \textbf{Talk about the lsig header here, how it's a legacy field for 802.11a, etc, how the ofdm is 64 bins(52 effective bins), which bins we are looking for, what frequencies it lines up with}
+These transmissions can vary when it comes to the entire frames information. However, each standard has the same preamble that signifies the start of a transmission, and what central freuency the transmission is on.  For 802.11, a wifi transmission is concentrated in one or more 20 MHz wide wifi channels or bins. At the 2.4 GHz band, Wi-Fi is allocated throughput 11 wireless channels ranging from 1 to 11.  However, only 3 of these channels (1, 6, and 11) are used due to each channel only being 5 MHz wide.  Since transmissions on the 2.4 GHz band are 20 MHz wide, the utilized channels are spaced enough to mitigate co-channel interference. A photo of the allocated spectrum is shown below:
+
+%Put in the 2.4 GHz photo
+
+Also, for protocols 802.11a, 802.11n and 802.11 ac, they also use the 5 GHz frequency band which contains a range of 45 channels from 36 to 165 spanning spectrally from 5180 MHz to 5825 MHz.  This allocation is shown below:
+
+%include photo of 5GHz band
+
+What first signifies a transmission on any of these wifi channels is the detection of the OFDM PLCP preamble which signifies which channel the information is being transmitted on. This preamble consists of  In addition to the preamble, you could also decode the information from the Data fields, however, all of that data is usually encrypted so that it prevents any unauthorized user from accessing it. \cite{wifi_book}
 
 \subsubsection{MAVLink}
-MAVLink is a wireless communication protocol similar to WiFi that is used on small unmanned aerial vehicles. The protocol was designed to be a lightweight, header-only message marshaling library, and is used by many drones as a communication protocol between the drone and the controller. MAVlink utilizes the 2.4 GHz band along with WiFi. Therefore, the only way to differentiate between the two signals is by comparing the frames of the two protocols. This can be done by demodulating the GFSK signal and decoding the frame which is shown in Figure \ref{fig:MAVlink_frame}. The red STX frame signifies the start of a transmission. This frame will always be an 8 bit code of 0xFE. The rest of the frame is described in Table \ref{fig:MAVlink_frame_table}.
-\\ \textbf{TALK A BIT MORE ABOUT HISTORY, ETC} 
+The Micro Aerial Vehicle Link (MAVLink) protocol is a free open source wireless communication protocol for controlling small unmanned aerial vehicles. This protocol first came about in 2009 by Lorenz Meier under LGPL license. \ref{MAVLINK_Website}  This protocol was designed to be a lightweight, header-only message marshaling library.  MAVLINK was first most commonly used with autopiloting software, but is trying to become the worldwide standard in drone communication. This communication protocol consists of communication with a slave drone and a master ground controller.  MAVlink controllers most commonly transmit data on the 2.4 GHz band along-side 802.11 wireless communications. Therefore, an airbourne receiver must be able to classify what type of signal it has received. To classify a MAVLink transmission, this can be done by demodulating MAVLink's GFSK modulated data, and decoding its data frame. 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/mavlink-packet.png}
-\caption{MAVLink Transmission Frame}
+\caption{MAVLink Transmission Frame. The red STX frame signifies the start of a transmission. This frame will always be an 8 bit code of 0xFE used for start of frame detection. The following parameters give information about the payload such as it's size and who the data was meant for.  The payload category is a data field which contains a library-based command for the drone to perform.}
 \label{fig:MAVlink_frame}
 \end{figure}
-\begin{figure}[ht]
-\centering
-\includegraphics[width=0.70\textwidth]{img/MAVLink-Packet-Table.PNG}
-\caption{MAVLink Frame Descriptor \textbf{Needs 2-3 sentences descriptor for each caption -Narut}}
-\label{fig:MAVlink_frame_table}
-\end{figure}
-\textbf{Talk about how the header can be used to localize maybe?} 
- \cite{mavlink_vuln}\par
-Also, opposed to WiFi signals, MAVLink transmissions are all non-encrypted, making it vulnerable to things such as network attacks or an unauthorized user operating the drone. Any user can send signals to a drone using a GFSK transmitter and the drone has no knowledge on who the correct user \cite{MAVLink}. \textbf{Has any work been done on exploiting MAVLink? If so we should talk about it here}
+\begin{tabular}{|l|l|l|1|}
+  Byte Index & Content & Value & Purpose \\ \hline
+          0 &	Packet start sign &                  0xFE &       Indicates start of a new packet \\
+          1 &   Payload length &                0 - 255 &       Indicates length of the following payload \\
+          2 &   Packet Sequence &               0 - 255 &       Enables packet loss detection because each component counts up its send sequence. \\
+          3 &   System ID &            1 - 225 &  Identifies the sending system; enables multiple platforms to use the same network \\
+          4 &   Component ID &         0 - 255 &  Identifies the sending component; allows for multiple components on the same platform. \\
+          5 &	Message ID &		   0 - 255 &  Identifies the message being sent defines the payload and how it should be decoded. \\
+          6 - n+6 &	Data & 			   0 - 255 & Data of the mesasge depends on message ID \\
+          n+7-n+8 & Checksum & ITU hash of bytes including MAVLINK parameter computed from message fields to prevent decoding from a different protocol version \\
+\end{tabular}
+\cite{mavlink_vuln}\par
+Also, opposed to wifi signals, MAVLink transmissions are all non-encrypted, making it vulnerable to things such as network attacks or an unauthorized user operating the drone. Any user can send signals to a drone using a GFSK transmitter and the drone has no knowledge on who the correct user.
 
 \subsection{GPS \textbf{Needs more content}}
 Global Positioning System, or GPS, provides highly accurate location information to a user with a receiver module. This technology was developed during the height of the cold war in the 1960s \cite{gps_info}. GPS works by using a network of 24 satellites that are transmitting on 1575.42Mhz using a division coding scheme. The individual satellites send out information such as the current system time, and their locations. Given the locations of the satellites, as well as the calculated time of travel from the satellites to the receiver, the GPS receiver then performs localization based on this received information. The accurate time stamping required to perform this localization is only possible because each GPS satellite is capable of maintaining a highly accurate clock, and each receiver determines its current time through the interpretation of satellite data. This accurate clock information is used for the synchronization of clocks across cellular telephone systems, and other time critical applications. \cite{GPS_Book}

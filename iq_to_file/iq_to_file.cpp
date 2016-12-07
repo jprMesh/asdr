@@ -250,7 +250,7 @@ template<typename samp_type> void recv_to_file(
         buff[samps_per_buff+3] = time_val;
         
         if (outfile.is_open())
-            outfile.write((const char*)buff, num_rx_samps*sizeof(std::complex<samp_type>));
+            outfile.write((const char*)buff, (num_rx_samps+4)*sizeof(std::complex<samp_type>));
 
         ticks_diff = now - start;
         if (ticks_requested > 0){
