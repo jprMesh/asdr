@@ -15,12 +15,13 @@
 
 /******************************************************************************/
 Masdr::Masdr() {
+    // Initialize software status
     process_done = false;
     transmit_done = false;
     soft_status = IDLE;
-    // Initialize linked list of received buffer.
-    recv_head.heading = 0;
-    recv_head.next = NULL;
+
+    // Initialize received sample buffer
+    rb_index = 0;
     
     //Initialize FFTW
     fft_in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
@@ -78,20 +79,20 @@ Masdr::Masdr() {
     float Ts = 1/freq;
     // float omega=2*PI*freq_tx; //2pif
 
-    for(i=0; i < N_RRC;i++){
-        if(i = N_RRC/2)
+    for(i = 0; i < N_RRC;i++){
+        if(i == N_RRC/2)
             rrcBuf[i] = 1;
-        else{
-            time = (i - N_RRC/2)*Ts;
+        else {
+            time = (i - N_RRC/2) * Ts;
             rrcBuf[i] = PI*PI/(PI*(a-b)-4*a) * 
-                        4*a*time*cos(time*(a+b))+ PI *sin(time*(b-a)) /
+                        4*a*time*cos(time*(a+b))+ PI*sin(time*(b-a)) /
                             time*(16 * time * time * a * a - PI * PI);
         }
     }
-        initialize_peripherals();
+
+    initialize_peripherals();
     initialize_uhd();
     update_status();
-    
 }
 
 /******************************************************************************/
@@ -101,7 +102,6 @@ Masdr::~Masdr() {
     fftw_free(fft_in); 
     fftw_free(fft_out);
     shutdown_uhd();
-    delete recv_head.next;
     delete trans_head;
 }
 /******************************************************************************/
@@ -150,14 +150,10 @@ void Masdr::state_transition() {
 /******************************************************************************/
 void Masdr::repeat_action() {
     if (soft_status == SAMPLE) {
-        // Receive into current buffer
-        curr_recv_buf->heading = phy_status.heading;
-        rx_stream->recv(curr_recv_buf->recv_buf,RBUF_SIZE,md,3.0,false);
-        // Start new buffer
-        RecvNode *new_node = new RecvNode; // should be initialized to 0.
-        curr_recv_buf->next = new_node;
-        curr_recv_buf = curr_recv_buf->next;
-
+        rb_index = WRAP_RBUF(rb_index + 1);
+        recv_buf[rb_index].heading = phy_status.heading;
+        rx_stream->recv(recv_buf[rb_index].recv_buf,
+                        RBUF_SIZE, md, 3.0, false);
     } else if (soft_status == PROCESS) {
         ;
 
@@ -263,8 +259,6 @@ void Masdr::begin_sampling() {
     stream_cmd.stream_now = true;
     stream_cmd.time_spec = uhd::time_spec_t(); // Holds the time.
     rx_stream->issue_stream_cmd(stream_cmd);   // Initialize the stream
-    // Set current buffer to head
-    curr_recv_buf = &recv_head;
 }
 
 /******************************************************************************/
@@ -272,45 +266,41 @@ void Masdr::stop_sampling() {
     uhd::stream_cmd_t stream_cmd(
         uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
     rx_stream->issue_stream_cmd(stream_cmd);
-    // Clear linked list
-    delete recv_head.next;
-    recv_head.next = NULL;
 }
 
 /******************************************************************************/
 /********************************PROCESSING************************************/
 /******************************************************************************/
 void Masdr::begin_processing() {
-
-    //while data structure is null, energy detect current buffer,
-    bool hasEnergy = energy_detection(curr_recv_buf->recv_buf,RBUF_SIZE);
+    bool hasEnergy = energy_detection(recv_buf[rb_index].recv_buf, RBUF_SIZE);
     if(hasEnergy) {
-        run_fft(curr_recv_buf->recv_buf);
+        run_fft(recv_buf[rb_index].recv_buf);
         float has_wifi =  match_filt();
-        if(has_wifi != -1){
-          localize();
+        if(has_wifi != -1) {
+            localize();
         }
     }
 }
 
 /******************************************************************************/
 bool Masdr::energy_detection(std::complex<float> *sig_in, int size){
-    float acc=0,max=0, mag;
-    int i;
-    for (i = 0; i < size; i++) {
+    float acc = 0;
+    float max = 0;
+    float mag;
+    for (int i = 0; i < size; i++) {
         mag = sqrt(sig_in[i].real()*sig_in[i].real()+sig_in[i].imag()*sig_in[i].imag());
         acc += mag;
         if(max < mag)
             max = mag;
     }
 
-    // if(DEBUG_THRESH) {    
-    //     std::cout<< max ;        
-    //     for (i=0; i < (int)(mag*1000); i++){
-    //         std::cout << "#";
-    //     }
-    //     std::cout<<std::endl;
-    // }
+    if(DEBUG_THRESH) {    
+        std::cout<< max ;        
+        for (int i = 0; i < (int)(mag*1000); i++){
+            std::cout << "#";
+        }
+        std::cout<<std::endl;
+    }
 
     if(max > THRESH_E)
         return true;
@@ -319,19 +309,17 @@ bool Masdr::energy_detection(std::complex<float> *sig_in, int size){
 }
 
 /******************************************************************************/
-void  Masdr::run_fft(std::complex<float> *buff_in){
+void Masdr::run_fft(std::complex<float> *buff_in) {
     int i;
     for(i = 0; i < N_FFT;i++){
         fft_in[i][0] = buff_in[i].real();
         fft_in[i][1] = buff_in[i].imag();
     }
     fftw_execute(fft_p);
-
 }
 
 /******************************************************************************/
-float Masdr::match_filt(){
-    //Match filter.
+float Masdr::match_filt() {
     int i, j;
     float match_val[2] = {0,0}, match_mag, re, im;
     for(i = 0; i < N_FFT; i++) {
@@ -339,7 +327,6 @@ float Masdr::match_filt(){
         im = fft_out[i][0] * ofdm_head[i][1] + fft_out[i][1] * ofdm_head[i][0];
         match_val[0] += re;
         match_val[1] += im;
-
     }
     match_mag = sqrt(match_val[0]*match_val[0]+match_val[1]*match_val[1]);
 
@@ -458,7 +445,7 @@ void Masdr::transmit_data() {
                 else
                     accum += transmitBuffer_rrc[k].real()*rrcBuf[j];
             }
-            transmitBuffer_final[i] = {accum,0};
+            transmitBuffer_final[i] = std::complex<float>(accum,0);
         }
 
         /*
@@ -487,7 +474,7 @@ void Masdr::transmit_data() {
         uhd::tx_metadata_t md;
     md.start_of_burst = false;
     md.end_of_burst = false;
-    while(1) { //!stop_signal_called)
+    while(1) {
         //transmit(transmitBuffer, TBUF_SIZE);
         tx_stream->send(transmitBuffer, TBUF_SIZE, md);
 
@@ -604,32 +591,12 @@ void Masdr::tx_test() {
 void Masdr::mag_test() {
     float deg;
     init_mag();
-    while(1){ //!stop_signal_called)
+    while(1) {
         deg=read_mag();
         std::cout<< "Mag Reading: "<<deg <<std::endl;
         usleep(4000000);
     }
         
-}
-/******************************************************************************/
-void Masdr::RecvNode_test() {
-    std::cout << "Begin testing" << std::endl;
-    recv_head.heading = 180;
-    curr_recv_buf = &recv_head;
-    for (int i=0; i<400; ++i) {
-        RecvNode *newnode = new RecvNode;
-        newnode->heading = int(curr_recv_buf->heading + 10) % 360;
-        curr_recv_buf->next = newnode;
-        curr_recv_buf = curr_recv_buf->next;
-    }
-    std::cout << "Done filling list" << std::endl;
-    std::cout << recv_head.next->heading << std::endl;
-    std::cout << recv_head.next->next->heading << std::endl;
-    std::cout << recv_head.next->next->next->heading << std::endl;
-    delete recv_head.next;
-    recv_head.next = NULL;
-    std::cout << "Done freeing list" << std::endl;
-    std::cout << recv_head.next << std::endl;
 }
 
 /******************************************************************************/
@@ -638,7 +605,7 @@ void Masdr::match_test(){
     float test_val;
     int i, k=0;
     begin_sampling();
-    while(1) { //!stop_signal_called)
+    while(1) {
         begin_sampling();
         rx_stream->recv(testbuf,RBUF_SIZE,md,3.0,false);
         // stop_sampling();
@@ -741,12 +708,9 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
 
     else{
         while(1) { //!stop_signal_called)
-            // if(G_DEBUG) std::cout<<"Entered While"<<std::endl;
             masdr.update_status();
-            // if(G_DEBUG) std::cout<< "While has looped once" <<std::endl;
             masdr.state_transition();
             masdr.repeat_action();
-
         }
     }
 

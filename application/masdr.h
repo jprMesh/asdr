@@ -55,6 +55,10 @@
                     ///Going to use 1024 for now.
 
 #define N_RRC 1024 /// 12/4/16 MHLI: Currently not the right number
+
+#define RBUF_BLOCKS 8 /// Num blocks in rolling buffer. MUST BE POWER OF 2.
+#define WRAP_RBUF(x) (x & RBUF_BLOCKS) /// Wrap buffer around
+
 /**
  * @brief MASDR Application Class
  * 
@@ -120,10 +124,6 @@ public:
      * Probably remove in a bit.
      */
     void mag_test();
-    /**
-     * @brief Test the Recv Structure. REMOVE LATER
-     */
-    void RecvNode_test();
     
     /**
      * @brief Test the match filter amount. REMOVE LATER
@@ -220,24 +220,23 @@ private:
      * Transmit sampling location and directions for signals to ground station.
      */
     void transmit_data();
+
     std::complex<float> testbuf[RBUF_SIZE]; ///< Testing if structure is too big.
-    float  rrcBuf[N_RRC];///4 samples per symbol, 
+    float rrcBuf[N_RRC]; ///< 4 samples per symbol.
     uhd::rx_streamer::sptr rx_stream; ///< The UHD rx streamer
     uhd::tx_streamer::sptr tx_stream; ///< The UHD tx streamer
     uhd::rx_metadata_t md; ///< UHD Metadata
     PhyStatus phy_status; ///< Physical status of the platform
     SoftStatus soft_status; ///< The current stage of the software on the SBC
-    RecvNode recv_head; ///< Head node in linked list buffer for received signals
-    RecvNode* curr_recv_buf; ///< Current buffer for receiving
+    samp_block recv_buf[RBUF_BLOCKS]; ///< Rolling buffer of rcvd sample blocks
+    int rb_index; ///< Index of next insertion into recv_buff.
     TransNode* trans_head; ///< Head node in linked list buffer for transmitting
-    TransNode* curr_trans_buf; ///< Used to add more values at the end of the buffer
+    TransNode* curr_trans_buf; ///< Last item in linked list.
     fftw_plan fft_p; ///< FFTW Plan
     fftw_complex ofdm_head[N_FFT]; //< Expected OFDM Header. 
     fftw_complex *fft_in, *fft_out; ///< Buffers for FFT.
     bool process_done; ///< Set when data processing has completed
     bool transmit_done; ///< Set when data transmission has completed
 };
-
-
 
 #endif // __masdr_h__
