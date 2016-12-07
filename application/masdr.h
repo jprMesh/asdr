@@ -13,21 +13,20 @@
 #ifndef __masdr_h__
 #define __masdr_h__
 
-// Standard libraries
+// Standard Libraries
 #include <iostream>
 #include <csignal>
 #include <complex>
 #include <cmath>
-// UHD libraries
+// UHD Libraries
 #include <uhd/types/tune_request.hpp>
 #include <uhd/utils/thread_priority.hpp>
 #include <uhd/utils/safe_main.hpp>
 #include <uhd/usrp/multi_usrp.hpp>
 #include <uhd/exception.hpp>
-//FFT Library
-//#include  <complex.h>
+// FFT Library
 #include <fftw3.h>
-// Other libraries
+// Other includes
 #include "utils.h"
 
 #define G_DEBUG 1
@@ -157,13 +156,6 @@ private:
     void initialize_uhd();
 
     /**
-     * @brief Reconfigure the SDR interface for transmitting or receiving.
-     * 
-     * @param txrx Whether to configure for transmitting or receiving.
-     */
-    void reconfig_uhd(int txrx);
-
-    /**
      * @brief Gracefully stop the SDR.
      * 
      * Stop all SDR processing and close any connections to the USRP SDR.
@@ -177,11 +169,16 @@ private:
     
     /**
      * @brief Detect if there's any energy detected on the bandwidth being measured.
+     * 
+     * @param sig_in ///THIS IS NEEDED
+     * @param size ///THIS IS NEEDED
      */
     bool energy_detection(std::complex<float> *sig_in, int size);
     
     /**
      * @brief Transfer buffer to fft_in, and run FFT.
+     * 
+     * @param ///THIS IS NEEDED
      */
     void run_fft(std::complex<float> *);
     
@@ -190,11 +187,12 @@ private:
      */
     float match_filt();
 
-
     /**
      * @brief Locate signal. Returns x,y coordinates based on GPS.
+     * 
+     * /// Per my comment in the cpp, should this be renamed rss maybe?
      */
-    float * localize();
+    float* localize();
 
     /**
      * @brief Command the SDR to stop taking samples.

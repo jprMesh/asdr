@@ -13,23 +13,23 @@
 #ifndef __utils_h__
 #define __utils_h__
 
+// Standard Libraries
 #include <iostream>
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
-// UHD libraries
+// UHD Libraries
 #include <uhd/usrp/multi_usrp.hpp>
-// Boost libraries
+// Boost Libraries
 #include <boost/format.hpp>
 #include <boost/thread.hpp>
-//Using pthread for GPS
-#include <pthread.h>
 //GPS libraries
 #include <gps.h>
 #include <unistd.h>
 #include <math.h>
+#include <pthread.h> //Using pthread for GPS
 
-// Buffer sizes
+// SDR buffer sizes
 #define RBUF_SIZE 16384
 #define TBUF_SIZE 226   //11/6/16 NARUT: dependent 
                         //on our packet size 5 floats (32*5) + (33*2) start/end
@@ -82,7 +82,7 @@
  */
 typedef struct samp_block {
     float heading; ///< Heading in degrees from north, according to magnetometer
-    std::complex<float> recv_buf[RBUF_SIZE]; ///< USRP samples from current direction
+    std::complex<float> recv_buf[RBUF_SIZE]; ///< USRP samples
 } Sampblock;
 
 /**
@@ -147,8 +147,6 @@ typedef struct {
     double strength; ///< Strength of detected signal.
 } TxHit;
 
-
-
 /**
  * @brief Handle a SIGINT nicely.
  */
@@ -174,6 +172,7 @@ bool check_locked_sensor(std::vector<std::string> sensor_names,
                          const char* sensor_name,
                          get_sensor_fn_t get_sensor_fn,
                          double setup_time);
+
 /**
  * Initialize USB GPS
  */

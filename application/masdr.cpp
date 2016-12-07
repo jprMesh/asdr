@@ -1,7 +1,7 @@
 // File: masdr.cpp
 //
 // MASDR Project 2016
-// WPI MQP E-Project number: 
+// WPI MQP E-Project number:
 // Members: Jonas Rogers
 //          Kyle Piette
 //          Max Li
@@ -22,11 +22,12 @@ Masdr::Masdr() {
 
     // Initialize received sample buffer
     rb_index = 0;
-    
-    //Initialize FFTW
+
+    // Initialize FFTW
     fft_in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
     fft_out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
-    fft_p = fftw_plan_dft_1d(N_FFT, fft_in, fft_out, FFTW_FORWARD, FFTW_MEASURE);
+    fft_p = fftw_plan_dft_1d(N_FFT, fft_in, fft_out,
+                             FFTW_FORWARD, FFTW_MEASURE);
 
     //Intialize OFDM Match Filter head
     //OFDM HEAD DETAILS:
@@ -34,15 +35,15 @@ Masdr::Masdr() {
         //Each OFDM bucket is 16 fft buckets.
         //They are located at 254-270, 480-415, 640-615,864-880
     int i;
-    for(i=0;i<N_FFT;i++){
-        int ratio = N_FFT/64; //Number of fft bins in an OFDM bin.
+    for (i = 0; i < N_FFT; ++i) {
+        int ratio = N_FFT/64; // Number of fft bins in an OFDM bin.
 
-        //Account for the fact that only middle 52 OFDM bins are used.
-        if (i < 6 * ratio || i > 58 * ratio){
+        // Account for the fact that only middle 52 OFDM bins are used.
+        if (i < 6 * ratio || i > 58 * ratio) {
             ofdm_head[i][0] = 0;
             ofdm_head[i][1] = 0;
         }
-        else if(i >= (6+6) * ratio && i < (6+7) * ratio){
+        else if(i >= (6+6) * ratio && i < (6+7) * ratio) {
             ofdm_head[i][0] = 1;
             ofdm_head[i][1] = 1;
         }
@@ -54,7 +55,7 @@ Masdr::Masdr() {
             ofdm_head[i][0] = 1;
             ofdm_head[i][1] = 1;
         }
-        else if(i >= (40+14) * ratio && i < (40 + 15) * ratio){
+        else if(i >= (40+14) * ratio && i < (40 + 15) * ratio) {
             ofdm_head[i][0] = 1;
             ofdm_head[i][1] = 1;
         }
@@ -73,20 +74,20 @@ Masdr::Masdr() {
     // and   a= 2 pi excess bandwidth
 
     float time;
-    //Maybe internal freq should be 905e6,idk
+    // Maybe internal freq should be 905e6,idk
     int freq = (870e3/4)/2; //Currently 1/2 symbol rate
     float excess=0.2, b = 2*PI * freq, a = 2*PI*excess;
     float Ts = 1/freq;
     // float omega=2*PI*freq_tx; //2pif
 
-    for(i = 0; i < N_RRC;i++){
-        if(i == N_RRC/2)
+    for (i = 0; i < N_RRC;i++) {
+        if (i == N_RRC/2)
             rrcBuf[i] = 1;
         else {
             time = (i - N_RRC/2) * Ts;
-            rrcBuf[i] = PI*PI/(PI*(a-b)-4*a) * 
-                        4*a*time*cos(time*(a+b))+ PI*sin(time*(b-a)) /
-                            time*(16 * time * time * a * a - PI * PI);
+            rrcBuf[i] = ((PI*PI / (PI*(a-b)-4*a))
+                         * (4*a*time*cos(time*(a+b)) + PI*sin(time*(b-a))
+                            / time * (16 * time * time * a * a - PI * PI)));
         }
     }
 
@@ -97,26 +98,23 @@ Masdr::Masdr() {
 
 /******************************************************************************/
 Masdr::~Masdr() {
-    //Shutdown fftw
     fftw_destroy_plan(fft_p);
-    fftw_free(fft_in); 
+    fftw_free(fft_in);
     fftw_free(fft_out);
     shutdown_uhd();
     delete trans_head;
 }
+
 /******************************************************************************/
 /***************************STATE TRANSITIONS**********************************/
 /******************************************************************************/
 void Masdr::update_status() {
-    // update phy_status from peripherals
-    
     ///10/31/16 MHLI: FILLER INFORMATION,REPLACE WITH CORRECT UPDATING
     phy_status.heading = 0;
     phy_status.is_stat_and_rot = false;
     phy_status.location[0] = 0;
     phy_status.location[1] = 0;
     phy_status.location[2] = 0;
-
 }
 
 /******************************************************************************/
@@ -126,6 +124,7 @@ void Masdr::state_transition() {
         begin_sampling();
     }
     soft_status = SAMPLE;
+
     // if (soft_status == IDLE && phy_status.is_stat_and_rot) {
     //     begin_sampling();
     //     soft_status = SAMPLE;
@@ -180,8 +179,6 @@ void Masdr::initialize_uhd() {
     int tx_rate = 870e3; //4 samples per symbol at 700kHz
     int master_rate = 42e6;
     float freq_rx = 2.4e9; //Set rx frequency to 2.4 GHz
-    //float freq_rx = 700e6; //11/6/16 MHLI: TEST, for when we only have 900 MHz Ant
-    
     float freq_tx = 905e6; //set tx frequency
     int gain = 50;
     std::string rx_ant = "RX2"; //ant can be "TX/RX" or "RX2"
@@ -192,8 +189,9 @@ void Masdr::initialize_uhd() {
     //int bw =10e6; ///10/31/16 MHLI: UP to 56e6
     //Only care about 16.6 MHz of the 20 (or 8.3MHz of 10)
     int rx_bw = 20e6; //11/16/16 MHLI: Should this be 10e6 and will it do half above half below?
-    int tx_bw = 300e3; 
+    int tx_bw = 300e3;
     // int tx_bw = 0;
+
     //Create USRP object
     uhd::usrp::multi_usrp::sptr usrp = uhd::usrp::multi_usrp::make((std::string)"");
     //Lock mboard clocks
@@ -201,11 +199,11 @@ void Masdr::initialize_uhd() {
     usrp->set_master_clock_rate(master_rate);
     //set rates.
     usrp->set_rx_rate(rx_rate);
-     usrp->set_tx_rate(tx_rate);
+    usrp->set_tx_rate(tx_rate);
 
-    //Set frequencies. 
+    //Set frequencies.
     uhd::tune_request_t tune_request_rx(freq_rx);
-    usrp->set_rx_freq(tune_request_rx); 
+    usrp->set_rx_freq(tune_request_rx);
     uhd::tune_request_t tune_request_tx(freq_tx);
     usrp->set_tx_freq(tune_request_tx);
     //Set gain
@@ -219,7 +217,7 @@ void Masdr::initialize_uhd() {
     usrp->set_tx_antenna(tx_ant);
 
     //allow for some setup time
-    boost::this_thread::sleep(boost::posix_time::seconds(setup_time)); 
+    boost::this_thread::sleep(boost::posix_time::seconds(setup_time));
     //check Ref and LO Lock detect
     check_locked_sensor(usrp->get_rx_sensor_names(0),
                         "lo_locked",
@@ -235,11 +233,6 @@ void Masdr::initialize_uhd() {
 }
 
 /******************************************************************************/
-void Masdr::reconfig_uhd(int txrx) {
-
-}
-
-/******************************************************************************/
 void Masdr::shutdown_uhd() {
     //post-running wrapping up
     uhd::stream_cmd_t stream_cmd(
@@ -252,7 +245,7 @@ void Masdr::shutdown_uhd() {
 /******************************************************************************/
 
 void Masdr::begin_sampling() {
-    // Initialize new sampling stream
+    // Create new sampling stream
     uhd::stream_cmd_t stream_cmd(
         uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS);
     stream_cmd.num_samps = size_t(0);
@@ -263,6 +256,7 @@ void Masdr::begin_sampling() {
 
 /******************************************************************************/
 void Masdr::stop_sampling() {
+    // Issue command to close stream
     uhd::stream_cmd_t stream_cmd(
         uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
     rx_stream->issue_stream_cmd(stream_cmd);
@@ -283,23 +277,26 @@ void Masdr::begin_processing() {
 }
 
 /******************************************************************************/
-bool Masdr::energy_detection(std::complex<float> *sig_in, int size){
+bool Masdr::energy_detection(std::complex<float> *sig_in, int size) {
+    int i;
     float acc = 0;
     float max = 0;
     float mag;
-    for (int i = 0; i < size; i++) {
-        mag = sqrt(sig_in[i].real()*sig_in[i].real()+sig_in[i].imag()*sig_in[i].imag());
+
+    for (i = 0; i < size; i++) {
+        mag = sqrt(sig_in[i].real() * sig_in[i].real()
+                   + sig_in[i].imag() * sig_in[i].imag());
         acc += mag;
-        if(max < mag)
+        if (mag > max)
             max = mag;
     }
 
-    if(DEBUG_THRESH) {    
-        std::cout<< max ;        
-        for (int i = 0; i < (int)(mag*1000); i++){
+    if(DEBUG_THRESH) {
+        std::cout << max;
+        for (i = 0; i < (int)(mag*1000); i++){
             std::cout << "#";
         }
-        std::cout<<std::endl;
+        std::cout << std::endl;
     }
 
     if(max > THRESH_E)
@@ -311,7 +308,7 @@ bool Masdr::energy_detection(std::complex<float> *sig_in, int size){
 /******************************************************************************/
 void Masdr::run_fft(std::complex<float> *buff_in) {
     int i;
-    for(i = 0; i < N_FFT;i++){
+    for(i = 0; i < N_FFT; ++i){
         fft_in[i][0] = buff_in[i].real();
         fft_in[i][1] = buff_in[i].imag();
     }
@@ -320,26 +317,31 @@ void Masdr::run_fft(std::complex<float> *buff_in) {
 
 /******************************************************************************/
 float Masdr::match_filt() {
-    int i, j;
-    float match_val[2] = {0,0}, match_mag, re, im;
-    for(i = 0; i < N_FFT; i++) {
+    int i;
+    int j;
+    float match_val[2] = {0,0};
+    float match_mag;
+    float re;
+    float im;
+
+    for (i = 0; i < N_FFT; i++) {
         re = fft_out[i][0] * ofdm_head[i][0] - fft_out[i][1] * ofdm_head[i][1];
         im = fft_out[i][0] * ofdm_head[i][1] + fft_out[i][1] * ofdm_head[i][0];
         match_val[0] += re;
         match_val[1] += im;
     }
-    match_mag = sqrt(match_val[0]*match_val[0]+match_val[1]*match_val[1]);
-
-    if(match_mag > THRESH_MATCH)
+    match_mag = sqrt(match_val[0] * match_val[0]
+                     + match_val[1] * match_val[1]);
+    if (match_mag > THRESH_MATCH)
         return match_mag;
     else
         return 0;
 }
 
 /******************************************************************************/
-float * Masdr::localize(){
-    //Calculate distance from RSS
-    //calculate angle from distance
+float* Masdr::localize() {
+    // I think this is pretty much just going to be the RSS energy level for the
+    //   buffer currently being looked at. -Jonas 12/7
     return NULL;
 }
 
@@ -376,7 +378,7 @@ void Masdr::transmit_data() {
         for(i = 0; i < 32; i++) {
             if ((data.output >> (31 - i)) & 1)
                 transmitBuffer[i+bias] = std::complex<float>(1,0);
-            else 
+            else
                 transmitBuffer[i+bias] = std::complex<float>(-1,0);
         }
         bias += 32; // compensate for adding magnetometer data
@@ -386,7 +388,7 @@ void Masdr::transmit_data() {
         for(i = 0; i < 32; i++) {
             if ((data.output >> (31 - i)) & 1)
                 transmitBuffer[i+bias] = std::complex<float>(1,0);
-            else 
+            else
                 transmitBuffer[i+bias] = std::complex<float>(-1,0);
         }
         bias += 32; // compensate for adding gps data 0
@@ -395,7 +397,7 @@ void Masdr::transmit_data() {
         for(i = 0; i < 32; i++) {
             if ((data.output >> (31 - i)) & 1)
                 transmitBuffer[i+bias] = std::complex<float>(1,0);
-            else 
+            else
                 transmitBuffer[i+bias] = std::complex<float>(-1,0);
         }
         bias += 32; // compensate for adding gps data 1
@@ -404,7 +406,7 @@ void Masdr::transmit_data() {
         for(i = 0; i < 32; i++) {
             if ((data.output >> (31 - i)) & 1)
                 transmitBuffer[i+bias] = std::complex<float>(1,0);
-            else 
+            else
                 transmitBuffer[i+bias] = std::complex<float>(-1,0);
         }
         bias += 32; // compensate for adding gps data 2
@@ -414,7 +416,7 @@ void Masdr::transmit_data() {
         for(i = 0; i < 32; i++) {
             if ((data.output >> (31 - i)) & 1)
                 transmitBuffer[i+bias] = std::complex<float>(1,0);
-            else 
+            else
                 transmitBuffer[i+bias] = std::complex<float>(-1,0);
         }
         bias += 32; // compensate for adding data
@@ -460,7 +462,7 @@ void Masdr::transmit_data() {
     trans_head = NULL;
     curr_trans_buf = NULL;
     */
-    
+
     //TESTING
     //Use DBPSK in transmission ASSUME NO CHANGE IS 0.
     std::cout << "Start transmit" << std::endl;
@@ -480,10 +482,10 @@ void Masdr::transmit_data() {
 
     }
     std::cout << "Done with transmit" << std::endl;
-}   
-/******************************************************************************/
+}
 
-void Masdr::transmit(std::complex<float> *msg, int len) { 
+/******************************************************************************/
+void Masdr::transmit(std::complex<float> *msg, int len) {
     uhd::tx_metadata_t md;
     md.start_of_burst = false;
     md.end_of_burst = false;
@@ -493,12 +495,18 @@ void Masdr::transmit(std::complex<float> *msg, int len) {
 /******************************************************************************/
 /************************************TESTS*************************************/
 /******************************************************************************/
-void Masdr::rx_test(){
-    int i=0,j, numLoops; //Counter, to hel, p 
-    float accum, max_inBuf=0,max_periodic = 0, max_total=0, mag_squared;
+void Masdr::rx_test() {
+    int i = 0;
+    int j;
+    int numLoops; //Counter, to help
+    float accum
+    float max_inBuf = 0;
+    float max_periodic = 0;
+    float max_total = 0;
+    float mag_squared;
     std::complex<float> testbuf[RBUF_SIZE];
-    std::cout << "Entered rx_test" << std::endl;
 
+    std::cout << "Entered rx_test" << std::endl;
     begin_sampling();
     std::cout << "Began sampling" << std::endl;
     rx_stream->recv(testbuf, RBUF_SIZE, md, 3.0, false);
@@ -508,7 +516,7 @@ void Masdr::rx_test(){
         while (1){//(i < 5000) {
         // accum = 0;
         // rx_stream->recv(testbuf, RBUF_SIZE, md, 3.0, false);
-        
+
         // for(j=0;j<RBUF_SIZE;j++) {
         //     mag_squared = (sqrt(testbuf[j].real() *testbuf[j].real()
         //               + testbuf[j].imag()*testbuf[j].imag()));
@@ -541,9 +549,9 @@ void Masdr::rx_test(){
         // }
 
         rx_stream->recv(testbuf, RBUF_SIZE, md, 3.0, false);
-        std::cout<<energy_detection(testbuf, RBUF_SIZE)<<std::endl;
+        std::cout << energy_detection(testbuf, RBUF_SIZE) << std::endl;
     }
-    else 
+    else
         numLoops = 5000;
 
 
@@ -553,22 +561,19 @@ void Masdr::rx_test(){
 
     stop_sampling();
     std::cout << "Stopped sampling" << std::endl;
-    std::cout <<"RX test done." <<std::endl<<std::endl;
+    std::cout << "RX test done." << std::endl << std::endl;
 }
 
 /******************************************************************************/
 void Masdr::tx_test() {
     int i; //Counter, to help test
     std::complex<float> testbuf[100];
-    std::cout << "Entered tx_test" << std::endl;
 
+    std::cout << "Entered tx_test" << std::endl;
     //Initialize test buffer.
-    for (i = 0; i <100; i++) {
+    for (i = 0; i < 100; ++i) {
         testbuf[i] = std::complex<float> (1,0);
     }
-    
-    i = 0;
-
 
     uhd::tx_metadata_t md;
     md.start_of_burst = false;
@@ -577,14 +582,15 @@ void Masdr::tx_test() {
     std::cout << "Began transmit" << std::endl;
     tx_stream->send(testbuf, 100, md);
     std::cout << "First Buff done" << std::endl;
-        
+
+    i = 0;
     while (1) {
         tx_stream->send(testbuf, 100, md);
         ++i;
     }
 
     std::cout << "Stopped transmit" << std::endl;
-    std::cout <<"Tx test done." <<std::endl<<std::endl;
+    std::cout << "Tx test done." <<std::endl<<std::endl;
 }
 
 /******************************************************************************/
@@ -593,17 +599,18 @@ void Masdr::mag_test() {
     init_mag();
     while(1) {
         deg=read_mag();
-        std::cout<< "Mag Reading: "<<deg <<std::endl;
+        std::cout << "Mag Reading: " << deg << std::endl;
         usleep(4000000);
     }
-        
+
 }
 
 /******************************************************************************/
-void Masdr::match_test(){
+void Masdr::match_test() {
     //Test match filt stuff.
     float test_val;
-    int i, k=0;
+    int i
+    int k = 0;
     begin_sampling();
     while(1) {
         begin_sampling();
@@ -612,7 +619,7 @@ void Masdr::match_test(){
         // std::cout<<"Rec'd"<<std::endl;
         // std::cout<< testbuf[500].real();
         // std::cout<<std::endl;
-       
+
         run_fft(testbuf);
         // std::cout<<"FFT'd"<<std::endl;
         // std::cout<< fft_out[500][0]<<std::endl;
@@ -629,37 +636,42 @@ void Masdr::match_test(){
          // std::cout<< match_filt()<<std::endl;
     }
 
-    std::cout<<"Match filter test done." <<std::endl<<std::endl;
+    std::cout << "Match filter test done." << std::endl << std::endl;
 }
+
 /******************************************************************************/
-void Masdr::transmit_data_test(){
+void Masdr::transmit_data_test() {
     int i;
-    std::cout <<"In tx data test" <<std::endl;
-    transmit_data();    
+    std::cout << "In tx data test" << std::endl;
+    transmit_data();
 }
+
 /******************************************************************************/
-void Masdr::fft_test(){
-    int i, numTests = 100, max_index = 0, real_index;
+void Masdr::fft_test() {
+    int i;
+    int numTests = 100
+    int max_index = 0;
+    int real_index;
     int freq = 3000000;
     int freq_scale = 25000000;
-    double max_mag = 0, magnitude;
+    double max_mag = 0
+    double magnitude;
     fftw_plan p2;
-    fftw_complex *fft_in2 = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
+
+    fftw_complex* fft_in2 = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
     p2 = fftw_plan_dft_1d(N_FFT, fft_out, fft_in2, FFTW_BACKWARD, FFTW_MEASURE);
 
-
-    for(i = 0; i <N_FFT; i++){
+    for(i = 0; i < N_FFT; ++i) {
         fft_in[i][0] = cos(2 * PI * freq * i / freq_scale);
-        //fft_in[i][0] = 1;
         fft_in[i][1] = 0;
     }
 
-
-    std::cout<< "Test Forward"<<std::endl<<std::endl;
-    fftw_execute(fft_p); /* repeat as needed */   
-    for (i = 0; i < N_FFT; i++){
-        magnitude =sqrt(fft_out[i][0]*fft_out[i][0] + fft_out[i][1]*fft_out[i][1]);
-        if(magnitude > max_mag){
+    std::cout<< "Test Forward" << std::endl << std::endl;
+    fftw_execute(fft_p); /* repeat as needed */
+    for (i = 0; i < N_FFT; ++i) {
+        magnitude = sqrt(fft_out[i][0] * fft_out[i][0]
+                         + fft_out[i][1] * fft_out[i][1]);
+        if (magnitude > max_mag) {
             max_mag = magnitude;
             max_index = i;
         }
@@ -668,12 +680,12 @@ void Masdr::fft_test(){
 
     std::cout << "Max Magnitude: "<<max_mag<< " at index: " << max_index<<std::endl;
     std::cout << "Bucket represents " <<max_index * freq_scale /2/ N_FFT <<std::endl;
-    
-    std::cout<< "Test Backward" <<std::endl<<std::endl;    
+
+    std::cout<< "Test Backward" <<std::endl<<std::endl;
     // for(i = 0; i < N_FFT; i++){
     //     out[i][0] = 0;
     //     out[i][1] = 0;
-    // } 
+    // }
     // out[0][N_FFT/2] = 1;
     max_mag = 0;
    fftw_execute(p2);
@@ -683,13 +695,13 @@ void Masdr::fft_test(){
                 max_mag = magnitude;
                 max_index = i;
             }
-        std::cout << "Real: "<<fft_in2[i][0]<< "\tImaginary: " << fft_in2[i][1]<<std::endl; 
-    }   
+        std::cout << "Real: "<<fft_in2[i][0]<< "\tImaginary: " << fft_in2[i][1]<<std::endl;
+    }
 
 
         std::cout << "Max Magnitude: "<<max_mag<< " at index: " << max_index<<std::endl;
         std::cout << "Bucket represents " <<max_index * freq_scale /2/ N_FFT <<std::endl;
-        
+
 }
 
 /******************************************************************************/
@@ -697,16 +709,16 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
     std::signal(SIGINT, handle_sigint);
     Masdr masdr;
 
-    if(G_DEBUG){
-        if(DEBUG_THRESH) masdr.rx_test();
-        if(DEBUG_TX) masdr.tx_test();
-        if(DEBUG_MATCH)masdr.match_test();
-        if(DEBUG_MAG)masdr.mag_test();
-        if(DEBUG_FFT) masdr.fft_test();
-        if(DEBUG_TX_DATA) masdr.transmit_data_test();
+    if (G_DEBUG) {
+        if (DEBUG_THRESH) masdr.rx_test();
+        if (DEBUG_TX) masdr.tx_test();
+        if (DEBUG_MATCH) masdr.match_test();
+        if (DEBUG_MAG) masdr.mag_test();
+        if (DEBUG_FFT) masdr.fft_test();
+        if (DEBUG_TX_DATA) masdr.transmit_data_test();
     }
 
-    else{
+    else {
         while(1) { //!stop_signal_called)
             masdr.update_status();
             masdr.state_transition();
