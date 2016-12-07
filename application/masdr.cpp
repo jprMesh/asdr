@@ -83,9 +83,12 @@ Masdr::Masdr() {
             rrcBuf[i] = 1;
         else{
             time = (i - N_RRC/2)*Ts;
-            rrcBuf[i] = PI*PI/(PI*(a-b)-4*a) * 
-                        4*a*time*cos(time*(a+b))+ PI *sin(time*(b-a)) /
-                            time*(16 * time * time * a * a - PI * PI);
+            rrcBuf[i] = (sin(PI*time/Ts*(1-excess))+4*excess*time/Ts*cos(PI*time/Ts*(1+excess))) 
+                        /(PI*time/Ts*(1-(4*excess*time/Ts)*(4*excess*time/Ts)));
+
+        //    rrcBuf[i] = PI*PI/(PI*(a-b)-4*a) * 
+        //                4*a*time*cos(time*(a+b))+ PI *sin(time*(b-a)) /
+        //                    time*(16 * time * time * a * a - PI * PI);
         }
     }
         initialize_peripherals();
