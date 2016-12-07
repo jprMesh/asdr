@@ -75,8 +75,8 @@ Masdr::Masdr() {
 
     float time;
     // Maybe internal freq should be 905e6,idk
-    int freq = (870e3/4)/2; //Currently 1/2 symbol rate
-    float excess=0.2, b = 2*PI * freq, a = 2*PI*excess;
+    int freq = 1e6/SPS; //Currently 1/2 symbol rate
+    float excess=0.2;
     float Ts = 1/freq;
     // float omega=2*PI*freq_tx; //2pif
 
@@ -120,7 +120,7 @@ void Masdr::initialize_uhd() {
     uhd::set_thread_priority_safe();
 
     int rx_rate = 42e6;//To deal with the 20MHz bandwidth we have.
-    int tx_rate = 870e3; //4 samples per symbol at 700kHz
+    int tx_rate = 1e6; //4 samples per symbol at 700kHz
     int master_rate = 42e6;
     float freq_rx = 2.4e9; //Set rx frequency to 2.4 GHz
     float freq_tx = 905e6; //set tx frequency
@@ -430,10 +430,11 @@ void Masdr::transmit_data() {
         }
         */
         /// 12/4/15 MHLI:Deal with root raised cosine.
-        std::complex<float> transmitBuffer_rrc[SPS*TBUF_SIZE];
-        std::complex<float> transmitBuffer_final[SPS*TBUF_SIZE];
-        for(i = 0; i < SPS*TBUF_SIZE; i++){
-            if(!i%SPS)
+        std::complex<float> transmitBuffer_rrc[SPS*TBUF_SIZE + N_RRC];
+        std::complex<float> transmitBuffer_final[SPS*TBUF_SIZE] + N_RRC];
+        f
+        or(i = 0; i < SPS*TBUF_SIZE+ N_RRC; i++){
+            if(!i%SPS && i < SPS*TBUF_SIZE)
                 transmitBuffer_rrc[i] = transmitBuffer[i/SPS];
             else
                 transmitBuffer_rrc[i] = 0;
