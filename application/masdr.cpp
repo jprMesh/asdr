@@ -431,9 +431,8 @@ void Masdr::transmit_data() {
         */
         /// 12/4/15 MHLI:Deal with root raised cosine.
         std::complex<float> transmitBuffer_rrc[SPS*TBUF_SIZE + N_RRC];
-        std::complex<float> transmitBuffer_final[SPS*TBUF_SIZE] + N_RRC];
-        f
-        or(i = 0; i < SPS*TBUF_SIZE+ N_RRC; i++){
+        std::complex<float> transmitBuffer_final[SPS*TBUF_SIZE + N_RRC];
+        for(i = 0; i < SPS*TBUF_SIZE+ N_RRC; i++){
             if(!i%SPS && i < SPS*TBUF_SIZE)
                 transmitBuffer_rrc[i] = transmitBuffer[i/SPS];
             else
