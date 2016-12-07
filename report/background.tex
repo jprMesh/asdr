@@ -53,20 +53,23 @@ The Micro Aerial Vehicle Link (MAVLink) protocol is a free open source wireless 
 \includegraphics[width=0.70\textwidth]{img/mavlink-packet.png}
 \caption{MAVLink Transmission Frame. The red STX frame signifies the start of a transmission. This frame will always be an 8 bit code of 0xFE used for start of frame detection. The following parameters give information about the payload such as it's size and who the data was meant for.  The payload category is a data field which contains a library-based command for the drone to perform.}
 \label{fig:MAVlink_frame}
-\end{figure}
+\end{figure}\par
+\begin{table}[ht]
+\centering
 \begin{tabular}{|l|l|l|l|}
-  Byte Index & Content & Value & Purpose \\ \hline
-          0 &	Packet start sign &                  0xFE &       Indicates start of a new packet \\
+  \hline
+  Byte Index & Content & Value &  Purpose \\ \hline
+          0 &	Packet start sign &                  0xFE &       Indicates start of a new packet\\
           1 &   Payload length &                0 - 255 &       Indicates length of the following payload \\
-          2 &   Packet Sequence &               0 - 255 &       Enables packet loss detection because each component counts up its send sequence. \\
+          2 &   Packet Sequence &               0 - 255 &       Enables packet loss detection because each component counts up its send sequence \\
           3 &   System ID &            1 - 225 &  Identifies the sending system; enables multiple platforms to use the same network \\
-          4 &   Component ID &         0 - 255 &  Identifies the sending component; allows for multiple components on the same platform. \\
-          5 &	Message ID &		   0 - 255 &  Identifies the message being sent defines the payload and how it should be decoded. \\
+          4 &   Component ID &         0 - 255 &  Identifies the sending component; allows for multiple components on the same platform \\
+          5 &	Message ID &		   0 - 255 &  Identifies the message being sent defines the payload and how it should be decoded \\
           6 - n+6 &	Data & 			   0 - 255 & Data of the mesasge depends on message ID \\
-          n+7-n+8 & Checksum & ITU hash of bytes including MAVLINK parameter computed from message fields to prevent decoding from a different protocol version \\
-\end{tabular}
-\cite{mavlink_vuln}\par
-Also, opposed to wifi signals, MAVLink transmissions are all non-encrypted, making it vulnerable to things such as network attacks or an unauthorized user operating the drone. Any user can send signals to a drone using a GFSK transmitter and the drone has no knowledge on who the correct user.
+          n+7-n+8 & Checksum & & ITU hash of bytes including MAVLINK parameter computed from message fields to prevent decoding from a different protocol version \\ \hline
+\end{tabular}\end{table}
+\par
+Also, opposed to wifi signals, MAVLink transmissions are all non-encrypted, making it vulnerable to things such as network attacks or an unauthorized user operating the drone. Any user can send signals to a drone using a GFSK transmitter and the drone has no knowledge on who the correct user \cite{mavlink_vuln}.
 
 \subsection{GPS \textbf{Needs more content}}
 Global Positioning System, or GPS, provides highly accurate location information to a user with a receiver module. This technology was developed during the height of the cold war in the 1960s \cite{gps_info}. GPS works by using a network of 24 satellites that are transmitting on 1575.42Mhz using a division coding scheme. The individual satellites send out information such as the current system time, and their locations. Given the locations of the satellites, as well as the calculated time of travel from the satellites to the receiver, the GPS receiver then performs localization based on this received information. The accurate time stamping required to perform this localization is only possible because each GPS satellite is capable of maintaining a highly accurate clock, and each receiver determines its current time through the interpretation of satellite data. This accurate clock information is used for the synchronization of clocks across cellular telephone systems, and other time critical applications \cite{GPS_Book}.
