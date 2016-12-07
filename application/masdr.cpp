@@ -502,7 +502,7 @@ void Masdr::rx_test() {
     int i = 0;
     int j;
     int numLoops; //Counter, to help
-    float accum
+    float accum;
     float max_inBuf = 0;
     float max_periodic = 0;
     float max_total = 0;
@@ -612,7 +612,7 @@ void Masdr::mag_test() {
 void Masdr::match_test() {
     //Test match filt stuff.
     float test_val;
-    int i
+    int i;
     int k = 0;
     begin_sampling();
     while(1) {
@@ -652,12 +652,12 @@ void Masdr::transmit_data_test() {
 /******************************************************************************/
 void Masdr::fft_test() {
     int i;
-    int numTests = 100
+    int numTests = 100;
     int max_index = 0;
     int real_index;
     int freq = 3000000;
     int freq_scale = 25000000;
-    double max_mag = 0
+    double max_mag = 0;
     double magnitude;
     fftw_plan p2;
 

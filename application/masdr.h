@@ -56,7 +56,7 @@
 #define N_RRC 1024 /// 12/4/16 MHLI: Currently not the right number
 
 #define RBUF_BLOCKS 8 /// Num blocks in rolling buffer. MUST BE POWER OF 2.
-#define WRAP_RBUF(x) (x & (pow(2,RBUF_BLOCKS) - 1)) /// Wrap buffer around
+#define WRAP_RBUF(x) (x & (int)(pow(2,RBUF_BLOCKS) - 1)) /// Wrap buffer around
 
 /**
  * @brief MASDR Application Class
