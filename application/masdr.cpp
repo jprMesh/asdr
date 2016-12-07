@@ -122,9 +122,9 @@ void Masdr::initialize_uhd() {
     int rx_rate = 42e6;//To deal with the 20MHz bandwidth we have.
     int tx_rate = 1e6; //4 samples per symbol at 700kHz
     int master_rate = 42e6;
-    float freq_rx = 2.4e9; //Set rx frequency to 2.4 GHz
+    float freq_rx = 2.462e9; //Set rx frequency to 2.4 GHz
     float freq_tx = 905e6; //set tx frequency
-    int gain = 50;
+    int gain = 50;// Default: 8dB
     std::string rx_ant = "RX2"; //ant can be "TX/RX" or "RX2"
     std::string tx_ant = "TX/RX"; //ant can be "TX/RX" or "RX2"
     std::string wirefmt = "sc16"; //or sc8
@@ -554,13 +554,6 @@ void Masdr::rx_test() {
 
         rx_stream->recv(testbuf, RBUF_SIZE, md, 3.0, false);
         std::cout << energy_detection(testbuf, RBUF_SIZE) << std::endl;
-    }
-    else
-        numLoops = 5000;
-
-
-    while(i<numLoops && !DEBUG_THRESH){
-        rx_stream->recv(testbuf, RBUF_SIZE, md, 3.0, false);
     }
 
     stop_sampling();
