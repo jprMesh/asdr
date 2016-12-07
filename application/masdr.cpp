@@ -106,65 +106,6 @@ Masdr::~Masdr() {
 }
 
 /******************************************************************************/
-/***************************STATE TRANSITIONS**********************************/
-/******************************************************************************/
-void Masdr::update_status() {
-    ///10/31/16 MHLI: FILLER INFORMATION,REPLACE WITH CORRECT UPDATING
-    phy_status.heading = 0;
-    phy_status.is_stat_and_rot = false;
-    phy_status.location[0] = 0;
-    phy_status.location[1] = 0;
-    phy_status.location[2] = 0;
-}
-
-/******************************************************************************/
-void Masdr::state_transition() {
-    /// 11/17/16 MHLI: Commented out to test sampling.
-    if(soft_status != SAMPLE){
-        begin_sampling();
-    }
-    soft_status = SAMPLE;
-
-    // if (soft_status == IDLE && phy_status.is_stat_and_rot) {
-    //     begin_sampling();
-    //     soft_status = SAMPLE;
-
-    // } else if (soft_status == SAMPLE && !phy_status.is_stat_and_rot) {
-    //     stop_sampling();
-    //     begin_processing();
-    //     soft_status = PROCESS;
-
-    // } else if (soft_status == PROCESS && process_done) {
-    //     process_done = false;
-    //     transmit_data();
-    //     soft_status = TRANSMIT;
-
-    // } else if (soft_status == TRANSMIT && transmit_done) {
-    //     transmit_done = false;
-    //     // Notify ground station of idleness
-    //     soft_status = IDLE;
-    // }
-}
-
-/******************************************************************************/
-void Masdr::repeat_action() {
-    if (soft_status == SAMPLE) {
-        rb_index = WRAP_RBUF(rb_index + 1);
-        recv_buf[rb_index].heading = phy_status.heading;
-        rx_stream->recv(recv_buf[rb_index].recv_buf,
-                        RBUF_SIZE, md, 3.0, false);
-    } else if (soft_status == PROCESS) {
-        ;
-
-    } else if (soft_status == TRANSMIT) {
-        ;
-
-    } else if (soft_status == IDLE) {
-        ;
-    }
-}
-
-/******************************************************************************/
 /**************************INITIALIZATIONS*************************************/
 /******************************************************************************/
 void Masdr::initialize_peripherals() {
@@ -238,6 +179,65 @@ void Masdr::shutdown_uhd() {
     uhd::stream_cmd_t stream_cmd(
         uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
     rx_stream->issue_stream_cmd(stream_cmd);
+}
+
+/******************************************************************************/
+/***************************STATE TRANSITIONS**********************************/
+/******************************************************************************/
+void Masdr::update_status() {
+    ///10/31/16 MHLI: FILLER INFORMATION,REPLACE WITH CORRECT UPDATING
+    phy_status.heading = 0;
+    phy_status.is_stat_and_rot = false;
+    phy_status.location[0] = 0;
+    phy_status.location[1] = 0;
+    phy_status.location[2] = 0;
+}
+
+/******************************************************************************/
+void Masdr::state_transition() {
+    /// 11/17/16 MHLI: Commented out to test sampling.
+    if(soft_status != SAMPLE){
+        begin_sampling();
+    }
+    soft_status = SAMPLE;
+
+    // if (soft_status == IDLE && phy_status.is_stat_and_rot) {
+    //     begin_sampling();
+    //     soft_status = SAMPLE;
+
+    // } else if (soft_status == SAMPLE && !phy_status.is_stat_and_rot) {
+    //     stop_sampling();
+    //     begin_processing();
+    //     soft_status = PROCESS;
+
+    // } else if (soft_status == PROCESS && process_done) {
+    //     process_done = false;
+    //     transmit_data();
+    //     soft_status = TRANSMIT;
+
+    // } else if (soft_status == TRANSMIT && transmit_done) {
+    //     transmit_done = false;
+    //     // Notify ground station of idleness
+    //     soft_status = IDLE;
+    // }
+}
+
+/******************************************************************************/
+void Masdr::repeat_action() {
+    if (soft_status == SAMPLE) {
+        rb_index = WRAP_RBUF(rb_index + 1);
+        recv_buf[rb_index].heading = phy_status.heading;
+        rx_stream->recv(recv_buf[rb_index].recv_buf,
+                        RBUF_SIZE, md, 3.0, false);
+    } else if (soft_status == PROCESS) {
+        ;
+
+    } else if (soft_status == TRANSMIT) {
+        ;
+
+    } else if (soft_status == IDLE) {
+        ;
+    }
 }
 
 /******************************************************************************/
@@ -688,8 +688,8 @@ void Masdr::fft_test() {
     // }
     // out[0][N_FFT/2] = 1;
     max_mag = 0;
-   fftw_execute(p2);
-   for (i = 0; i < N_FFT; i++){
+    fftw_execute(p2);
+    for (i = 0; i < N_FFT; i++){
             magnitude =sqrt(fft_in2[i][0]*fft_in2[i][0] + fft_in2[i][1]*fft_in2[i][1]);
             if(magnitude > max_mag){
                 max_mag = magnitude;
