@@ -13,44 +13,37 @@
 #ifndef __utils_h__
 #define __utils_h__
 
+// Standard Libraries
 #include <iostream>
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
-// UHD libraries
+// UHD Libraries
 #include <uhd/usrp/multi_usrp.hpp>
-// Boost libraries
+// Boost Libraries
 #include <boost/format.hpp>
 #include <boost/thread.hpp>
-
-//Using pthread for GPS
-#include <pthread.h>
-
 //GPS libraries
 #include <gps.h>
 #include <unistd.h>
 #include <math.h>
+#include <pthread.h> //Using pthread for GPS
 
-// Buffer sizes
-
-// #define RBUF_SIZE 1024 /// Temp not 16384
+// SDR buffer sizes
 #define RBUF_SIZE 16384
-
 #define TBUF_SIZE 226   //11/6/16 NARUT: dependent 
                         //on our packet size 5 floats (32*5) + (33*2) start/end
 #define SPS 4 //4 samples per symbol.
-//GPS constants
 
+//GPS constants
 #define GPS_BUF_SIZE 60  // Hold the past 6 seconds of samples
 
-
-
+// Energy detection constants
 #define THRESH_E 0.1 ///11/14/16 MHLI: Picked based on received information.
 #define THRESH_MATCH 0 //11/14/16 MHLI: 20,25 would work probably, especially in 
-//#define THRESH_MATCH 0
 
-#define PI 3.14159265359
-// Defining standard bits for bit manipulation
+// Standard defines
+#define PI      3.14159265359
 #define BIT0    0x00000001
 #define BIT1    0x00000002
 #define BIT2    0x00000004
@@ -85,23 +78,12 @@
 #define BIT31   0x80000000
 
 /**
- * Linked list node structure for received sample buffer and heading.
+ * Structure for received sample buffer and heading.
  */
-typedef struct recvnode {
+typedef struct samp_block {
     float heading; ///< Heading in degrees from north, according to magnetometer
-    std::complex<float> recv_buf[RBUF_SIZE]; ///< USRP samples from current direction
-    struct recvnode* next; ///< Next recorded block, either a pointer or NULL
-
-    /**
-     * @brief Delete the next item in the list.
-     *
-     * This will call recursively until everything after the element it was
-     * initially called on is deleted.
-     */
-    ~recvnode() {
-        delete next;
-    }
-} RecvNode;
+    std::complex<float> recv_buf[RBUF_SIZE]; ///< USRP samples
+} Sampblock;
 
 /**
  * Linked list node structure of data to be packaged then transmitted.
@@ -165,8 +147,6 @@ typedef struct {
     double strength; ///< Strength of detected signal.
 } TxHit;
 
-
-
 /**
  * @brief Handle a SIGINT nicely.
  */
@@ -184,41 +164,39 @@ typedef boost::function<uhd::sensor_value_t (const std::string&)>
     get_sensor_fn_t;
 
 /**
- * Function provided by UHD, find documentation at http://files.ettus.com/manual/
+ * Function provided by UHD.
+ * 
+ * Documentation at http://files.ettus.com/manual/
  */
 bool check_locked_sensor(std::vector<std::string> sensor_names,
                          const char* sensor_name,
                          get_sensor_fn_t get_sensor_fn,
                          double setup_time);
+
 /**
- * Initializes GPS
+ * Initialize USB GPS
  */
 int init_gps();
-
 
 /**
  * Reads latitude, longitude, and time from GPS and puts it in FIFO
  */
 void *poll_gps();
 
-
 /**
  * Read data from GPS FIFO
  */
 void get_gps_data(double *latitude, double *longitude, double *time);
 
-
 /**
  * Shuts down GPS
  */
-int rem_gps();
-
+void rem_gps();
 
 /**
  * Initializes Magnetometer
  */
 void init_mag();
-
 
 /**
  * Reads data from  Magnetometer
