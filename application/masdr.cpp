@@ -436,7 +436,7 @@ void Masdr::transmit_data() {
 	    if(i%2)
                 transmitBuffer[i] = std::complex<float>(1,0);
             else
-                transmitBuffer[i] = std::complex<float>(-1,0);
+                transmitBuffer[i] = std::complex<float>(1,0);//-1,0);
         }
         std::complex<float> transmitBuffer_rrc[SPS*TBUF_SIZE + N_RRC];
         std::complex<float> transmitBuffer_final[SPS*TBUF_SIZE + N_RRC];
@@ -450,7 +450,7 @@ void Masdr::transmit_data() {
         int j,k;
         float accum = 0;
         //Convolve w/ root raised cosine.
-        for(i=0; i < SPS*TBUF_SIZE;i++){
+        for(i=0; i < SPS*TBUF_SIZE+N_RRC;i++){
             for(j=0; j < N_RRC;j++){
                 k = i-j;
                 if(!k)
@@ -477,20 +477,23 @@ void Masdr::transmit_data() {
     //TESTING
     //Use DBPSK in transmission ASSUME NO CHANGE IS 0.
     std::cout << "Start transmit" << std::endl;
-    for(i = 0; i < TBUF_SIZE; i++) {
-        // if(i%6 == 0 || 6 == 5)
-        //     transmitBuffer[i] = std::complex<float>(1,0);
-        // else
-            transmitBuffer[i] = std::complex<float>(-1,0);
+    // for(i = 0; i < TBUF_SIZE; i++) {
+    //     // if(i%6 == 0 || 6 == 5)
+    //     //     transmitBuffer[i] = std::complex<float>(1,0);
+    //     // else
+    //         transmitBuffer[i] = std::complex<float>(-1,0);
 
-    }
+    // }
         uhd::tx_metadata_t md;
     md.start_of_burst = false;
     md.end_of_burst = false;
     while(1) {
         //transmit(transmitBuffer, TBUF_SIZE);
-        tx_stream->send(transmitBuffer, TBUF_SIZE, md);
+        //Transmit root raised cosined signals
+        tx_stream->send(transmitBuffer_final, SPS* TBUF_SIZE + N_RRC, md);
 
+        //Transmit Unmodulated signal.
+        //tx_stream->send(transmitBuffer, TBUF_SIZE, md);
     }
     std::cout << "Done with transmit" << std::endl;
 }
