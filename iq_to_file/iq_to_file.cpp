@@ -152,7 +152,7 @@ template<typename samp_type> void recv_to_file(
     unsigned long long num_total_samps = 0;
     double lat_in, long_in,time_in;   
     float match_val[2] = {0,0}, re, im;
-    std::complex<samp_type> match_mag, lat_val, long_val, time_val;
+    std::complex<samp_type> match_mag, lat_val, long_val, time_val, rssi_val;
     boost::this_thread::sleep(boost::posix_time::seconds(2)); //allow for some setup time
     std::cout<<"DEBUG flag"<<std::endl;
 
@@ -162,13 +162,13 @@ template<typename samp_type> void recv_to_file(
 
     uhd::rx_metadata_t md;
 
-    std::complex<samp_type> buff[samps_per_buff + 4]; // extra size for match filt value, latitude, longitude, time
+    std::complex<samp_type> buff[samps_per_buff + 5]; // extra size for match filt value, latitude, longitude, time
         
     std::ofstream outfile;
     if (not null)
         outfile.open(file.c_str(), std::ofstream::binary);
     bool overflow_message = true;
-
+    double rssi = 0;
     //setup streaming
     uhd::stream_cmd_t stream_cmd((num_requested_samples == 0)?
         uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS:
@@ -237,20 +237,25 @@ template<typename samp_type> void recv_to_file(
             match_val[0] += re;
             match_val[1] += im;
         }
+
+        rssi = usrp->get_rx_sensor("rssi",0).to_real();
         //Imaginary value of 1000 to make it easy to find in post processing.
         get_gps_data(&lat_in,&long_in,&time_in);
         match_mag = std::complex<samp_type>(sqrt(match_val[0]*match_val[0]+match_val[1]*match_val[1]),1000);
         lat_val = std::complex<samp_type>((samp_type)lat_in,2000);
         long_val = std::complex<samp_type>((samp_type)long_in,3000);
         time_val = std::complex<samp_type>((samp_type)time_in,4000);
+        rssi_val = std::complex<samp_type>((samp_type)rssi,5000);
+        
         //Log Match filter result.
         buff[samps_per_buff] = match_mag;
         buff[samps_per_buff+1] = lat_val;
         buff[samps_per_buff+2] = long_val;
         buff[samps_per_buff+3] = time_val;
+        buff[samps_per_buff+4] = rssi_val;
         
         if (outfile.is_open())
-            outfile.write((const char*)buff, (num_rx_samps+4)*sizeof(std::complex<samp_type>));
+            outfile.write((const char*)buff, (num_rx_samps+5)*sizeof(std::complex<samp_type>));
 
         ticks_diff = now - start;
         if (ticks_requested > 0){
