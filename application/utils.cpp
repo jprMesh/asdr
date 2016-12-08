@@ -121,6 +121,20 @@ void *poll_gps(void *unused){
                     gps_buff[gps_buf_head][0] = gps_data__.fix.latitude;
                     gps_buff[gps_buf_head][1] = gps_data__.fix.longitude;
                     gps_buff[gps_buf_head][2] = gps_data__.fix.time;
+                    // use gps_data__.fix.--- to access
+                    // double ept;     /* Expected time uncertainty */
+                    // double latitude;    /* Latitude in degrees (valid if mode >= 2) */
+                    // double epy;     /* Latitude position uncertainty, meters */
+                    // double longitude;   /* Longitude in degrees (valid if mode >= 2) */
+                    // double epx;     /* Longitude position uncertainty, meters */
+                    // double altitude;    /* Altitude in meters (valid if mode == 3) */
+                    // double epv;     /* Vertical position uncertainty, meters */
+                    // double track;   /* Course made good (relative to true north) */
+                    // double epd;     /* Track uncertainty, degrees */
+                    // double speed;   /* Speed over ground, meters/sec */
+                    // double eps;     /* Speed uncertainty, meters/sec */
+                    // double climb;       /* Vertical speed, meters/sec */
+                    // double epc;     /* Vertical speed uncertainty */
                     //Loop buffer
                     gps_buf_head = (gps_buf_head + 1) % GPS_BUF_SIZE;
 
