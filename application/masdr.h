@@ -219,6 +219,7 @@ private:
      */
     void transmit_data();
 
+    uhd::usrp::multi_usrp::sptr usrp;
     std::complex<float> testbuf[RBUF_SIZE]; ///< Testing if structure is too big.
     float rrcBuf[N_RRC]; ///< 4 samples per symbol.
     uhd::rx_streamer::sptr rx_stream; ///< The UHD rx streamer

@@ -137,7 +137,7 @@ void Masdr::initialize_uhd() {
     // int tx_bw = 0;
 
     //Create USRP object
-    uhd::usrp::multi_usrp::sptr usrp = uhd::usrp::multi_usrp::make((std::string)"");
+    usrp = uhd::usrp::multi_usrp::make((std::string)"");
     //Lock mboard clocks
     usrp->set_clock_source("internal"); //internal, external, mimo
     usrp->set_master_clock_rate(master_rate);
@@ -508,13 +508,18 @@ void Masdr::transmit(std::complex<float> *msg, int len) {
 /******************************************************************************/
 void Masdr::rx_test() {
     int i = 0;
-    int j;
+    int j = 0;
     int numLoops; //Counter, to help
     float accum;
     float max_inBuf = 0;
     float max_periodic = 0;
     float max_total = 0;
     float mag_squared;
+    double rssi;
+    int TX_Power = 0; //Transmit power of a wireless AP at 2.4 GHz
+    double dist_avg;
+    double calc_avg[1024];
+
     std::complex<float> testbuf[RBUF_SIZE];
 
     std::cout << "Entered rx_test" << std::endl;
@@ -560,6 +565,20 @@ void Masdr::rx_test() {
         // }
 
         rx_stream->recv(testbuf, RBUF_SIZE, md, 3.0, false);
+        rssi = usrp->get_rx_sensor("rssi",0).to_real();
+        if(rssi > -78){
+            calc_avg[i++] = pow(10,((rssi)/-20));         
+        }
+
+        if (i > 1023) {
+            for (j = 0; j < 1024; j++) {
+                dist_avg += calc_avg[j];
+            }
+            std::cout << dist_avg/1024 << std::endl;
+            dist_avg = 0;   
+            i = 0;
+        }
+        
         //std::cout << energy_detection(testbuf, RBUF_SIZE) << std::endl;
     }
 
@@ -567,7 +586,7 @@ void Masdr::rx_test() {
     std::cout << "Stopped sampling" << std::endl;
     std::cout << "RX test done." << std::endl << std::endl;
 }
-
+    
 /******************************************************************************/
 void Masdr::tx_test() {
     int i; //Counter, to help test
