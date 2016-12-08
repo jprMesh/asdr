@@ -84,6 +84,14 @@ typedef struct samp_block {
     float heading; ///< Heading in degrees from north, according to magnetometer
     std::complex<float> recv_buf[RBUF_SIZE]; ///< USRP samples
 } Sampblock;
+/**
+* Structure for GPS Position
+*/
+typedef struct gps_dat{
+    float x;
+    float y;
+    float z;
+}GPSData;
 
 /**
  * Linked list node structure of data to be packaged then transmitted.
