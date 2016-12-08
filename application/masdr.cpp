@@ -352,10 +352,12 @@ float* Masdr::localize() {
 /*********************************TRANSMISSION*********************************/
 /******************************************************************************/
 void Masdr::transmit_data() {
+    /*
     if (trans_head == NULL) {
         std::cout << "No values to transmit" << std::endl;
         return;
     }
+    */
     int i; // looping
     int bias = 0; // compensating shift for adding more data
     TransNode* trans_temp = trans_head;
@@ -430,6 +432,12 @@ void Masdr::transmit_data() {
         }
         */
         /// 12/4/15 MHLI:Deal with root raised cosine.
+	for(i=0;i<TBUF_SIZE;i++){
+	    if(i%2)
+                transmitBuffer[i] = std::complex<float>(1,0);
+            else
+                transmitBuffer[i] = std::complex<float>(-1,0);
+        }
         std::complex<float> transmitBuffer_rrc[SPS*TBUF_SIZE + N_RRC];
         std::complex<float> transmitBuffer_final[SPS*TBUF_SIZE + N_RRC];
         for(i = 0; i < SPS*TBUF_SIZE+ N_RRC; i++){
