@@ -163,17 +163,19 @@ private:
     void shutdown_uhd();
 
     /**
-     * @brief Fork off a new process to start the SDR taking samples.
+     * @brief Create a new thread to do the sampling.
      */
-    void begin_sampling();
+    void sample();
     
     /**
      * @brief Detect if there's any energy detected on the bandwidth being measured.
      * 
      * @param sig_in ///THIS IS NEEDED
      * @param size ///THIS IS NEEDED
+     * 
+     * @return ///THIS IS NEEDED
      */
-    bool energy_detection(std::complex<float> *sig_in, int size);
+    float energy_detection(std::complex<float> *sig_in, int size);
     
     /**
      * @brief Transfer buffer to fft_in, and run FFT.
@@ -192,7 +194,7 @@ private:
      * 
      * /// Per my comment in the cpp, should this be renamed rss maybe?
      */
-    float* localize();
+    float* rss();
 
     /**
      * @brief Command the SDR to stop taking samples.
@@ -236,6 +238,7 @@ private:
     fftw_complex *fft_in, *fft_out; ///< Buffers for FFT.
     bool process_done; ///< Set when data processing has completed
     bool transmit_done; ///< Set when data transmission has completed
+    bool do_sample; ///< Disable to gracefully shutdown sampling.
 };
 
 #endif // __masdr_h__

@@ -97,6 +97,8 @@ Masdr::Masdr() {
     initialize_peripherals();
     initialize_uhd();
     update_status();
+
+    boost::thread(sample);
 }
 
 /******************************************************************************/
@@ -104,6 +106,7 @@ Masdr::~Masdr() {
     fftw_destroy_plan(fft_p);
     fftw_free(fft_in);
     fftw_free(fft_out);
+    stop_sampling();
     shutdown_uhd();
     delete trans_head;
 }
@@ -198,31 +201,19 @@ void Masdr::update_status() {
 
 /******************************************************************************/
 void Masdr::state_transition() {
-    /// 11/17/16 MHLI: Commented out to test sampling.
-    if(soft_status != SAMPLE){
-        boost::thread(begin_sampling);
+    if (soft_status == IDLE) {
+        soft_status = PROCESS;
+        begin_processing();
+
+    } else if (soft_status == PROCESS && process_done) {
+        soft_status = TRANSMIT;
+        process_done = false;
+        transmit_data();
+
+    } else if (soft_status == TRANSMIT && transmit_done) {
+        soft_status = IDLE;
+        transmit_done = false;
     }
-    soft_status = SAMPLE;
-
-    // if (soft_status == IDLE && phy_status.is_stat_and_rot) {
-    //     begin_sampling();
-    //     soft_status = SAMPLE;
-
-    // } else if (soft_status == SAMPLE && !phy_status.is_stat_and_rot) {
-    //     stop_sampling();
-    //     begin_processing();
-    //     soft_status = PROCESS;
-
-    // } else if (soft_status == PROCESS && process_done) {
-    //     process_done = false;
-    //     transmit_data();
-    //     soft_status = TRANSMIT;
-
-    // } else if (soft_status == TRANSMIT && transmit_done) {
-    //     transmit_done = false;
-    //     // Notify ground station of idleness
-    //     soft_status = IDLE;
-    // }
 }
 
 /******************************************************************************/
@@ -245,47 +236,53 @@ void Masdr::repeat_action() {
 /************************************SAMPLE************************************/
 /******************************************************************************/
 
-void Masdr::begin_sampling() {
+void Masdr::sample() {
     // Create new sampling stream
-    uhd::stream_cmd_t stream_cmd(
+    uhd::stream_cmd_t start_strm_cmd(
         uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS);
-    stream_cmd.num_samps = size_t(0);
-    stream_cmd.stream_now = true;
-    stream_cmd.time_spec = uhd::time_spec_t(); // Holds the time.
-    rx_stream->issue_stream_cmd(stream_cmd);   // Initialize the stream
-    while (1) {
+    start_strm_cmd.num_samps = size_t(0);
+    start_strm_cmd.stream_now = true;
+    start_strm_cmd.time_spec = uhd::time_spec_t(); // Holds the time.
+    rx_stream->issue_stream_cmd(start_strm_cmd);   // Initialize the stream
+    while (do_sample) {
         rb_index = WRAP_RBUF(rb_index + 1);
         recv_buf[rb_index].heading = phy_status.heading;
-        rx_stream->recv(recv_buf[rb_index].recv_buf,
+        rx_stream->recv(recv_buf[rb_index].samples,
                         RBUF_SIZE, md, 3.0, false);
         boost::this_thread::interruption_point();
     }
-}
-
-/******************************************************************************/
-void Masdr::stop_sampling() {
     // Issue command to close stream
-    uhd::stream_cmd_t stream_cmd(
+    uhd::stream_cmd_t stop_strm_cmd(
         uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
-    rx_stream->issue_stream_cmd(stream_cmd);
+    rx_stream->issue_stream_cmd(stop_strm_cmd);
 }
 
 /******************************************************************************/
 /********************************PROCESSING************************************/
 /******************************************************************************/
 void Masdr::begin_processing() {
-    bool hasEnergy = energy_detection(recv_buf[rb_index].recv_buf, RBUF_SIZE);
-    if(hasEnergy) {
-        run_fft(recv_buf[rb_index].recv_buf);
-        float has_wifi =  match_filt();
-        if(has_wifi != -1) {
-            localize();
+    int i;
+    samp_block proc_buf[RBUF_BLOCKS/2];
+    float energy = 0;
+
+    for (i = 0; i < RBUF_BLOCKS/2; ++i) {
+        proc_buf[i] = recv_buf[WRAP_RBUF(rb_index - RBUF_BLOCKS/2 + i)];
+    }
+    for (i = 0; i < RBUF_BLOCKS/2; ++i) {
+        energy += energy_detection(proc_buf[i].samples, RBUF_SIZE);
+    }
+    if(energy > THRESH_E) {
+        for (i = 0; i < RBUF_BLOCKS/2; ++i) {
+            run_fft(proc_buf[rb_index].samples);
+            float has_wifi =  match_filt();
+            if(has_wifi != -1)
+                rss();
         }
     }
 }
 
 /******************************************************************************/
-bool Masdr::energy_detection(std::complex<float> *sig_in, int size) {
+float Masdr::energy_detection(std::complex<float> *sig_in, int size) {
     int i;
     float acc = 0;
     float max = 0;
@@ -307,10 +304,7 @@ bool Masdr::energy_detection(std::complex<float> *sig_in, int size) {
         std::cout << std::endl;
     }
 
-    if(max > THRESH_E)
-        return true;
-    else
-        return false;
+    return max;
 }
 
 /******************************************************************************/
@@ -347,7 +341,7 @@ float Masdr::match_filt() {
 }
 
 /******************************************************************************/
-float* Masdr::localize() {
+float* Masdr::rss() {
     // I think this is pretty much just going to be the RSS energy level for the
     //   buffer currently being looked at. -Jonas 12/7
     return NULL;
@@ -531,7 +525,7 @@ void Masdr::rx_test() {
     std::complex<float> testbuf[RBUF_SIZE];
 
     std::cout << "Entered rx_test" << std::endl;
-    begin_sampling();
+    sample();
     std::cout << "Began sampling" << std::endl;
     rx_stream->recv(testbuf, RBUF_SIZE, md, 3.0, false);
     std::cout << "First Buff done" << std::endl;
@@ -642,9 +636,9 @@ void Masdr::match_test() {
     float test_val;
     int i;
     int k = 0;
-    begin_sampling();
+    sample();
     while(1) {
-        begin_sampling();
+        sample();
         rx_stream->recv(testbuf,RBUF_SIZE,md,3.0,false);
         // stop_sampling();
         // std::cout<<"Rec'd"<<std::endl;

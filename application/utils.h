@@ -23,7 +23,7 @@
 // Boost Libraries
 #include <boost/format.hpp>
 #include <boost/thread.hpp>
-//GPS libraries
+// GPS libraries
 #include <gps.h>
 #include <unistd.h>
 #include <math.h>
@@ -82,7 +82,7 @@
  */
 typedef struct samp_block {
     float heading; ///< Heading in degrees from north, according to magnetometer
-    std::complex<float> recv_buf[RBUF_SIZE]; ///< USRP samples
+    std::complex<float> samples[RBUF_SIZE]; ///< USRP samples
 } Sampblock;
 
 /**
