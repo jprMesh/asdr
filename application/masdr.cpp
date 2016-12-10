@@ -200,7 +200,7 @@ void Masdr::update_status() {
 void Masdr::state_transition() {
     /// 11/17/16 MHLI: Commented out to test sampling.
     if(soft_status != SAMPLE){
-        begin_sampling();
+        boost::thread(begin_sampling);
     }
     soft_status = SAMPLE;
 
@@ -228,10 +228,8 @@ void Masdr::state_transition() {
 /******************************************************************************/
 void Masdr::repeat_action() {
     if (soft_status == SAMPLE) {
-        rb_index = WRAP_RBUF(rb_index + 1);
-        recv_buf[rb_index].heading = phy_status.heading;
-        rx_stream->recv(recv_buf[rb_index].recv_buf,
-                        RBUF_SIZE, md, 3.0, false);
+        ;
+        
     } else if (soft_status == PROCESS) {
         ;
 
@@ -255,6 +253,13 @@ void Masdr::begin_sampling() {
     stream_cmd.stream_now = true;
     stream_cmd.time_spec = uhd::time_spec_t(); // Holds the time.
     rx_stream->issue_stream_cmd(stream_cmd);   // Initialize the stream
+    while (1) {
+        rb_index = WRAP_RBUF(rb_index + 1);
+        recv_buf[rb_index].heading = phy_status.heading;
+        rx_stream->recv(recv_buf[rb_index].recv_buf,
+                        RBUF_SIZE, md, 3.0, false);
+        boost::this_thread::interruption_point();
+    }
 }
 
 /******************************************************************************/
