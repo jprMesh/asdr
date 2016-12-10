@@ -156,13 +156,6 @@ private:
     void initialize_uhd();
 
     /**
-     * @brief Gracefully stop the SDR.
-     * 
-     * Stop all SDR processing and close any connections to the USRP SDR.
-     */
-    void shutdown_uhd();
-
-    /**
      * @brief Create a new thread to do the sampling.
      */
     void sample();
@@ -191,8 +184,6 @@ private:
 
     /**
      * @brief Locate signal. Returns x,y coordinates based on GPS.
-     * 
-     * /// Per my comment in the cpp, should this be renamed rss maybe?
      */
     float* rss();
 

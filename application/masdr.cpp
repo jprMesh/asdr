@@ -103,11 +103,10 @@ Masdr::Masdr() {
 
 /******************************************************************************/
 Masdr::~Masdr() {
+    do_sample = false;
     fftw_destroy_plan(fft_p);
     fftw_free(fft_in);
     fftw_free(fft_out);
-    stop_sampling();
-    shutdown_uhd();
     delete trans_head;
 }
 
@@ -177,14 +176,6 @@ void Masdr::initialize_uhd() {
     uhd::stream_args_t stream_args("fc32","sc16");
     rx_stream = usrp->get_rx_stream(stream_args); //Can only be called once.
     tx_stream = usrp->get_tx_stream(stream_args); //Can only be called once.
-}
-
-/******************************************************************************/
-void Masdr::shutdown_uhd() {
-    //post-running wrapping up
-    uhd::stream_cmd_t stream_cmd(
-        uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
-    rx_stream->issue_stream_cmd(stream_cmd);
 }
 
 /******************************************************************************/
@@ -583,8 +574,7 @@ void Masdr::rx_test() {
         
         //std::cout << energy_detection(testbuf, RBUF_SIZE) << std::endl;
     }
-
-    stop_sampling();
+    do_sample = false;
     std::cout << "Stopped sampling" << std::endl;
     std::cout << "RX test done." << std::endl << std::endl;
 }
