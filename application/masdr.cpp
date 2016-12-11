@@ -470,9 +470,9 @@ void Masdr::transmit_data() {
     md.end_of_burst = false;
 
     while(1) {
-        transmit(transmitBuffer, TBUF_SIZE);
+        //transmit(transmitBuffer, TBUF_SIZE);
         //Temporarily step out of transmit function
-        //tx_stream->send(transmitBuffer,TBUF_SIZE, md);
+        tx_stream->send(transmitBuffer,TBUF_SIZE, md);
          //Transmit root raised cosined signals
         //tx_stream->send(transmitBuffer_final, SPS* TBUF_SIZE + N_RRC, md);
 
