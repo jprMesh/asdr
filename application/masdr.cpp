@@ -368,16 +368,6 @@ void Masdr::transmit_data() {
         }
         bias += 33; // compensate for adding start bits
 
-        //packing magnetometer data
-        data.input = trans_temp->heading;
-        for(i = 0; i < 32; i++) {
-            if ((data.output >> (31 - i)) & 1)
-                transmitBuffer[i+bias] = std::complex<float>(1,0);
-            else
-                transmitBuffer[i+bias] = std::complex<float>(-1,0);
-        }
-        bias += 32; // compensate for adding magnetometer data
-
         //packing gps data
         data.input = trans_temp->gps[0];
         for(i = 0; i < 32; i++) {
@@ -397,15 +387,6 @@ void Masdr::transmit_data() {
         }
         bias += 32; // compensate for adding gps data 1
 
-        data.input = trans_temp->gps[2];
-        for(i = 0; i < 32; i++) {
-            if ((data.output >> (31 - i)) & 1)
-                transmitBuffer[i+bias] = std::complex<float>(1,0);
-            else
-                transmitBuffer[i+bias] = std::complex<float>(-1,0);
-        }
-        bias += 32; // compensate for adding gps data 2
-
         //packing data
         data.input = trans_temp->data;
         for(i = 0; i < 32; i++) {
@@ -422,6 +403,8 @@ void Masdr::transmit_data() {
         }
         */
         /// 12/4/15 MHLI:Deal with root raised cosine.
+
+        /* //BEGIN RRC
 	for(i=0;i<TBUF_SIZE;i++){
 	    if(i%2)
                 transmitBuffer[i] = std::complex<float>(1,0);
@@ -450,6 +433,7 @@ void Masdr::transmit_data() {
             }
             transmitBuffer_final[i] = std::complex<float>(accum,0);
         }
+        */ //END RRC
 
         /*
         std::cout << "Transmitting..." << std::endl;
@@ -474,13 +458,19 @@ void Masdr::transmit_data() {
     //         transmitBuffer[i] = std::complex<float>(-1,0);
 
     // }
-        uhd::tx_metadata_t md;
+    
+    for(i = 0; i < TBUF_SIZE; i++) {
+        transmitBuffer[i] = std::complex<float>(1,0);
+    }
+
+    uhd::tx_metadata_t md;
     md.start_of_burst = false;
     md.end_of_burst = false;
+
     while(1) {
-        //transmit(transmitBuffer, TBUF_SIZE);
+        transmit(transmitBuffer, TBUF_SIZE);
         //Transmit root raised cosined signals
-        tx_stream->send(transmitBuffer_final, SPS* TBUF_SIZE + N_RRC, md);
+        //tx_stream->send(transmitBuffer_final, SPS* TBUF_SIZE + N_RRC, md);
 
         //Transmit Unmodulated signal.
         //tx_stream->send(transmitBuffer, TBUF_SIZE, md);
