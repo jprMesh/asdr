@@ -39,10 +39,10 @@ KalmanFilter::~KalmanFilter() {
 }
 
 /******************************************************************************/
-float * KalmanFilter::predict() {
+void KalmanFilter::predict() {
     float tempx[4] = {0,0,0,0};
-    float tempP[4][4] = 0;
-    int i, j;
+    float tempP[4][4] = {0};
+    int i, j, k;
 
 
 
@@ -71,9 +71,11 @@ float * KalmanFilter::predict() {
 
 /******************************************************************************/
 void KalmanFilter::update(float pos_x, float pos_y, float e_x, float e_y) {
-   float temp[4][4] = 0, mid[4][4] = 0;
-   float temp_y[4] = 0;
+   float temp[4][4] = {0};
+   float mid[4][4] = {0};
+   float temp_y[4] = {0};
    float hph,rs;
+   int i, j, k;
 
    //Y = M-Hx 
     innovation[0] = pos_x - x[0];
@@ -81,8 +83,8 @@ void KalmanFilter::update(float pos_x, float pos_y, float e_x, float e_y) {
     innovation[2] = (pos_x - pos_x_last) - x[2];
     innovation[3] = (pos_y - pos_y_last) - x[3];
     //Save current location
-    pos_x_last = x_in;
-    pos_y_last = y_in; 
+    pos_x_last = pos_x;
+    pos_y_last = pos_y; 
 
 
     // IF K is constant, this isn't necessary.
@@ -108,9 +110,9 @@ void KalmanFilter::update(float pos_x, float pos_y, float e_x, float e_y) {
     //X = x+KY
     for(i = 0; i < 4; i++) {
         for (j = 0; j< 4; j++){
-            tempy[i] += K[i][j] * y[j];
+            temp_y[i] += K[i][j] * innovation[j];
         }
-        x[i] = x[i] + tempy[i];
+        x[i] = x[i] + temp_y[i];
     }
 
     // Mid = I-KH
