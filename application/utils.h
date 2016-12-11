@@ -31,8 +31,8 @@
 
 // SDR buffer sizes
 #define RBUF_SIZE 16384
-#define TBUF_SIZE 226   //11/6/16 NARUT: dependent 
-                        //on our packet size 5 floats (32*5) + (33*2) start/end
+#define TBUF_SIZE 162   //11/6/16 NARUT: dependent 
+                        //on our packet size 5 floats (32*3) + (33*2) start/end
 #define SPS 4 //4 samples per symbol.
 
 //GPS constants
@@ -91,7 +91,10 @@ typedef struct samp_block {
 typedef struct gps_dat {
     float x;
     float y;
-    float z;
+    float v_x;
+    float v_y;
+    float e_x;
+    float e_y;
 } GPSData;
 
 /**

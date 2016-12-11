@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style type="text/css">
+      html, body {{ height: 100%; margin: 0; padding: 0; }}
+      #map {{ height: 100%; }}
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script type="text/javascript">
+
+"use strict;"
+var circles = {{
+  {points}
+}};
+
+function initMap() {{
+  // Create the map.
+  var map = new google.maps.Map(document.getElementById('map'), {{
+    zoom: 17,
+    center: {{lat: {center_lat}, lng: {center_lng}}},
+    mapTypeId: 'terrain'
+  }});
+
+  // Construct the circle for each value in citymap.
+  for (var meas in circles) {{
+    // Add the circle for this city to the map.
+    var measurement_circle = new google.maps.Circle({{
+      strokeColor: '#000000',
+      strokeOpacity: 0.4,
+      strokeWeight: 10,
+      fillColor: '#000000',
+      fillOpacity: 0.0,
+      map: map,
+      center: circles[meas].center,
+      radius: circles[meas].distance
+    }});
+  }}
+}}
+
+    </script>
+    <script async defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCVfTNGdIPK1Unu6VAbsvpcUUv7uvExWVc&callback=initMap">
+    </script>
+  </body>
+</html>

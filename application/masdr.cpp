@@ -12,7 +12,7 @@
 
 #include "masdr.h"
 #include "utils.h"
-
+#include "kalman_filt.h"
 /******************************************************************************/
 Masdr::Masdr() {
     // Initialize software status
@@ -97,17 +97,17 @@ Masdr::Masdr() {
     initialize_peripherals();
     initialize_uhd();
     update_status();
+    do_sample = true;
 
-    boost::thread(sample);
+    boost::thread* s_thr = new boost::thread(boost::bind(&Masdr::sample, this));
 }
 
 /******************************************************************************/
 Masdr::~Masdr() {
+    do_sample = false;
     fftw_destroy_plan(fft_p);
     fftw_free(fft_in);
     fftw_free(fft_out);
-    stop_sampling();
-    shutdown_uhd();
     delete trans_head;
 }
 
@@ -126,6 +126,7 @@ void Masdr::initialize_uhd() {
     int tx_rate = 1e6; //4 samples per symbol at 700kHz
     int master_rate = 42e6;
     float freq_rx = 2.462e9; //Set rx frequency to 2.4 GHz //Set to 2.412 for channel 1 
+
     float freq_tx = 905e6; //set tx frequency
     int gain = 50;// Default: 8dB
     std::string rx_ant = "RX2"; //ant can be "TX/RX" or "RX2"
@@ -177,14 +178,6 @@ void Masdr::initialize_uhd() {
     uhd::stream_args_t stream_args("fc32","sc16");
     rx_stream = usrp->get_rx_stream(stream_args); //Can only be called once.
     tx_stream = usrp->get_tx_stream(stream_args); //Can only be called once.
-}
-
-/******************************************************************************/
-void Masdr::shutdown_uhd() {
-    //post-running wrapping up
-    uhd::stream_cmd_t stream_cmd(
-        uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS);
-    rx_stream->issue_stream_cmd(stream_cmd);
 }
 
 /******************************************************************************/
@@ -377,16 +370,6 @@ void Masdr::transmit_data() {
         }
         bias += 33; // compensate for adding start bits
 
-        //packing magnetometer data
-        data.input = trans_temp->heading;
-        for(i = 0; i < 32; i++) {
-            if ((data.output >> (31 - i)) & 1)
-                transmitBuffer[i+bias] = std::complex<float>(1,0);
-            else
-                transmitBuffer[i+bias] = std::complex<float>(-1,0);
-        }
-        bias += 32; // compensate for adding magnetometer data
-
         //packing gps data
         data.input = trans_temp->gps[0];
         for(i = 0; i < 32; i++) {
@@ -406,15 +389,6 @@ void Masdr::transmit_data() {
         }
         bias += 32; // compensate for adding gps data 1
 
-        data.input = trans_temp->gps[2];
-        for(i = 0; i < 32; i++) {
-            if ((data.output >> (31 - i)) & 1)
-                transmitBuffer[i+bias] = std::complex<float>(1,0);
-            else
-                transmitBuffer[i+bias] = std::complex<float>(-1,0);
-        }
-        bias += 32; // compensate for adding gps data 2
-
         //packing data
         data.input = trans_temp->data;
         for(i = 0; i < 32; i++) {
@@ -431,6 +405,8 @@ void Masdr::transmit_data() {
         }
         */
         /// 12/4/15 MHLI:Deal with root raised cosine.
+
+        /* //BEGIN RRC
 	for(i=0;i<TBUF_SIZE;i++){
 	    if(i%2)
                 transmitBuffer[i] = std::complex<float>(1,0);
@@ -459,6 +435,7 @@ void Masdr::transmit_data() {
             }
             transmitBuffer_final[i] = std::complex<float>(accum,0);
         }
+        */ //END RRC
 
         /*
         std::cout << "Transmitting..." << std::endl;
@@ -483,13 +460,19 @@ void Masdr::transmit_data() {
     //         transmitBuffer[i] = std::complex<float>(-1,0);
 
     // }
-        uhd::tx_metadata_t md;
+    
+    for(i = 0; i < TBUF_SIZE; i++) {
+        transmitBuffer[i] = std::complex<float>(1,0);
+    }
+
+    uhd::tx_metadata_t md;
     md.start_of_burst = false;
     md.end_of_burst = false;
+
     while(1) {
-        //transmit(transmitBuffer, TBUF_SIZE);
+        transmit(transmitBuffer, TBUF_SIZE);
         //Transmit root raised cosined signals
-        tx_stream->send(transmitBuffer_final, SPS* TBUF_SIZE + N_RRC, md);
+        //tx_stream->send(transmitBuffer_final, SPS* TBUF_SIZE + N_RRC, md);
 
         //Transmit Unmodulated signal.
         //tx_stream->send(transmitBuffer, TBUF_SIZE, md);
@@ -583,8 +566,7 @@ void Masdr::rx_test() {
         
         //std::cout << energy_detection(testbuf, RBUF_SIZE) << std::endl;
     }
-
-    stop_sampling();
+    do_sample = false;
     std::cout << "Stopped sampling" << std::endl;
     std::cout << "RX test done." << std::endl << std::endl;
 }
@@ -635,30 +617,17 @@ void Masdr::match_test() {
     //Test match filt stuff.
     float test_val;
     int i;
-    int k = 0;
-    sample();
+
     while(1) {
-        sample();
-        rx_stream->recv(testbuf,RBUF_SIZE,md,3.0,false);
-        // stop_sampling();
-        // std::cout<<"Rec'd"<<std::endl;
-        // std::cout<< testbuf[500].real();
-        // std::cout<<std::endl;
+        for (int j = 0; j < RBUF_BLOCKS/2; ++j) {
+            run_fft(recv_buf[WRAP_RBUF(rb_index - RBUF_BLOCKS/2 + j)].samples);
 
-        run_fft(testbuf);
-        // std::cout<<"FFT'd"<<std::endl;
-        // std::cout<< fft_out[500][0]<<std::endl;
-        test_val = match_filt();
-        std::cout<<test_val;
-        for(i = 0; i < (int)test_val*5; i++)
-            std::cout<<'#';
-        std::cout<<std::endl;
-        // if(!(k%50000))
-        //     std::cout<<match_filt()<<std::endl;
-
-        // if(k > 1000000)
-        //     k = 0;
-         // std::cout<< match_filt()<<std::endl;
+            test_val = match_filt();
+            //std::cout << test_val;
+            for (i = 0; i < (int)test_val*5; ++i)
+                std::cout << '#';
+            std::cout << std::endl;
+        }
     }
 
     std::cout << "Match filter test done." << std::endl << std::endl;
