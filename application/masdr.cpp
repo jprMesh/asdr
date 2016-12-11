@@ -97,8 +97,9 @@ Masdr::Masdr() {
     initialize_peripherals();
     initialize_uhd();
     update_status();
+    do_sample = true;
 
-    boost::thread(sample);
+    boost::thread* s_thr = new boost::thread(boost::bind(&Masdr::sample, this));
 }
 
 /******************************************************************************/
@@ -615,30 +616,17 @@ void Masdr::match_test() {
     //Test match filt stuff.
     float test_val;
     int i;
-    int k = 0;
-    sample();
+
     while(1) {
-        sample();
-        rx_stream->recv(testbuf,RBUF_SIZE,md,3.0,false);
-        // stop_sampling();
-        // std::cout<<"Rec'd"<<std::endl;
-        // std::cout<< testbuf[500].real();
-        // std::cout<<std::endl;
+        for (int j = 0; j < RBUF_BLOCKS/2; ++j) {
+            run_fft(recv_buf[WRAP_RBUF(rb_index - RBUF_BLOCKS/2 + j)].samples);
 
-        run_fft(testbuf);
-        // std::cout<<"FFT'd"<<std::endl;
-        // std::cout<< fft_out[500][0]<<std::endl;
-        test_val = match_filt();
-        std::cout<<test_val;
-        for(i = 0; i < (int)test_val*5; i++)
-            std::cout<<'#';
-        std::cout<<std::endl;
-        // if(!(k%50000))
-        //     std::cout<<match_filt()<<std::endl;
-
-        // if(k > 1000000)
-        //     k = 0;
-         // std::cout<< match_filt()<<std::endl;
+            test_val = match_filt();
+            //std::cout << test_val;
+            for (i = 0; i < (int)test_val*5; ++i)
+                std::cout << '#';
+            std::cout << std::endl;
+        }
     }
 
     std::cout << "Match filter test done." << std::endl << std::endl;

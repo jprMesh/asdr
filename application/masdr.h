@@ -32,12 +32,12 @@
 #define G_DEBUG 1
 #if G_DEBUG
     #define DEBUG_THRESH 0
-    #define DEBUG_MATCH 0
+    #define DEBUG_MATCH 1
     #define DEBUG_TX 0
     #define DEBUG_MAG 0
     #define DEBUG_FFT 0
-    #define DEBUG_TX_DATA 1
-    #define SCALE_ACC 1
+    #define DEBUG_TX_DATA 0
+    #define SCALE_ACC 0
 #else
     #define DEBUG_THRESH 0
     #define DEBUG_MATCH 0
@@ -55,8 +55,8 @@
 
 #define N_RRC 1024 /// 12/4/16 MHLI: Currently not the right number
 
-#define RBUF_BLOCKS 8 /// Num blocks in rolling buffer. MUST BE POWER OF 2.
-#define WRAP_RBUF(x) (x & (int)(pow(2, RBUF_BLOCKS) - 1)) /// Wrap buffer around
+#define RBUF_BLOCKS 16 /// Num blocks in rolling buffer. MUST BE POWER OF 2.
+#define WRAP_RBUF(x) (x & (RBUF_BLOCKS - 1)) /// Wrap buffer around
 
 /**
  * @brief MASDR Application Class
