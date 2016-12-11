@@ -13,6 +13,8 @@
 #include "masdr.h"
 #include "utils.h"
 #include "kalman_filt.h"
+#include <iostream>
+#include <fstream>
 /******************************************************************************/
 Masdr::Masdr() {
     // Initialize software status
@@ -464,6 +466,14 @@ void Masdr::transmit_data() {
     for(i = 0; i < TBUF_SIZE; i++) {
         transmitBuffer[i] = std::complex<float>(1,0);
     }
+    
+
+    std::ofstream ofs;
+    ofs.open ("/home/mqp/Results.bin", std::ofstream::out | std::ofstream::app);
+
+    ofs << transmitBuffer << endl;
+
+    ofs.close();
 
     uhd::tx_metadata_t md;
     md.start_of_burst = false;
@@ -724,4 +734,3 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
 
     return EXIT_SUCCESS;
 }
-
