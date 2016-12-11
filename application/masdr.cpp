@@ -471,7 +471,7 @@ void Masdr::transmit_data() {
     std::ofstream ofs;
     ofs.open ("/home/mqp/Results.bin", std::ofstream::out | std::ofstream::app);
 
-    ofs << transmitBuffer << endl;
+    ofs << transmitBuffer << std::endl;
 
     ofs.close();
 
