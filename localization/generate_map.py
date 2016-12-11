@@ -1,4 +1,6 @@
 # Read in measurements from file
+# with open('masdr_data.dat', 'rb') as datafile:
+#     flots = struct.unpack('f', datafile.read(4))
 
 # (Lat, Long, RSSI value)
 measurements = [(42.274744, -71.8084369, -73.3),
