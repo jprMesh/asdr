@@ -471,7 +471,9 @@ void Masdr::transmit_data() {
 
     while(1) {
         transmit(transmitBuffer, TBUF_SIZE);
-        //Transmit root raised cosined signals
+        //Temporarily step out of transmit function
+        //tx_stream->send(transmitBuffer,TBUF_SIZE, md);
+         //Transmit root raised cosined signals
         //tx_stream->send(transmitBuffer_final, SPS* TBUF_SIZE + N_RRC, md);
 
         //Transmit Unmodulated signal.
@@ -485,7 +487,7 @@ void Masdr::transmit(std::complex<float> *msg, int len) {
     uhd::tx_metadata_t md;
     md.start_of_burst = false;
     md.end_of_burst = false;
-    tx_stream->send(msg, len * sizeof(std::complex<float>), md);
+    tx_stream->send(msg, len , md);
 }
 
 /******************************************************************************/
