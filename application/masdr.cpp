@@ -125,7 +125,7 @@ void Masdr::initialize_uhd() {
     int rx_rate = 42e6;//To deal with the 20MHz bandwidth we have.
     int tx_rate = 1e6; //4 samples per symbol at 700kHz
     int master_rate = 42e6;
-    float freq_rx = 2.462e9; //Set rx frequency to 2.4 GHz
+    float freq_rx = 2.412e9; //Set rx frequency to 2.4 GHz
     float freq_tx = 905e6; //set tx frequency
     int gain = 50;// Default: 8dB
     std::string rx_ant = "RX2"; //ant can be "TX/RX" or "RX2"
