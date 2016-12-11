@@ -12,7 +12,7 @@
 
 #include "masdr.h"
 #include "utils.h"
-
+#include "kalman_filt.h"
 /******************************************************************************/
 Masdr::Masdr() {
     // Initialize software status
