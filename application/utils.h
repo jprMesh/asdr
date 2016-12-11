@@ -91,7 +91,10 @@ typedef struct samp_block {
 typedef struct gps_dat {
     float x;
     float y;
-    float z;
+    float v_x;
+    float v_y;
+    float e_x;
+    float e_y;
 } GPSData;
 
 /**

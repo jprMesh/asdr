@@ -145,6 +145,8 @@ set(SOURCES_MASDR
     masdr.h
     utils.cpp
     utils.h
+    kalman_filt.cpp
+    kalman_filt.h
     #lsm303dlhc_mag.c
     #lsm303dlhc.h
     ## Add any other MASDR files here ##
