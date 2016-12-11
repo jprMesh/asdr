@@ -36,14 +36,14 @@ WEP encryption, dynamic frequency selection, and the OFDM preamble are all have 
          802.11ac &      20, 40, 80 &                  5 &  MIMO-OFDM \\ \hline
 \end{tabular}
 \end{table}\par
-These transmissions can vary when it comes to the entire frames information. However, each standard has the same preamble that signifies the start of a transmission, and what central freuency the transmission is on.  For 802.11, a wifi transmission is concentrated in one or more 20 MHz wide wifi channels or bins. At the 2.4 GHz band, Wi-Fi is allocated throughput 11 wireless channels ranging from 1 to 11.  However, only 3 of these channels (1, 6, and 11) are used due to each channel only being 5 MHz wide.  Since transmissions on the 2.4 GHz band are 20 MHz wide, the utilized channels are spaced enough to mitigate co-channel interference. This is shown in Figure \ref{2.4GHz_channel}.
+These transmissions can vary when it comes to the entire frames information. However, each standard has the same preamble that signifies the start of a transmission, and what central freuency the transmission is on.  For 802.11, a wifi transmission is concentrated in one or more 20 MHz wide wifi channels or bins. At the 2.4 GHz band, Wi-Fi is allocated throughput 11 wireless channels ranging from 1 to 11.  However, only 3 of these channels (1, 6, and 11) are used due to each channel only being 5 MHz wide.  Since transmissions on the 2.4 GHz band are 20 MHz wide, the utilized channels are spaced enough to mitigate co-channel interference. This is shown in Figure \ref{fig:2.4GHz_channel}.
 \begin{figure}[ht]
 \centering
-\includegraphics[width=0.70\textwidth]{img/2.4_GHz_Channels.png}
+\includegraphics[width=0.70\textwidth]{img/2_GHz_Channels.png}
 \caption{\textbf{KYLE MUST EDIT THIS}}
 \label{fig:2.4GHz_channel}
 \end{figure}
-Also, for protocols 802.11a, 802.11n and 802.11 ac, they also use the 5 GHz frequency band which contains a range of 45 channels from 36 to 165 spanning spectrally from 5180 MHz to 5825 MHz.  This is shown in Figure \ref{5GHz_channel}.
+Also, for protocols 802.11a, 802.11n and 802.11 ac, they also use the 5 GHz frequency band which contains a range of 45 channels from 36 to 165 spanning spectrally from 5180 MHz to 5825 MHz.  This is shown in Figure \ref{fig:5GHz_channel}.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/5_GHz_Channels.png}
@@ -59,7 +59,7 @@ The Micro Aerial Vehicle Link (MAVLink) protocol is a free open source wireless 
 \includegraphics[width=0.70\textwidth]{img/mavlink-packet.png}
 \caption{MAVLink Transmission Frame. The red STX frame signifies the start of a transmission. This frame will always be an 8 bit code of 0xFE used for start of frame detection. The following parameters give information about the payload such as it's size and who the data was meant for.  The payload category is a data field which contains a library-based command for the drone to perform.}
 \label{fig:MAVlink_frame}
-\end{figure}\par
+\end{figure} \par
 \begin{table}[ht]
 \centering
 \begin{tabular}{|l|l|l|l|}
