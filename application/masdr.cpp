@@ -473,6 +473,7 @@ void Masdr::transmit_data() {
 
     ofs << transmitBuffer << std::endl;
 
+
     ofs.close();
 
     uhd::tx_metadata_t md;
