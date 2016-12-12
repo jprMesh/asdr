@@ -40,14 +40,14 @@ These transmissions can vary when it comes to the entire frames information. How
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/2_GHz_Channels.png}
-\caption{\textbf{KYLE MUST EDIT THIS}}
+\caption{This image shows the allocation for 802.11 channels in the 2.4 GHz band. Each channel is 20 MHz wide and also has 10 MHz allocated as a gaurd channel. Channels 2-5 and 7-10 are not used as a wireless channel since it would be overlapping in 2 primary wifi channels.}
 \label{fig:2.4GHz_channel}
 \end{figure}
 Also, for protocols 802.11a, 802.11n and 802.11 ac, they also use the 5 GHz frequency band which contains a range of 45 channels from 36 to 165 spanning spectrally from 5180 MHz to 5825 MHz.  This is shown in Figure \ref{fig:5GHz_channel}.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/5_GHz_Channels.png}
-\caption{\textbf{KYLE MUST EDIT THIS}}
+\caption{The 5GHz band allocates channels for higher bandwidth transmissions.  Wi-Fi channels at 5GHz cater to transmitting information at either 20, 40 or 80 MHz. Each wifi transmission on a specified channel will adapt to a higher or lower bandwidth setting based on the corresponding signal strength and interference between a transmitter and receiver.}
 \label{fig:5GHz_channel}
 \end{figure}
 What first signifies a transmission on any of these wifi channels is the detection of the OFDM PLCP preamble which signifies which channel the information is being transmitted on. This preamble consists of  In addition to the preamble, you could also decode the information from the Data fields, however, all of that data is usually encrypted so that it prevents any unauthorized user from accessing it. \cite{wifi_book}
