@@ -40,10 +40,12 @@ signals to be identified. In looking at other signals, other energy detection
 techniques may be warranted. In addition, the platform can be modified to 
 classify the signals it receives.\par
 
-A Kalman filter was implemented in matlab for motion tracking. It was kind of 
-working, worked in matlab. 
- * (finish) port to c++
- * test experimentally
- * EKF
- * KF other aspects.
- * Incoroporate other sensors.
+The Kalman filter used in this project was designed for GPS values, and had a few shortcomings.
+The first shortcoming was that it was only implemented in MATLAB, using a very basic
+test signal and simplistic model. There is C++ code that was written, but never tested.
+The first step would be to use the Kalman filter in the existing code. Beyond this,
+the model used to generate the Kalman gains can be improved, which would result in better 
+predictions. In addition, a Kalman filter could be applied to other aspects of the 
+system, such as the RSS sensing value, and the distance calculation that uses it.
+This is non-trivial, because the equation for getting distance from RSS is non-linear,
+so an Extended Kalman filter would be necessary. 
