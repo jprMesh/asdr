@@ -9,28 +9,62 @@ KalmanFilter::KalmanFilter() {
         x[i] = 0;
         innovation[i] = 0;
         for (j = 0; j < 4; j++) {
-            
-            if(i==j){
-                A[i][j] = 1;
-                P[i][j] = 1; //Should be var_(x or y or vx or vy)
-                Q[i][j] = 0.01; //Arbitrarily picked
-                H[i][j] = 1; //Arbitrarily picked
-                S[i][j] = 1; // Arbitrarily picked
-                K[i][j] = 1; //Arbitrarily picked
-                R[i][j] = 0.01; //Arbitrarily picked
-            }
+         
+            if(i == j)
+                H[i][j] = 1;
+            else
+                H[i][j] = 0;
 
-            else{
                 A[i][j] = 0;
                 P[i][j] = 0;
                 Q[i][j] = 0;
-                H[i][j] = 0;
                 S[i][j] = 0;
                 K[i][j] = 0;
                 R[i][j] = 0;
-            }
+            
         }
     }
+    
+    //A: Constant V model (sampling fast enough for it)
+    A[0][0] = 1;
+    A[0][2] = 0.001; //dt
+    A[1][1] = 1;
+    A[1][3] = 0.001; //dt
+    A[2][2] = 1;
+    A[3][3] = 1;    
+
+    //P: Arbitrarily picked rn, get value from gps.
+    P[0][0] = 2; //Var dx
+    P[1][1] = 2; //Var dy
+    P[2][2] = 4; //var vx
+    P[3][3] = 4; //var vy
+
+    //Q: Assumed that the noise is white.
+    //Q = q*[1/4*dt^4 0 0.5*dt^3 0; 
+    //      0 1/4*dt^4 0 0.5*dt^3; 
+    //      0.5*dt^3 0 dt^2 0; 
+    //      0 0.5*dt^3 0 dt^2];
+
+    float q = 1; //Constant
+    Q[0][0] = q * 2.5e-13;
+    Q[0][2] = q * 5e-10;
+    Q[1][1] = q * 2.5e-13;
+    Q[1][3] = q * 5e-10;
+    Q[2][0] = q * 5e-10;
+    Q[2][2] = q * 1e-6;
+    Q[3][1] = q * 5e-10;
+    Q[3][3] = q * 1e-6;
+
+    //Calculated from matlab trial, may need modificaions.
+    K[0][0] = 0.625;
+    K[0][2] = -750.002;
+    K[1][1] = 0.625;
+    K[1][3] = -750.002;
+    K[2][0] = 4.375e-4;
+    K[2][2] = 1.875;
+    K[3][1] = 4.375e-4;
+    K[3][3] = 1.875;
+
    }
 
 /******************************************************************************/
@@ -89,22 +123,22 @@ void KalmanFilter::update(float pos_x, float pos_y, float e_x, float e_y) {
 
     // IF K is constant, this isn't necessary.
     //S = HPH^T + RS
-    for(i = 0; i < 4; i++) {
-        for(j = 0; j < 4; j++) {
-            hph = 0; 
-            rs = 0;
-            for(k = 0; k < 4; k++){
-                hph += H[i][k] * P[k][j] *H[k][i];
-                rs += R[i][k] * S[k][j];
-            }
-            temp[i][j] = hph + rs;
-        }
-    }
-    for(i=0;i<4;i++){
-        for(j=0;j<4;j++){
-            S[i][j] = temp[i][j];
-        }
-    }
+    // for(i = 0; i < 4; i++) {
+    //     for(j = 0; j < 4; j++) {
+    //         hph = 0; 
+    //         rs = 0;
+    //         for(k = 0; k < 4; k++){
+    //             hph += H[i][k] * P[k][j] *H[k][i];
+    //             rs += R[i][k] * S[k][j];
+    //         }
+    //         temp[i][j] = hph + rs;
+    //     }
+    // }
+    // for(i=0;i<4;i++){
+    //     for(j=0;j<4;j++){
+    //         S[i][j] = temp[i][j];
+    //     }
+    // }
     //K=PH^TS^-1K //K will be set to a constant
 
     //X = x+KY
