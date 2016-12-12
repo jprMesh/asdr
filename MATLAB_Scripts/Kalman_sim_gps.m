@@ -1,20 +1,26 @@
 clear all;
 close all;
 
-numTrials = 100;
+numTrials = 10000;
 dt = 0.01;
 %A = [1.23 0.968 0.05 0.7; 0 1 0 0; 0 0 1 0; 0 0 0 1];
 A = [1 0 dt 0; 0 1 0 dt; 0 0 1 0; 0 0 0 1];
 %Initialize x to 0;
 x = [0;0;0;0;];
 q = 1;
-sd_r = 1;
+sd_r = 0.1;
 %Initialize input
 z = zeros(4, numTrials);
 for i = 1:numTrials
-    xrand = rand()/2;
-    yrand = rand()/2;
-    z(:,i) = [i+xrand i+yrand 1+xrand 1+yrand];
+    xrand = rand()/4;
+    yrand = rand()/4;
+    if i == 1
+        z(:,i) = [i+xrand i+yrand 1 1];
+    else
+        z(:,i) = [i+xrand i+yrand 0 0];
+        z(3,i) = z(1,i)-z(1,i-1);
+        z(4,i) = z(2,i)-z(1,i-1);
+    end
 end
 var_dx = 1;
 var_dy = 1;
@@ -30,6 +36,7 @@ p= [var_dx 0 0 0; 0 var_dy 0 0; 0 0 var_vx 0; 0 0 0 var_vy];
     %Q(4,4) = 1;
     
     %R = zeros(4,4);
+    %R is model covariance?
     R = sd_r * [1/4*dt^4 0 0.5*dt^3 0; 0 1/4*dt^4 0 0.5*dt^3; 0.5*dt^3 0 dt^2 0; 0 0.5*dt^3 0 dt^2];
     
 for i = 1:numTrials
