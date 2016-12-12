@@ -1,17 +1,18 @@
 \chapter{Conclusions}
-Introductory paragraph.
+In this chapter, the accomplishments acheieved by this MQP, as well as ways that 
+the project can be expanded in the future. 
+ * Made the system
+ * flew the thing
+ * logged I, Q data
+ * Match filtered.
+ * RSS value.
+ * GPS value
+ * Tx/rx working on ground.
+ * Kalman Filter in MATLAB
 
-
-\section{Conclusions}
-* Made the system
-* flew the thing
-* logged I, Q data
-* Match filtered.
-* RSS value.
-* GPS value
-* Tx/rx working on ground.
-* Kalman Filter in MATLAB
-
+\section{Conclusions} %Change when we have a discussion on it.
+ * Tx/Rx is more complicated than expected.
+ * GPS is only good for coarse localization.
 
 \section{Recommendations}
  * Smarter channel measuring/deciding (instead of just reading one).
@@ -23,10 +24,15 @@ Introductory paragraph.
 \section{Future Work}
 The primary focus of this MQP was to create an aerial SDR testbed, on which more 
 specialized projects can be completed. This is the primary area where future work
-could be based. 
- * Drone controller localization 
- * Channel Modelling  \par
+could be based. One possibility is to investigate the localization of the controller
+of a drone. This involves locating a communication signal from a drone, determining its
+SSID, finding another transmitter with the same SSID, and localizing it. Another possibility
+is to use two aerial SDR platforms to emperically model a channel. One platform
+would act as the transmitter, the other as the receiver. These are two of many possibilities.
+With the growth of Cognative Radio and quadcopters, the number of possible applications
+will only increase.\par
 
+One of the secondary purposes of this MQP was to implement WiFi
 In addition to making the platform, the MQP focused on energy detection 
 and localization. 
  * Other energy detection techniques
