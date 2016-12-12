@@ -32,11 +32,13 @@ would act as the transmitter, the other as the receiver. These are two of many p
 With the growth of Cognative Radio and quadcopters, the number of possible applications
 will only increase.\par
 
-One of the secondary purposes of this MQP was to implement WiFi
-In addition to making the platform, the MQP focused on energy detection 
-and localization. 
- * Other energy detection techniques
- * Classification. \par
+One of the secondary purposes of this MQP was to implement WiFi localization on 
+the platform. There are many different ways to do this, covered in the background.
+This project focused primarily on using a matched filter in the frequency domain to match
+an OFDM header used by most WiFi communications, but WiFi is only one of many 
+signals to be identified. In looking at other signals, other energy detection
+techniques may be warranted. In addition, the platform can be modified to 
+classify the signals it receives.\par
 
 A Kalman filter was implemented in matlab for motion tracking. It was kind of 
 working, worked in matlab. 
