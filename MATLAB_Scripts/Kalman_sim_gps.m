@@ -2,18 +2,19 @@ clear all;
 close all;
 
 numTrials = 10000;
-dt = 0.01;
+dt = 0.001;
 %A = [1.23 0.968 0.05 0.7; 0 1 0 0; 0 0 1 0; 0 0 0 1];
 A = [1 0 dt 0; 0 1 0 dt; 0 0 1 0; 0 0 0 1];
 %Initialize x to 0;
 x = [0;0;0;0;];
 q = 1;
-sd_r = 0.1;
+%q = 4;
+sd_r = 0.5;
 %Initialize input
 z = zeros(4, numTrials);
 for i = 1:numTrials
-    xrand = rand()/4;
-    yrand = rand()/4;
+    xrand = rand()/2;
+    yrand = rand()/2;
     if i == 1
         z(:,i) = [i+xrand i+yrand 1 1];
     else
@@ -22,10 +23,10 @@ for i = 1:numTrials
         z(4,i) = z(2,i)-z(1,i-1);
     end
 end
-var_dx = 1;
-var_dy = 1;
-var_vx = 1;
-var_vy = 1;
+var_dx = 2;
+var_dy = 2;
+var_vx = 4;
+var_vy = 4;
 p= [var_dx 0 0 0; 0 var_dy 0 0; 0 0 var_vx 0; 0 0 0 var_vy];
 %initialize H
     H = [1 0 0 0; 0 1 0 0; 0 0 1 0; 0 0 0 1];
