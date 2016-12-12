@@ -1,8 +1,41 @@
 \chapter{Conclusions}
-And recommendations.
+Introductory paragraph.
+
+
 \section{Conclusions}
-What we did
+* Made the system
+* flew the thing
+* logged I, Q data
+* Match filtered.
+* RSS value.
+* GPS value
+* Tx/rx working on ground.
+* Kalman Filter in MATLAB
+
+
 \section{Recommendations}
-What we messed up on that we suggest gets fixed.
+ * Smarter channel measuring/deciding (instead of just reading one).
+ * TX/RX in air
+ * Kalman Filter Test/implement in C.
+ * 5 GHz drone ctl
+
+
 \section{Future Work}
-What can be expanded on.
+The primary focus of this MQP was to create an aerial SDR testbed, on which more 
+specialized projects can be completed. This is the primary area where future work
+could be based. 
+ * Drone controller localization 
+ * Channel Modelling  \par
+
+In addition to making the platform, the MQP focused on energy detection 
+and localization. 
+ * Other energy detection techniques
+ * Classification. \par
+
+A Kalman filter was implemented in matlab for motion tracking. It was kind of 
+working, worked in matlab. 
+ * (finish) port to c++
+ * test experimentally
+ * EKF
+ * KF other aspects.
+ * Incoroporate other sensors.
