@@ -227,6 +227,30 @@ Unlike the previously described methods, some localization techniques use the an
 \end{figure}\par
 AoA localization consists of similar issues as other techniques. Noise and channel issues still come into effect. Additional issues occur if these unknowns can’t be dealt with. Another constraint is the requirement for highly directional sensing, which complicates the sensing of a signal before localizing it. This can either be done with many antennas or a very directional antenna, but it adds complexity.
 
+\section{Kalman Filtering}
+In the previous section, the localization techniques discussed were discussed mainly on the merits of the technique itself, assuming that the numbers used in the techniques are as good as they can be. Usually, this isn't the case \cite{kf_book}. Changing environment conditions and noisy sensors introduce errors that are hard to predict, and thus hard to mitigate. This is one of the motivations of Kalman filters, as well as the field of error estimation in general. In addition, Kalman Filters are frequently used as a way to control a system, using the estimate as feedback. Any applications relevant to this project are solely estimation-based, so the rest of this section will focus on this aspect of Kalman filters. \par
+
+In most situations, the known information of a system is a combination of sensor values and a model of what the sensor values should be. The sensor values are imperfect, and have some amount of noise \cite{kf_pictures}. The model, based on some fundamental assumptions, is too imprecise to perfectly apply to the situation. By choosing some middle value in between the measurement and the prediction, a more accurate value can be produced. The Kalman filter is one way to decide which middle value to use \cite{kf_robots}. It applies only to linear systems. Non-linear systems can be linearized and used as an input to a Kalman filter, in which case it is called an Extended Kalman filter. The math for Extended Kalman filters is fairly complicated, so the focus of this section will be standard Kalman filters.\par
+The equations used in a Kalman filter are shown below:
+\subsubsection*{Predict:}
+\begin{align}
+    \vec{x} &= \matr{F}\vec{x} + \matr{H}\vec{u} \\
+    \matr{P} &= \matr{F}\matr{P}\matr{F^T} + \matr{Q} 
+\end{align}
+\subsubsection*{Update:}
+\begin{align}
+    \vec{y} &= \vec{M} - \matr{H}\vec{x} \\
+    \matr{S}&= \matr{HPH^T+RS} \\
+    \matr{K} &= \matr{PH^TS^{-1}K} \\
+    \vec{x} &= \vec{x} + \matr{K}\vec{y} \\
+    \matr{P} &= \matr{(I-KH)P}
+\end{align} \par
+
+The first set of equations predicts the current state given the last state. The first equation updates the state based on the current state and current input. The vector $\vec{x}$ is the state of the Kalman filter. This has the values being filtered. $\vec{u}$ is the value of the controls being used to alter the state. In our application, this is 0. $\matr{F}$ is the state transition matrix, which determines how the different states interact with each other.  $\matr{H}$ is the control matrix. The second equation updates the covariance matrix of the state, which is $\matr{P}$. $\matr{Q}$ is the covariance of the noise of the sensors. \par
+
+The second set of equations updates the Kalman filter to take into account the most recent measurement. $\vec{y}$,sometimes called innovation, is the difference between the measurement received and the last state prediction. 
+$\matr{S}$ is an intermediate matrix, used so that the calculation of the Kalman gain $\matr{K}$ is not too complicated in one step. Some documentation on Kalman filtering skip this step.  $\matr{R}$ is the covariance of the external noise. The calculated Kalman gains are then used to update the state and state covariance to take into account the updated model and input. \par
+
 \section{Software Defined Radio}
 Due to the rapidly increasing number of users dependent on efficient spectrum allocation for communication, the use of reprogrammable radios has become an integral part of designing communication systems. Radios exist in a wide range of devices, such as cell phones, cars, televisions, garage door openers, and computers. A radio is any device that transmits or receives wireless signals that are within the radio frequency band of the electromagnetic spectrum. A software defined radio (SDR) is defined as a “radio in which some or all of the physical layer functions are software defined” \cite{sdr_forum}. Traditional hardware based radios are nearly impossible to modify post-production, and have limited ways to be repurposed. SDRs, on the other hand, are comparatively inexpensive, highly reusable, and are easily configurable to support multiple waveform standards.\par
 There are multiple different families of SDRs, two of which are RTL and Universal Software Radio Peripheral (USRP). An RTL is a low cost SDR that uses a DVB-T TV tuner dongle based on the RTL2832U chip set \cite{rtl_sdr}. The DVB-T TV tuner was converted to be used as a wideband SDR using a new software driver. The RTL-SDR can be used for many applications including listening to aircraft traffic control, decoding ham radio packets, and sniffing GSM signals. The USRP is a flexible transceiver that is able to use a standard PC to prototype wireless systems. USRPs are able to prototype a wide range of single-channel and multi-input multi output (MIMO) wireless communication systems \cite{USRP_NI}. USRPs can be programmed using software frameworks including GNU Radio, Matlab, Simulink, LabVIEW, C++.\par
