@@ -8,7 +8,7 @@ This energy measurement is then compared to a threshold energy. This threshold w
 
 
 \subsection{Match filtering}
-In order to categorize Wi-Fi signals at the 2.4GHz band, an OFDM detector was implemented. In order to detect OFDM, the receiver will detect beacon frames by correlating upon the Wi-Fi’s L-STF structure. The L-STF structure is a specific spacing and timing of transmissions over various subcarriers. This structure is also used for calculating the coarse frequency offset. The subcarriers and transmissions used in L-STF are shown in the figure below. \par 
+In order to categorize Wi-Fi signals at the 2.4GHz band, an OFDM detector was implemented. In order to detect OFDM, the receiver will detect beacon frames by correlating upon the Wi-Fi’s L-STF structure. The L-STF structure is a specific spacing and timing of transmissions over various subcarriers. This structure is also used for calculating the coarse frequency offset. The subcarriers and transmissions used in L-STF are shown in Figure \ref{fig:ofdm_subcarriers}. \par 
 
 \begin{figure}[ht!]
 	\centering
@@ -17,7 +17,7 @@ In order to categorize Wi-Fi signals at the 2.4GHz band, an OFDM detector was im
 	\label{fig:ofdm_subcarriers}
 \end{figure}\par
 %(https://static1.squarespace.com/static/54860cc3e4b020d690f237ba/t/556cc531e4b0a02f64b72fed/1433191737073/ofdm-subcarriers?format=1000w)
-The multiple subcarriers are represented by the various waveform colors in figure \ref{fig:ofdm_subcarriers}.  The spacing of each frequency is denoted by f.  This series of waveforms are transmitted from the OFDM transmitter over a fixed amount of time. The spacing and frequency behavior of the L-STF field has the following characteristics: \par
+The multiple subcarriers are represented by the various waveform colors in Figure \ref{fig:ofdm_subcarriers}.  The spacing of each frequency is denoted by f.  This series of waveforms are transmitted from the OFDM transmitter over a fixed amount of time. The spacing and frequency behavior of the L-STF field has the following characteristics: \par
 \begin{table}[ht!]
 	\centering
 \begin{tabular}{|p{3.6cm}|p{4cm}|p{4cm}|p{4.5cm}|}
