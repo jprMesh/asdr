@@ -97,7 +97,7 @@ The simplest method of non-cooperative sensing is energy detection. In this appr
 This method of detection is the most simple as it does not require information about the signal ignoring key aspects of signals such as modulation method and pulse shaping. Because of this, it is the simplest detection method to implement. However, an assumption made in using energy detection is that the signals being searched for have significantly more power than the noise and interference of the channel. This does not always prove to be true. In addition to this, energy detection cannot be used to distinguish signals using the frequencies measured, as no pulse shape information is determined.
 
 \subsection{Matched Filter}
-Another approach to spectrum sensing is through the use of matched filters. Matched filters are designed to maximize the signal to noise ratio (SNR) given an input signal, which we will call $s_{in}$ \cite{sensing_energy}. To sense signals through matched filtering, prior knowledge of the reference signal (or $s_{ref}$) to be detected must be known. The $s_{in}$ will then be correlated with $s_{ref}$. This produces a value m, that will be compared to a threshold value. This process is described in Equation \ref{eq:matched} below and in Figure \ref{figure:matched_filter}
+Another approach to spectrum sensing is through the use of matched filters. Matched filters are designed to maximize the signal to noise ratio (SNR) given an input signal, which will be called $s_{in}$ \cite{sensing_energy}. To sense signals through matched filtering, prior knowledge of the reference signal (or $s_{ref}$) to be detected must be known. The $s_{in}$ will then be correlated with $s_{ref}$. This produces a value m, that will be compared to a threshold value. This process is described in Equation \ref{eq:matched} below and in Figure \ref{figure:matched_filter}
 . N represents the length of the reference signal, in samples. 
 \begin{align} \label{eq:matched}
     m &= \sum_{k = 0}^{N}s_{in}[t-k]s_ref[N-k] 
@@ -117,7 +117,7 @@ Cyclostationary Feature Detection (or CFD) depends on the fact that all communic
     R_x^{\alpha(\tau)} &= lim(t->\infty) \frac{1}{T} \int_{-T/2}^{T/2} R_x(t,\tau)exp(-j2\pi\alpha t dt)
 \end{align}
 
-Where $R_x(t,\tau)$ is the autocorrelation function of x at t with x at $\tau$. This function gives us an understanding of the times when the signal repeats, but is missing vital information of the repeated frequencies. By taking the fourier transform of $R_x^\alpha(\tau)$, we can get a better understanding of the frequencies in the Cyclostationary Process. This is denoted as $S_x^\alpha(f)$, and is equal to \cite{cyclostat_text}:  \par
+Where $R_x(t,\tau)$ is the autocorrelation function of x at t with x at $\tau$. This function gives us an understanding of the times when the signal repeats, but is missing vital information of the repeated frequencies. By taking the fourier transform of $R_x^\alpha(\tau)$, one can get a better understanding of the frequencies in the Cyclostationary Process. This is denoted as $S_x^\alpha(f)$, and is equal to \cite{cyclostat_text}:  \par
 
 \begin{align}\label{eq:scf}
 S_x^\alpha(f)=\int_{-\infty}^{\infty} R_x^\alpha(\tau)exp(-j2\pi f\tau d\tau) 
