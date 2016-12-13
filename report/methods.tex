@@ -2,7 +2,7 @@
 \section{Spectrum Sensing}
 The main aspect of this system is to be able to detect wireless signals. In order to do so, the following sensing methods were used.
 \subsection{Energy Detection}
-The system will be detecting transmissions based off of energy detection. This type of detection is done by measuring our received signal’s strength along a desired central frequency, and comparing it to an ideal threshold. In order to determine the energy of the received signal we used the following equation:\par 
+The system will be detecting transmissions based off of energy detection. This type of detection is done by measuring our received signal’s strength along a desired central frequency, and comparing it to an ideal threshold. In order to determine the energy of the received signal that was used the following equation:\par 
 \[E = \int_{-\infty}^{\infty}| x(t) |^2dt\]
 This energy measurement is then compared to a threshold energy. This threshold was chosen due to it being high enough to ensure a low chance of false alarm while still sensing signals from a significant distance. \par 
 
@@ -79,7 +79,7 @@ The rate field gives us information such as the modulation, coding rate, and dat
 	\caption{Rate Field Table}
 	\label{fig:ofdm_rate_table}
 \end{figure}\par
-Using the rate information, we can further analyze the received packet’s 802.11 frame to find the broadcast SSID of our received transmission frame. We will be concerned with the SSID field which starts at the 36th byte of the beacon frame header. 
+Using the rate information, further analization was done to the received packet’s 802.11 frame to find the broadcast SSID of our received transmission frame. The area of interest is the SSID field which starts at the 36th byte of the beacon frame header. 
 \begin{figure}[ht!]
 	\centering
 	\includegraphics[width=0.70\textwidth]{img/beacon_frame}
