@@ -24,10 +24,10 @@ KalmanFilter::KalmanFilter() {
             
         }
     }
-    
-    //A: Constant V model (sampling fast enough for it)
-    A[0][0] = 1;
-    A[0][2] = 0.001; //dt
+   
+     //A: Constant V model (sampling fast enough for it)
+    A[0][0] = 1
+;    A[0][2] = 0.001; //dt
     A[1][1] = 1;
     A[1][3] = 0.001; //dt
     A[2][2] = 1;
