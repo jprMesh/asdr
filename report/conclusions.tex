@@ -1,2 +1,49 @@
 \chapter{Conclusions}
-And recommendations.
+In this chapter, the accomplishments acheieved by this MQP, as well as ways that 
+the project can be expanded in the future. 
+ * Made the system
+ * flew the thing
+ * logged I, Q data
+ * Match filtered.
+ * RSS value.
+ * GPS value
+ * Tx/rx working on ground.
+ * Kalman Filter in MATLAB
+
+\section{Conclusions} %Change when we have a discussion on it.
+ * Tx/Rx is more complicated than expected.
+ * GPS is only good for coarse localization.
+
+\section{Recommendations}
+ * Smarter channel measuring/deciding (instead of just reading one).
+ * TX/RX in air
+ * Kalman Filter Test/implement in C.
+ * 5 GHz drone ctl
+
+
+\section{Future Work}
+The primary focus of this MQP was to create an aerial SDR testbed, on which more 
+specialized projects can be completed. This is the primary area where future work
+could be based. One possibility is to investigate the localization of the controller
+of a drone. This involves locating a communication signal from a drone, determining its
+SSID, finding another transmitter with the same SSID, and localizing it. Another possibility
+is to use two aerial SDR platforms to emperically model a channel. One platform
+would act as the transmitter, the other as the receiver. These are two of many possibilities.
+With the growth of Cognative Radio and quadcopters, the number of possible applications
+will only increase.\par
+
+One of the secondary purposes of this MQP was to implement WiFi localization on 
+the platform. There are many different ways to do this, covered in the background.
+This project focused primarily on using a matched filter in the frequency domain to match
+an OFDM header used by most WiFi communications, but WiFi is only one of many 
+signals to be identified. In looking at other signals, other energy detection
+techniques may be warranted. In addition, the platform can be modified to 
+classify the signals it receives.\par
+
+A Kalman filter was implemented in matlab for motion tracking. It was kind of 
+working, worked in matlab. 
+ * (finish) port to c++
+ * test experimentally
+ * EKF
+ * KF other aspects.
+ * Incoroporate other sensors.

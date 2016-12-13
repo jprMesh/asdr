@@ -53,13 +53,14 @@
 \usepackage{ulem}
 \usepackage{url}
 \usepackage{hyperref}
+\usepackage[toc]{glossaries}
 \usepackage{caption}
 \usepackage{amsmath}
 \usepackage{subcaption}
 \usepackage{pdflscape}
 
 \captionsetup[table]{skip=10pt}
-
+\makeglossaries
 % leave 1.5in margin to the left and 1in margin to the other
 % sides. Don't print page number in the margin (but rather above it)
 \setlength{\textheight}{8.63in}
@@ -70,7 +71,8 @@
 \setlength{\headsep}{0.0in}
 \newcommand{\matr}[1]{\mathbf{#1}} % undergraduate algebra version
 %\newcommand{\matr}[1]{#1}          % pure math version
-%\newcommand{\matr}[1]{\bm{#1}}     % ISO complying version
+%\newcommand{\matr}[1]{\bm{#1}}     % ISO complying 
+
 % Start to write
 \begin{document}
 	
@@ -183,11 +185,11 @@
 	\begin{center}
 		\textbf{Acknowledgements}
 	\end{center}
-	Write about acknowledgements lol
+	John Peck, Professor Alexander Wyglinski, Cathy(?), Bill Appleyard(??), Whoever we talked to about the solo.
 
 	\begin{center}
 		\textbf{Authorship}
-	\end{center}
+	\end{center};
 	talk about authorship now lol
 
 	\clearpage
@@ -202,7 +204,6 @@
 	% This will catch all objects enclosed in \begin{table}\end{table}
 	% statements.
 	\listoftables
-	
 	\include{glossary}
 	\include{executive-summary}
 	% And we need a clear separation between preface and text, otherwise
