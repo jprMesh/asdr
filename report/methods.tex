@@ -59,16 +59,25 @@ Once a beacon transmission is detected using the above techniques, the L-SIG fie
 	\label{table:WiFi_table}
 \end{table} \par
 The rate field gives us information such as the modulation, coding rate, and data rate by relating the rate to its respective binary value:
-%\begin{table}[ht!]
-%	\centering
-%	\begin{tabular}{|c|c|c|p{3cm} p{3cm} p{3cm}|}
-%		\hline
-%		Rate(bits 0-3) & Modulation & Coding Rate (R) & 20 MHz bw &  10 MHz bw\newline Data Rate(Mb/s) &5 MHz bw \\
-%		\hline
-%	\end{tabular}
-%	\caption{Rate Information}
-%	\label{table:ofdm_rate_table}
-%\end{table} \par
+
+\begin{table}[ht!]
+	\centering
+	\begin{tabular}{|l|l|l|l|l|}
+		\hline
+		Rate(bits 0-3) & Modulation & Coding Rate (R) & 20 MHz data rate (Mb/s)\\
+		1101 & Modulation & BPSK & 1/2 & 6 \\
+		1111 & Modulation & BPSK & 3/4 & 9 \\
+		0101 & Modulation & QPSK & 1/2 & 12 \\
+		0111 & Modulation & QPSK & 3/4 & 18 \\
+		1001 & Modulation & 16-QAM & 1/2 & 24 \\
+		1011 & Modulation & 16-QAM & 3/4 & 36 \\
+		0001 & Modulation & 64-QAM & 2/3 & 48 \\
+		0011 & Modulation & 64-QAM & 3/4 & 54 \\						
+		\hline
+	\end{tabular}
+	\caption{This table gives the corresponding modulation, coding rate, and data rate based on the received binary information from the L-STG field. These fields can then be used to further demodulate the received signal.}
+	\label{table:ofdm_rate_table}
+\end{table} \par
 
 \begin{figure}[ht!]
 	\centering
