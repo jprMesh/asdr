@@ -108,7 +108,7 @@ The shifting nature of wireless channels introduces a difficult to predict noise
 
 \subsection{GPS}
 The MASDR application uses GPS readings for location. The direction and distance of the beacon from the drone are then used to get an estimated location of the beacon. The receiver that is used in this project polls much less frequently than the localization technique, at around 10 times a second. Because of this, around 20 GPS measurements are taken at each sampling location. These measurements are averaged in order to achieve an accurate sampling location reading.\par
- \subsection{Kalman Filtering}
+ \subsection{Kalman Filtering}\label{methods:kf}
  The GPS receiver that is used in this project provides very noisy results. A contributing factor to this is that the receiver used is both small and cheap. Beause of this, the values that it reads are frequently very scattered, with a high variance. In order to mitigate this, a four-state kalman filter was designed and simulated in MATLAB. The Kalman Filter equations presented in the Background section are reproduced below \cite{kf_book}: \par
  \subsubsection*{Predict:}
 \begin{align}
