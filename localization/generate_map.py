@@ -2,12 +2,17 @@
 # with open('masdr_data.dat', 'rb') as datafile:
 #     flots = struct.unpack('f', datafile.read(4))
 
+from math import sqrt
+
+altitude = 30 # in meters
 # (Lat, Long, RSSI value)
-measurements = [(42.274744, -71.8084369, -73.3),
-                (42.275376, -71.8085379, -74.3),
-                (42.275342, -71.8075235, -74.9)]
-# Distance calculation 
-rss_dist_meas = [(meas[0], meas[1], 10**((meas[2]/-20))/100)
+measurements = [(42.274744, -71.8084369, -84.3),
+                (42.275376, -71.8085379, -85.3),
+                (42.275342, -71.8075235, -85.9)]
+# Distance calculation
+# Pythagorean theorem to eliminate altitude
+rss_dist_meas = [(meas[0], meas[1],
+                  sqrt((10**((meas[2]/-20))/100)**2 - altitude**2))
                  for meas in measurements]
 
 # Populate js list of points to plot
