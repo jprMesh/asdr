@@ -1,5 +1,7 @@
 //
 // Copyright 2010-2011,2014 Ettus Research LLC
+// Modified, 2016 by Narut Akadejdechapanich, Scott Iwanicki, Max Li, Kyle Piette, 
+// Jonas Rogers
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -34,23 +36,23 @@
 #include <math.h>
 
 #define N_FFT 1024
+#define GPS_BUF_SIZE 60  // Hold the past 6 seconds of samples
+
 namespace po = boost::program_options;
 
+///FFT handles, arrays
 fftw_complex *fft_in, *fft_out; ///< Buffers for FFT.
 fftw_plan fft_p;
 fftw_complex ofdm_head[N_FFT]; //< Expected OFDM Header.    
 
-
+///Interrupt Handlers
 static bool stop_signal_called = false;
 void sig_int_handler(int){stop_signal_called = true;}
 
+
+
+//GPS values
 pthread_t gps_thread;
-
-
-//GPS constants
-
-#define GPS_BUF_SIZE 60  // Hold the past 6 seconds of samples
-
 int gps_running = 1; // flag to start/stop gps polling 
                      // need to recall poll_gps after setting flag back to 1
 double gps_buff[GPS_BUF_SIZE][3]; //GPS data buffer. 
@@ -59,7 +61,8 @@ double gps_buff[GPS_BUF_SIZE][3]; //GPS data buffer.
                                  //2 is timestamp                                 
 volatile int gps_buf_head = 0; //current gps buffer head
 struct gps_data_t gps_data__;    //GPS struct
-
+/******************************************************************************/
+/***************************GPS FUNCTIONS**************************************/
 /******************************************************************************/
 int init_gps(){
     int rc,x;
@@ -134,8 +137,9 @@ void rem_gps(){
     gps_close (&gps_data__);
 }
 
-
-
+/******************************************************************************/
+/***************************RECV, FS WRITING FUNCTIONS*************************/
+/******************************************************************************/
 template<typename samp_type> void recv_to_file(
     uhd::usrp::multi_usrp::sptr usrp,
     const std::string &cpu_format,
@@ -144,7 +148,6 @@ template<typename samp_type> void recv_to_file(
     size_t samps_per_buff,
     unsigned long long num_requested_samples,
     double time_requested = 0.0,
-    bool stats = false,
     bool null = false,
     bool continue_on_bad_packet = false
 ){
@@ -153,22 +156,22 @@ template<typename samp_type> void recv_to_file(
     double lat_in, long_in,time_in;   
     float match_val[2] = {0,0}, re, im;
     std::complex<samp_type> match_mag, lat_val, long_val, time_val, rssi_val;
+    double rssi = 0;
     boost::this_thread::sleep(boost::posix_time::seconds(2)); //allow for some setup time
-    std::cout<<"DEBUG flag"<<std::endl;
-
     //create a receive streamer
     uhd::stream_args_t stream_args(cpu_format,wire_format);
     uhd::rx_streamer::sptr rx_stream = usrp->get_rx_stream(stream_args);
-
     uhd::rx_metadata_t md;
 
-    std::complex<samp_type> buff[samps_per_buff + 5]; // extra size for match filt value, latitude, longitude, time
-        
+    // extra size for match filt value, latitude, longitude, time
+    std::complex<samp_type> buff[samps_per_buff + 5]; 
+    
+    //File handle    
     std::ofstream outfile;
     if (not null)
         outfile.open(file.c_str(), std::ofstream::binary);
     bool overflow_message = true;
-    double rssi = 0;
+
     //setup streaming
     uhd::stream_cmd_t stream_cmd((num_requested_samples == 0)?
         uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS:
@@ -222,38 +225,42 @@ template<typename samp_type> void recv_to_file(
 
         num_total_samps += num_rx_samps;
         
-        ///11/18/16 MHLI:  
         //Copy buff.front() into an FFT
         for(i = 0; i < N_FFT; i++){
             fft_in[i][0] = buff[i].real();
             fft_in[i][0] = buff[i].imag();
         }
+
         //Execute FFT
         fftw_execute(fft_p);
-        //Match filter.
+        
+        //Matched filter.
         for(i = 0; i < N_FFT; i++) {
             re = fft_out[i][0] * ofdm_head[i][0] - fft_out[i][1] * ofdm_head[i][1];
             im = fft_out[i][0] * ofdm_head[i][1] + fft_out[i][1] * ofdm_head[i][0];
             match_val[0] += re;
             match_val[1] += im;
         }
-
+        //Read RSS value.
         rssi = usrp->get_rx_sensor("rssi",0).to_real();
-        //Imaginary value of 1000 to make it easy to find in post processing.
+
+        //Use imaginary values in complex data type to flag non-sample values.
         get_gps_data(&lat_in,&long_in,&time_in);
-        match_mag = std::complex<samp_type>(sqrt(match_val[0]*match_val[0]+match_val[1]*match_val[1]),1000);
+        match_mag = std::complex<samp_type>(sqrt(match_val[0]*match_val[0] + \
+                                                 match_val[1]*match_val[1]),1000);
         lat_val = std::complex<samp_type>((samp_type)lat_in,2000);
         long_val = std::complex<samp_type>((samp_type)long_in,3000);
         time_val = std::complex<samp_type>((samp_type)time_in,4000);
         rssi_val = std::complex<samp_type>((samp_type)rssi,5000);
         
-        //Log Match filter result.
+        //Add results to write buffer
         buff[samps_per_buff] = match_mag;
         buff[samps_per_buff+1] = lat_val;
         buff[samps_per_buff+2] = long_val;
         buff[samps_per_buff+3] = time_val;
         buff[samps_per_buff+4] = rssi_val;
         
+        //Write to buffer.
         if (outfile.is_open())
             outfile.write((const char*)buff, (num_rx_samps+5)*sizeof(std::complex<samp_type>));
 
@@ -269,18 +276,9 @@ template<typename samp_type> void recv_to_file(
 
     if (outfile.is_open())
         outfile.close();
-
-    if (stats) {
-        std::cout << std::endl;
-
-        double t = (double)ticks_diff.ticks() / (double)boost::posix_time::time_duration::ticks_per_second();
-        std::cout << boost::format("Received %d samples in %f seconds") % num_total_samps % t << std::endl;
-        double r = (double)num_total_samps / t;
-        std::cout << boost::format("%f Msps") % (r/1e6) << std::endl;
-
-    }
 }
 
+/******************************************************************************/
 typedef boost::function<uhd::sensor_value_t (const std::string&)> get_sensor_fn_t;
 
 bool check_locked_sensor(std::vector<std::string> sensor_names, const char* sensor_name, get_sensor_fn_t get_sensor_fn, double setup_time){
@@ -378,10 +376,9 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
                 gain=40;
     
     double      rate = 1e6,                 \
-                freq=2.4e9;
+                freq=2.4e9;                   
     
-    bool    stats = 0,                      \
-            null = 0,                       \
+    bool    null = 0,                       \
             continue_on_bad_packet = 0;
 
     
@@ -398,14 +395,6 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
     usrp->set_rx_freq(tune_request);
         
     usrp->set_rx_gain(gain);    
-    
-
-    //set the IF filter bandwidth
-    // if (vm.count("bw")) {
-    //     std::cout << boost::format("Setting RX Bandwidth: %f MHz...") % (bw/1e6) << std::endl;
-    //     usrp->set_rx_bandwidth(bw);
-    //     std::cout << boost::format("Actual RX Bandwidth: %f MHz...") % (usrp->get_rx_bandwidth()/1e6) << std::endl << std::endl;
-    // }
 
     //set the antenna
     usrp->set_rx_antenna(ant);
@@ -434,7 +423,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
     boost::this_thread::sleep(boost::posix_time::seconds(2)); //allow for some setup time   
     std::cout<< "Ready!" <<std::endl;
 #define recv_to_file_args(format) \
-    (usrp, format, wirefmt, file, spb, total_num_samps, total_time, stats, null, continue_on_bad_packet)
+    (usrp, format, wirefmt, file, spb, total_num_samps, total_time, null, continue_on_bad_packet)
     //recv to file
     if (type == "double") recv_to_file<double >recv_to_file_args("fc64");
     else if (type == "float") recv_to_file<float>recv_to_file_args("fc32");
