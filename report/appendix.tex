@@ -1,91 +1,9 @@
 \appendix
-\chapter{MATLAB Examples}
-\section{Energy Detection Example}
-\label{app:energy_detection}
-\begin{verbatim}
 
-clear all;
-close all;
-N = 10000; % N is length of Signal 
-Nbins = 1024;
-%Set Threshold to check if signal is there.
-thresh = 200;
-
-f = 500e3;
-Fs = 5e6;
-t = (1:N)* 1/Fs;
-
-noise = randn(1,N);
-sig = cos(2*pi*f * t);
-
-% Do FFT on time, noise.
-fft_noise = fft(noise, Nbins);
-fft_sig = fft(sig, Nbins);
-
-mag_noise = abs(fft_noise);
-mag_sig = abs(fft_sig);
-
-% Plot FFT results
-figure(1);
-% Hist values in bins, randn.
-plot(-(Nbins-1)/2:(Nbins-1)/2,mag_noise,-(Nbins-1)/2:(Nbins-1)/2,thresh*ones(1,Nbins));
-title('FFT Bin Values, Noise');
-axis([-512 512 0 250]);
-
-figure(2);
-% Hist values in bins, cos.
-plot(-(Nbins-1)/2:(Nbins-1)/2,mag_sig,-(Nbins-1)/2:(Nbins-1)/2,thresh*ones(1,Nbins));
-axis([-512 512 0 250]);
-title('FFT Bin Values, Signal');
-
-
-% Determine if either value passes threshold.
-noise_passes_thresh = (max(mag_noise)>thresh)
-sig_passes_thresh = (max(mag_sig)>thresh)
-\end{verbatim}
-\section{Matched Filter Example}
-\label{app:matched_filter}
-\begin{verbatim}
-clear all;
-close all;
-
-%Seed to generate expected value (so threshold is always applicable).
-rng(500);
-%Size of random signal, representing noise
-N=400;
-%pick thresh to separate matched result to unmatched result.
-thresh=20;
-
-%Example packet to look for
-toMatch = [1 -1 -1 -1 1 1 -1 1 1 -1 -1 -1 -1 -1 1 1 1 -1 1 1 1 1 -1 -1 1];
-%Reverse, so a filter operation will instead correlate. Shifted back to
-%positive to be causal.
-reverseMatch = toMatch(end:-1:1);
-
-%Generate random signal.
-noise = randn(1,N);
-%make signal with noise and 
-noise_signal = noise;
-
-%Add expected packet to signal.
-for i=50:length(toMatch) + 49
-    noise_signal(i) =  noise(i)+toMatch(i-49);
-end
-
-figure(1);
-plot(noise_signal);
-title('Noisy Signal With Match Header');
-
-%filter noise_signal
-filt_sig= filter(reverseMatch,1, noise_signal);
-figure(2);
-plot(1:length(filt_sig),filt_sig,1:length(filt_sig),thresh*ones(length(filt_sig)));
-title('Match Filtered Signal');
-\end{verbatim}
 \chapter{Design Configurations}
 \section{SBC Selection}
 \begin{landscape}
-    \begin{table}[ht]
+    \begin{table}[h!]
     \caption{SBC Selection}
     \label{table:sbc_selection}
     \centering
@@ -104,7 +22,7 @@ title('Match Filtered Signal');
     \end{table}
 \end{landscape} \par
 \section{Approach One}
-\begin{table}[ht]
+\begin{table}[h!]
 \centering
 \caption{Approach One Design Configuration}
 \label{table:approach_one}
@@ -141,8 +59,9 @@ title('Match Filtered Signal');
             Energy Sensing Technique              & Filter and energy detection               \\ \hline
 \end{tabular}
 \end{table}\par
+\pagebreak
 \section{Approach Two}
-\begin{table}[ht]
+\begin{table}[h!]
 \centering
 \caption{Approach Two Design Configuration}
 \label{table:approach_two}
@@ -179,8 +98,9 @@ title('Match Filtered Signal');
             Energy Sensing Technique              & Filter and energy detection               \\ \hline
 \end{tabular}
 \end{table}\par
+\pagebreak
 \section{Approach Three}
-\begin{table}[ht]
+\begin{table}[h]
 \centering
 \caption{Approach Three Design Configuration}
 \label{table:approach_three}
@@ -217,8 +137,9 @@ title('Match Filtered Signal');
             Energy Sensing Technique              & Filter and energy detection               \\ \hline
 \end{tabular}
 \end{table}\par
+\pagebreak
 \section{Approach Four}
-\begin{table}[ht]
+\begin{table}[h]
 \centering
 \caption{Approach Four Design Configuration}
 \label{table:approach_four}
@@ -255,3 +176,46 @@ title('Match Filtered Signal');
             Energy Sensing Technique              & Filter and energy detection               \\ \hline
 \end{tabular}
 \end{table}\par
+\pagebreak
+
+\chapter{C++ Code}
+\section{iq\_to\_file Source Code}\label{app:iq_to_file}
+\lstinputlisting[language=C++]{../iq_to_file/iq_to_file.cpp}
+\pagebreak
+\section{MASDR Code}\label{app:masdr_code}
+\subsection{utils.h}
+\lstinputlisting[language=C++]{../application/utils.h}
+\subsection{utils.cpp}
+\lstinputlisting[language=C++]{../application/utils.cpp}
+\subsection{masdr.h}
+\lstinputlisting[language=C++]{../application/masdr.h}
+
+\subsection{masdr.cpp}
+\lstinputlisting[language=C++]{../application/masdr.cpp}
+\pagebreak
+
+\chapter{Python Code}
+\pagebreak
+
+\chapter{MATLAB Code}
+
+\section{Energy Detection Example}
+\label{app:energy_detection}
+\lstinputlisting[language=MATLAB]{../MATLAB_Scripts/energy_detect_masdr.m}
+\pagebreak
+
+\section{Matched Filter Example}
+\label{app:matched_filter}
+\lstinputlisting[language=MATLAB]{../MATLAB_Scripts/matched_filt_masdr.m}
+\pagebreak
+
+\section{GPS Kalman Filter Simulation}
+\label{app:kf_sim}
+\lstinputlisting[language=MATLAB]{../MATLAB_Scripts/Kalman_sim_gps.m}
+\pagebreak
+
+\section{Post-Processing Script}
+\label{app:matlab_proc}
+\lstinputlisting[language=MATLAB]{../MATLAB_Scripts/data_manip_masdr.m}
+\pagebreak
+

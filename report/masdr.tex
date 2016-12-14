@@ -53,13 +53,44 @@
 \usepackage{ulem}
 \usepackage{url}
 \usepackage{hyperref}
+\usepackage[toc]{glossaries}
 \usepackage{caption}
 \usepackage{amsmath}
 \usepackage{subcaption}
 \usepackage{pdflscape}
-
+\usepackage[nottoc,numbib]{tocbibind}
+%Code settings:
+\usepackage{listings}
+\usepackage{color}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+ 
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\tiny,
+    breakatwhitespace=false,         
+    breaklines=true,  
+    frame=none,               
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,
+    framexleftmargin=5pt,                 
+    tabsize=2
+}
+\lstset{style=mystyle}
+%end code settings
 \captionsetup[table]{skip=10pt}
-
+\makeglossaries
 % leave 1.5in margin to the left and 1in margin to the other
 % sides. Don't print page number in the margin (but rather above it)
 \setlength{\textheight}{8.63in}
@@ -68,6 +99,9 @@
 \setlength{\oddsidemargin}{0.3in}
 \setlength{\evensidemargin}{0.3in}
 \setlength{\headsep}{0.0in}
+\newcommand{\matr}[1]{\mathbf{#1}} % undergraduate algebra version
+%\newcommand{\matr}[1]{#1}          % pure math version
+%\newcommand{\matr}[1]{\bm{#1}}     % ISO complying 
 
 % Start to write
 \begin{document}
@@ -146,7 +180,9 @@
 	Professor Yehia Massoud, Head of Department	
 	
 	\brk
+	\begin{center}
 	This report represents work of WPI undergraduate students submitted to the faculty as evidence of a degree requirement. WPI routinely publishes these reports on its web site without editorial or peer review. For more information about the projects program at WPI, see http://www.wpi.edu/Academics/Projects.
+	\end{center}
 	
 	% end of titlepage
 	\newpage
@@ -166,8 +202,7 @@
 	% Fortunately, LaTeX has thought of that, so it's very easy:
 	%
 	\begin{abstract}
-		This paper is the most important paper I have ever written. Therefore,
-		everyone should read it, like it, and recommend it to all his friends.
+		This project focuses on incorporating two new technologies, drones and software defined radios, to detect and localize relevant wireless signals with increased maneuverability. The objective lies in building a platform for wireless signal mapping and search and rescue purposes. The platform built will be a baseline for future development through the recommendations given in this report.
 	\end{abstract}
 	
 	% From here on, we need Roman page numbers according to the library
@@ -181,11 +216,11 @@
 	\begin{center}
 		\textbf{Acknowledgements}
 	\end{center}
-	Write about acknowledgements lol
+	John Peck, Professor Alexander Wyglinski, Cathy(?), Bill Appleyard(??), Whoever we talked to about the solo.
 
 	\begin{center}
 		\textbf{Authorship}
-	\end{center}
+	\end{center};
 	talk about authorship now lol
 
 	\clearpage
@@ -200,7 +235,6 @@
 	% This will catch all objects enclosed in \begin{table}\end{table}
 	% statements.
 	\listoftables
-	
 	\include{glossary}
 	\include{executive-summary}
 	% And we need a clear separation between preface and text, otherwise
