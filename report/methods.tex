@@ -109,7 +109,7 @@ The shifting nature of wireless channels introduces a difficult to predict noise
 \subsection{GPS}
 The MASDR application uses GPS readings for location. The direction and distance of the beacon from the drone are then used to get an estimated location of the beacon. The receiver that is used in this project polls much less frequently than the localization technique, at around 10 times a second. Because of this, around 20 GPS measurements are taken at each sampling location. These measurements are averaged in order to achieve an accurate sampling location reading.\par
  \subsection{Kalman Filtering}
- The GPS receiver that is used in this project provides very noisy results. A contributing factor to this is that the receiver used is both small and cheap. Beause of this, the values that it reads are frequently very scattered, with a high variance. In order to mitigate this, a four-state kalman filter was designed and simulated in MATLAB. The Kalman Filter equations presented in the Background section are reproduced below: \par
+ The GPS receiver that is used in this project provides very noisy results. A contributing factor to this is that the receiver used is both small and cheap. Beause of this, the values that it reads are frequently very scattered, with a high variance. In order to mitigate this, a four-state kalman filter was designed and simulated in MATLAB. The Kalman Filter equations presented in the Background section are reproduced below \cite{kf_book}: \par
  \subsubsection*{Predict:}
 \begin{align}
     \vec{x} &= \matr{F}\vec{x} + \matr{H}\vec{u} \label{eq:state_predict}\\ 
@@ -132,7 +132,7 @@ The state $\vec{x}$ holds the x position, y position, x velocity and y velocity.
 				v_y
 				\end{bmatrix}
 \end{align}\par
-Since we are just estimating the GPS measurement, there is no input that adjust the values, setting $\vec{u} = 0$. The state transition matrix F is based on how elements of the states interact with each other. In order to ensure that the filter isn't too complex, a constant velocity model is used. With a small enough dt, this is a valid assumption. Because velocity is the derivative of position, F is defined as follows: 
+Since we are just estimating the GPS measurement, there is no input that adjust the values, setting $\vec{u} = 0$. The state transition matrix F is based on how elements of the states interact with each other. In order to ensure that the filter isn't too complex, a constant velocity model is used \cite{kf_book}. With a small enough dt, this is a valid assumption. Because velocity is the derivative of position, F is defined as follows: 
 \begin{align}
 	\matr{F} &= \begin{bmatrix}
 					1 & 0 & dt & 0 \\
