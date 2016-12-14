@@ -7,7 +7,7 @@ The system will be detecting transmissions based off of energy detection. This t
 This energy measurement is then compared to a threshold energy. This threshold was chosen due to it being high enough to ensure a low chance of false alarm while still sensing signals from a significant distance. \par 
 
 
-\subsection{Match filtering}
+\subsection{Matched filtering}
 In order to categorize Wi-Fi signals at the 2.4GHz band, an OFDM detector was implemented. In order to detect OFDM, the receiver will detect beacon frames by correlating upon the Wi-Fiâ€™s L-STF structure. The L-STF structure is a specific spacing and timing of transmissions over various subcarriers. This structure is also used for calculating the coarse frequency offset. The subcarriers and transmissions used in L-STF are shown in Figure \ref{fig:ofdm_subcarriers}. \par 
 
 \begin{figure}[ht!]
@@ -89,7 +89,7 @@ Using the rate information, further analization was done to the received packetâ
 By converting these bits to ASCII, the SSID of our received transmission will be obtained.
 
 \subsection{Summary}
-By using a combination of energy detection and match filtering on OFDM beacon frames,  the desired signals will be identified  with a high probability of detection and a low probability of false alarm. Additionally, this will allow accurate determination the received SSID.
+By using a combination of energy detection and matched filtering on OFDM beacon frames,  the desired signals will be identified  with a high probability of detection and a low probability of false alarm. Additionally, this will allow accurate determination the received SSID.
 
 \section{Fusion and Localization}
 In order to draw meaning from the spectrum being measured, three types of data need to be analyzed: Received Signal Strength (RSS), heading, and location. Each of these measurements have noise to some extent. In this section, the combination of these data types and the mitigation of measurement noise will be discussed.\par  
@@ -107,9 +107,24 @@ In this project, a block size of 131,072 is chosen. The drone rotates at around 
 The shifting nature of wireless channels introduces a difficult to predict noise into the measurements taken. In order to mitigate this, the drone rotates N times. The resulting received signal strength measurements are then averaged with the readings from each rotation. This averaging reduces the chance that a random shift in the channel will negatively impact the direction readings. \par 
 
 \subsection{GPS}
-The MASDR application uses GPS readings for location. The direction and distance of the beacon from the drone are then used to get an estimated location of the beacon. 
-Within a GPS receiver, signal correction is already being carried out. This results in a cleaner, if not more accurate, measurement. In addition to this, the receiver that is used in this project polls much less frequently than the localization technique, at around 10 times a second. Because of this, around 20 GPS measurements are taken at each sampling location. These measurements are averaged in order to achieve an accurate sampling location reading.\par
- 
+The MASDR application uses GPS readings for location. The direction and distance of the beacon from the drone are then used to get an estimated location of the beacon. The receiver that is used in this project polls much less frequently than the localization technique, at around 10 times a second. Because of this, around 20 GPS measurements are taken at each sampling location. These measurements are averaged in order to achieve an accurate sampling location reading.\par
+ \subsubsection{Kalman Filtering}
+ The GPS receiver that is used in this project provides very noisy results. A contributing factor to this is that the receiver used is both small and cheap. Beause of this, the values that it reads are frequently very scattered, with a high variance. In order to mitigate this, a four-state kalman filter was designed.  \par
+ \subsubsection*{Predict:}
+\begin{align}
+    \vec{x} &= \matr{F}\vec{x} + \matr{H}\vec{u} \\
+    \matr{P} &= \matr{F}\matr{P}\matr{F^T} + \matr{Q} 
+\end{align}
+\subsubsection*{Update:}
+\begin{align}
+    \vec{y} &= \vec{M} - \matr{H}\vec{x} \\
+    \matr{S}&= \matr{HPH^T+RS} \\
+    \matr{K} &= \matr{PH^TS^{-1}K} \\
+    \vec{x} &= \vec{x} + \matr{K}\vec{y} \\
+    \matr{P} &= \matr{(I-KH)P}
+\end{align} \par
+
+
 \subsection{Summary}
 Each of the three measured values play a role in the localization of a beacon. The GPS location provides a base location from which to reason about the location of the beacon. Then, using the RSS measurement of the signal, an arc of possible locations is found along the azimuth around the GPS location. Finally, the direction measurement shows the azimuth at which the beacon is located. Each of these values also has some noise inherent to the process that they are measuring. By taking multiple measurements and calculating the intersections of the headings to signals, the accuracy of the localization is improved.
 
