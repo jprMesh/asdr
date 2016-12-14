@@ -72,14 +72,14 @@ A python script was written to briefly take control of the drone and rotate whil
 
 \section{Spectrum Sensing}
 
-In order to monitor the signal strength of our received data, we decided upon the localization technique of estimating distance away from a transmitter based on the RSSI of the received signal.  Our RSSI was measured by taking the average signal power across a 20 MHz 802.11 wifi channel. This RSSI measurement was taken by using the USRP B200 Mini’s get_rx_sensor command.  This command returns the corresponding RSSI value as a double in dBm format.  However, since a Wi-Fi transmitter is not transmitting all of the time, you will see sharp changes in RSSI measurements since the USRP is receiving the signal when it is on and also when there is only noise.
+In order to monitor the signal strength of our received data, we decided upon the localization technique of estimating distance away from a transmitter based on the RSSI of the received signal.  Our RSSI was measured by taking the average signal power across a 20 MHz 802.11 wifi channel. This RSSI measurement was taken by using the USRP B200 Mini’s get\_rx\_sensor command.  This command returns the corresponding RSSI value as a double in dBm format.  However, since a WiFi transmitter is not transmitting all of the time, you will see sharp changes in RSSI measurements since the USRP is receiving the signal when it is on and also when there is only noise.
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.70\textwidth]{img/rss_vals_test.jpg}
+	\includegraphics[width=0.70\textwidth]{img/rss_vals_test.png}
 	\caption{This graph shows how the RSSI of our received signal can dramatically change.  These sharp transitions in RSSI values are due to the transmitter not always continually transming.}
-	\label{fig:working_mini}
-
+	\label{fig:rss_values}
+\end{figure}
 Therefore, in order to have an accurate RSSI, one must make sure they filter out all of the RSSI reports that are just ultimately noise.  Therefore, we set a detection threshold of -85 dBm which is well above the noise floor.  Then, the output for our RSSI measurements only record noticeable signals.  
 
 Using corresponding RSSI values, we used these values to estimate the distance of the transmission that we sensed.  Our localization algorithm depended upon this calculation in order to accurately locate where a signal source was coming from.  Our resulting distance equation was:
@@ -89,7 +89,7 @@ Using corresponding RSSI values, we used these values to estimate the distance o
 \label{eq:rssi_dist} d &= 10^{(RSSI-RSSI_{calibration})(-10\alpha)} + d_{calibration}
 \end{align}
 
-Based on some field testing, this equation has been fairly accurate.
+Based on some field testing, this equation has been fairly accurate.\par
 
 \begin{table}[ht]
 \centering
@@ -214,7 +214,7 @@ the 3DR solo, and received by a ground-based RTL-SDR.
 
 For our communication protocol, we decided to use differential binary phase shift keying or DBPSK modulation for our communication interface.  This was to ensure that we could reduce bit error rate as much as possible.  Therefore, we designed a DBPSK receiver and transmitter using GNURadio. For the receiver side of our transmission we used the following gnuradio program:
 
-This program receives an input binary file source which is an array of our data.  This is then sent into a packet encoder which encapsulates all of the data into the binary file into packet with a preamble and access code.  This is to ensure that our receiver will be able to sync correctly to our transmitted data.  After some additional handling of the data, our data is then transmitted using the USRP with a central frequency of 905 MHz.  Before using our receiver, we can see our USRP transmitting on this frequency by monitoring its transmitting spectrum by using a spectrum monitoring tool for the RTL-SDR called SDR#
+This program receives an input binary file source which is an array of our data.  This is then sent into a packet encoder which encapsulates all of the data into the binary file into packet with a preamble and access code.  This is to ensure that our receiver will be able to sync correctly to our transmitted data.  After some additional handling of the data, our data is then transmitted using the USRP with a central frequency of 905 MHz.  Before using our receiver, we can see our USRP transmitting on this frequency by monitoring its transmitting spectrum by using a spectrum monitoring tool for the RTL-SDR called SDR\#
 
 This signal is then received by the RTL-SDR.  However, significant handling of the signal must be taken care of before we can demodulate the correct information. This cues upon multiple signal processing blocks before our final constellation. First, we used a Frequency Xlating FIR Filter which acts as a type of bandpass filter to filter out all of the extra signals that might be around that band.  After this we use a series of three blocks: a polyphase clock sync, a CMA equalizer, and a costas loop.  The polyphase clock sync is used to perform timing synchronization with the transmitter.  This is done by the use of two filter bank that use a match filter on a signal’s pulse shape.  In our case, we used a root raised cosine filter for our pulse shape since our transmitter is using a root raised cosine filter.  This synchronized signal is then sent through a CMA Equalizer and a Costas Loop in order to provide adequate phase correction.  Our results after all of this signal processing are as expected with the received BPSK signal. 
 
