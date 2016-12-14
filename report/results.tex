@@ -18,14 +18,14 @@ The encasing for the system was designed in SOLIDWORKS. It was fabricated using 
 \end{figure}\par
 The two wooden panels were created identically to reduce design time and fabrication time. Screw holes were precut into the wood to ensure mounting the components wouldn't split the wood. This enclosure was mounted to the bottom of the drone using the hardware mount on the drone detailed in Section \ref{Mounting}. \par
 
-To power the system, an 11V LiPo battery was used in combination with a 5V transformer to step down the voltage for use by the UP Board. The battery and converter were connected using connectors seen in Figure \ref{fig:connectors}, so that the battery could be disconnected when it is not in use. The male connector was soldered to the transformer and the female connector was soldered to the battery.
+To power the system, an 11V LiPo battery was used in combination with a 5V transformer to step down the voltage for use by the UP Board. The battery and converter were connected using connectors seen in Figure \ref{fig:connectors}, so that the battery could be disconnected when it is not in use. To prevent any mishandling of plugging the battery in backwards, a male molex connector was soldered to the transformer and a female molex connector was soldered to the battery.
 \begin{figure}[ht!]
 	\centering
 	\includegraphics[width=0.70\textwidth]{img/connectors.JPG}
-	\caption{Connectors for the battery. The male connector (left) is connected to the transformer and the female connector (right) is connected to the LiPo battery.}
+	\caption{Connectors for the battery. The male molex connector (left) is connected to the transformer and the female molex connector (right) is connected to the LiPo battery.}
 	\label{fig:connectors}
 \end{figure}\par
-The first transformer that was used in the system failed because it became disconnected from the UP Board when power was applied. This transformer was a buck converter which can fail when an output isn't connected because of the failure of a MOSFET or diode. A new transformer was purchased to replace the malfunctioning one. \par
+There were two transformers that were purchased, the Nextrox converter was the one that directly converted 12V down to 5V at 3A, and the DROK converter was the other which was an adjustable knob that ranged from 8V-35V to 1.5V-24V at 5A. Unfortunately the first transformer worked for the first few trails and the second just outright did not work out of the box. The first transformer that was used in the system failed because it became disconnected from the UP Board when power was applied. This transformer was a buck converter which can fail when an output isn't connected due of the failure of a MOSFET or diode. The second transformer's adjustable knob did not change the ratio at which the voltage was being output despite multiple attempts and methods. A new transformer was purchased to replace the malfunctioning transformers. \par
 
 The UP Board is connected to the 5V transformer using a barrel jack. The male connector was soldered onto the output of the transformer. The UP Board is the main system with everything else connected to it through USB or I2C. It was mounted upside down on the top panel as shown in Figure \ref{fig:box_usb_view}.
 \begin{figure}[ht!]
@@ -63,6 +63,8 @@ The complete system mounted on the drone is shown in Figure \ref{fig:drone_and_b
 
 \section{Code Framework}
 \section{Drone Control}
+To reduce interference when sensing signals, the WiFi cards on the controller and drone had to be replaced because the communication frequency and the sensing frequency matched. In order to replace these WiFi cards, research had to be done to determine the ath9k driver used which was compatible with a wide range of Atheros based cards. Despite the guarantee of compatibility, the first purchase of the R11e-5HnD MikroTik MiniPCI-E wireless card was unused due to the large heat sink that could not fit conveniently into both the controller and drone. Furthermore the connectors would also require adapters to connect to the antennas. This led to the second purchase of the SparkLAN WPEA-121N MiniPCI-E Half-Size wireless card, which required a bracket to be mounted. The replacement of the WiFi cards in the controller was done first for precaution and testing purposes. The replacement went smoothly, however the controller was still communicating at 2.4GHz. Upon checking the software, it detected that the WiFi card installed was capable of communicating at 5GHz. Therefore the controller's networking scheme was modified such that it would persistently communicate at a specific channel (5GHz). After these changes, SSHing into the controller was not possible. It was suspected that the antennas are incapable of transmitting at 5GHz. Limited with time and the scope of the project, it was not possible to obtain antennas to replace on the controller and drone. Due to this reason, the drone's WiFi card was not replaced, and both the controller and drone were factory reset to work at 2.4GHz.
+
 \section{Spectrum Sensing}
 %RSS part of things.
 %IQ_TO_FILE
