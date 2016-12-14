@@ -66,15 +66,36 @@ The complete system mounted on the drone is shown in Figure \ref{fig:drone_and_b
 To reduce interference when sensing signals, the WiFi cards on the controller and drone had to be replaced because the communication frequency and the sensing frequency matched. In order to replace these WiFi cards, research had to be done to determine the ath9k driver used which was compatible with a wide range of Atheros based cards. Despite the guarantee of compatibility, the first purchase of the R11e-5HnD MikroTik MiniPCI-E wireless card was unused due to the large heat sink that could not fit conveniently into both the controller and drone. Furthermore the connectors would also require adapters to connect to the antennas. This led to the second purchase of the SparkLAN WPEA-121N MiniPCI-E Half-Size wireless card, which required a bracket to be mounted. The replacement of the WiFi cards in the controller was done first for precaution and testing purposes. The replacement went smoothly, however the controller was still communicating at 2.4GHz. Upon checking the software, it detected that the WiFi card installed was capable of communicating at 5GHz. Therefore the controller's networking scheme was modified such that it would persistently communicate at a specific channel (5GHz). After these changes, SSHing into the controller was not possible. It was suspected that the antennas are incapable of transmitting at 5GHz. Limited with time and the scope of the project, it was not possible to obtain antennas to replace on the controller and drone. Due to this reason, the drone's WiFi card was not replaced, and both the controller and drone were factory reset to work at 2.4GHz.
 
 \section{Spectrum Sensing}
+%RSS part of things.
+%IQ_TO_FILE
 In addition to calculating RSS values, a C++ program separate from the code framework
 was written. This program, called iq\_to\_file, was created as a foundation with 
 which to work with. It became the testbed for specific elements of MASDR, since it
 was already capable of logging.The code for this section is in Appendix \ref{app:iq_to_file}. 
-This program is built on the rx_samples_to_file example that Ettus Research provides 
+This program is built on the rx\_samples\_to\_file example that Ettus Research provides 
 with the UHD. This program already had the desired base functionality, so it proved
 to be a good starting point. The program was then stripped of unnecessary functionality,
 including the command-line interface. \par
+With the extraneous functionality removed, components of the MASDR framework were
+added, in order to test them separately. The matched filter, RSS measurements, 
+and GPS modules were added. This allowed for post-process localization. In order to 
+save these values properly, they were packed into the complex type that was being
+used to save IQ samples. In order to make it possible to pull these values out
+in post-processing, they were given an unrealistic imaginary value. with each different 
+module getting a different imaginarry value. The matched filter outputs got 
+a flag of 1000. GPS X, Y and Z coordinates were given flags of 2000, 3000, and 4000,
+respectively. RSS values got a flag of 5000. These values were written with each 
+buffer of samples received. This makes it easier to align results when processing.\par
+%MATLAB
+Once a data file was recorded, it was processed using a MATLAB script. This script 
+is in Appendix \ref{app:matlab_proc}. This script reads in the .dat file produced 
+by iq\_to\_file, as floats. It then separates the data into in-phase and quadrature
+components. Then, after pre-allocating buffers, the script pulls out the non-IQ 
+samples. The matched filter values and the RSS measurements are then plotted. The
+script used to plot the received signal, but with longer record times, this
+becomse impractical or impossible.
 
 \section{Spectrum Localization}
+
 \section{Transmit To Ground}
 \section{Summary}
