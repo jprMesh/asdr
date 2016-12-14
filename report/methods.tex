@@ -109,24 +109,52 @@ The shifting nature of wireless channels introduces a difficult to predict noise
 \subsection{GPS}
 The MASDR application uses GPS readings for location. The direction and distance of the beacon from the drone are then used to get an estimated location of the beacon. The receiver that is used in this project polls much less frequently than the localization technique, at around 10 times a second. Because of this, around 20 GPS measurements are taken at each sampling location. These measurements are averaged in order to achieve an accurate sampling location reading.\par
  \subsection{Kalman Filtering}
- The GPS receiver that is used in this project provides very noisy results. A contributing factor to this is that the receiver used is both small and cheap. Beause of this, the values that it reads are frequently very scattered, with a high variance. In order to mitigate this, a four-state kalman filter was designed. The Kalman Filter equations presented in the Background section are reproduced below: \par
+ The GPS receiver that is used in this project provides very noisy results. A contributing factor to this is that the receiver used is both small and cheap. Beause of this, the values that it reads are frequently very scattered, with a high variance. In order to mitigate this, a four-state kalman filter was designed and simulated in MATLAB. The Kalman Filter equations presented in the Background section are reproduced below: \par
  \subsubsection*{Predict:}
 \begin{align}
-    \vec{x} &= \matr{F}\vec{x} + \matr{H}\vec{u} \\
-    \matr{P} &= \matr{F}\matr{P}\matr{F^T} + \matr{Q} 
+    \vec{x} &= \matr{F}\vec{x} + \matr{H}\vec{u} \label{eq:state_predict}\\ 
+    \matr{P} &= \matr{F}\matr{P}\matr{F^T} + \matr{Q} \label{eq:var_predict}
 \end{align}
 \subsubsection*{Update:}
 \begin{align}
-    \vec{y} &= \vec{M} - \matr{H}\vec{x} \\
-    \matr{S}&= \matr{HPH^T+RS} \\
-    \matr{K} &= \matr{PH^TS^{-1}K} \\
-    \vec{x} &= \vec{x} + \matr{K}\vec{y} \\
-    \matr{P} &= \matr{(I-KH)P}
+    \vec{y} &= \vec{M} - \matr{H}\vec{x} \label{eq:innovation_up}\\
+    \matr{S}&= \matr{HPH^T+RS} \label{eq:inter_up}\\
+    \matr{K} &= \matr{PH^TS^{-1}K} \label{eq:kalgain_up}\\
+    \vec{x} &= \vec{x} + \matr{K}\vec{y} \label{eq:state_up}\\
+    \matr{P} &= \matr{(I-KH)P} \label{eq:var_up}
 \end{align} \par
+The state $\vec{x}$ holds the x position, y position, x velocity and y velocity. \\
+\begin{align}
+	\vec{x} &= \begin{bmatrix}
+				d_x \\
+				d_y\\
+				v_x\\
+				v_y
+				\end{bmatrix}
+\end{align}\par
+Since we are just estimating the GPS measurement, there is no input that adjust the values, setting $\vec{u} = 0$. The state transition matrix F is based on how elements of the states interact with each other. In order to ensure that the filter isn't too complex, a constant velocity model is used. With a small enough dt, this is a valid assumption. Because velocity is the derivative of position, F is defined as follows: 
+\begin{align}
+	\matr{F} &= \begin{bmatrix}
+					1 & 0 & dt & 0 \\
+					0 & 1 & 0 & dt \\
+					0 & 0 & 1 & 0 \\
+					0 & 0 & 0 & 1
+				\end{bmatrix}
+\end{align} \par
+$\matr{P}$ is the variance matrix for the state, and is initialized as a diagonal matrix with the variance of each individual element. While the assumption that position and velocity are independent is oversimplified and na{\"i}ve. However, since P gets updated, this assumption is acceptable. \par
+$\vec{y}$ is the difference between the most recent measured value $\vec{M}$ and $\matr{H}\vec{x}$. H is set as an identity matrix, so $\vec{y}$ ends up being the difference between a measurement and its prediction. \par
+Both $\matr{Q}$ and $\matr{R}$ are noise covariance matrices; $\matr{Q}$ is the environment noise covariance, and $\matr{R}$ is the model noise covariance. In order to avoid complications, both of these are assumed to be piecewise white noise. this produces the matrix: 
+
+\begin{align}
+Var_v * \begin{bmatrix}\frac{dt^4}{4} & 0 & \frac{dt^3}{2} & 0\\0 & \frac{dt^4}{4} & 0 & \frac{dt^3}{2}\\\frac{dt^3}{2} & 0 & dt^2 & 0 \\ 0 & \frac{dt^3}{2} & 0 & dt^2  \end{bmatrix}
+\end{align} \\
+The variance is chosen to best fit the data. \par
+$\matr{K}$ is the kalman gain of the system. With a constant noise and variance, this matrix is constant. This is beneficial, as the matrix inverse (or pseudoinverse) that is needed to compute $\matr{k}$. In this implementation, the MATLAB simulation will approximate $\matr{K}$, and the resulting values will be used. \par
+Equations \ref{eq:state_up} and \ref{eq:var_up} are used to update the state and state covariance with the most recent measurement. 
 
 
 \subsection{Summary}
-Each of the three measured values play a role in the localization of a beacon. The GPS location provides a base location from which to reason about the location of the beacon. Then, using the RSS measurement of the signal, an arc of possible locations is found along the azimuth around the GPS location. Finally, the direction measurement shows the azimuth at which the beacon is located. Each of these values also has some noise inherent to the process that they are measuring. By taking multiple measurements and calculating the intersections of the headings to signals, the accuracy of the localization is improved.
+Each of the three measured values play a role in the localization of a beacon. The GPS location provides a base location from which to reason about the location of the beacon. This location is produced from a Kalman filter, reducing the variance of the measurements. Then, using the RSS measurement of the signal, an arc of possible locations is found along the azimuth around the GPS location. Finally, the direction measurement shows the azimuth at which the beacon is located. Each of these values also has some noise inherent to the process that they are measuring. By taking multiple measurements and calculating the intersections of the headings to signals, the accuracy of the localization is improved.
 
 \section{Drone Control and Communications}
 When dealing with multiple frequencies, interference is an issue that must be considered. Interference in the scope of this project may lead to interruptions to drone control, faulty interception of data, and faulty transmission of data. To help solve these issues, the following steps were taken in drone control and drone communications.\par 
