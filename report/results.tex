@@ -64,6 +64,15 @@ The complete system mounted on the drone is shown in Figure \ref{fig:drone_and_b
 \section{Code Framework}
 \section{Drone Control}
 \section{Spectrum Sensing}
+In addition to calculating RSS values, a C++ program separate from the code framework
+was written. This program, called iq\_to\_file, was created as a foundation with 
+which to work with. It became the testbed for specific elements of MASDR, since it
+was already capable of logging.The code for this section is in Appendix \ref{app:iq_to_file}. 
+This program is built on the rx_samples_to_file example that Ettus Research provides 
+with the UHD. This program already had the desired base functionality, so it proved
+to be a good starting point. The program was then stripped of unnecessary functionality,
+including the command-line interface. \par
+
 \section{Spectrum Localization}
 \section{Transmit To Ground}
 \section{Summary}
