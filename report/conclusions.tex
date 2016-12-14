@@ -1,30 +1,33 @@
 \chapter{Conclusions}
-
-In this chapter, the accomplishments acheieved by this MQP, as well as ways that 
-the project can be expanded in the future. 
- * Made the system
- * flew the thing
- * logged I, Q data
- * Match filtered.
- * RSS value.
- * GPS value
- * Tx/rx working on ground.
- * Kalman Filter in MATLAB
-
-\section{Conclusions} %Change when we have a discussion on it.
-In the process of designing 
- * Syncronization with having a TX/RX system using UHD and GNURadio is more complicated than expected.
- * GPS is only good for coarse localization.
- * Magnetometer was hard
- * 
-
-\section{Recommendations}
- * Smarter channel measuring/deciding (instead of just reading one) (doing a frequency sweep)
- * TX/RX in air
- * Kalman Filter Test/implement in C.
- * More sensor integration for localization
- * 5 GHz drone ctl
-
+The technologies of Cognative Radios and Quadcopters are encountering a renaissance
+with many different projects exploring the possibilities that they introduce. In this project,
+the two technologies were combined, resulting in a versatile platform. By doing so, 
+the team achieved the following:
+%Don't forget to add more details.
+\begin{itemize} 
+ \item \textbf{Constructed hardware platform.}
+ \item \textbf{Created software platform:}Created the MASDR software design platform,
+                    written to be able to be expanded upon. 
+ \item \textbf{Collected data:} Gathered assorted information from the air, including 
+                IQ samples, matched filter-processed samples, RSS values, and GPS locations.
+ \item \textbf{Communication to ground tested:}A DBPSK transmitter and receiver, 
+                including Root Raised Cosine Filter and channel equalization were created and tested. 
+ \item \textbf{Kalman Filter modelled in MATLAB:}A four-state tracking Kalman Filter
+                was modelled in MATLAB, using a constant-velocity model.
+\end{itemize} \par
+While designing MASDR, a number of problems were encountered.
+\begin{itemize}
+ \item Syncronization with having a TX/RX system using UHD and GNURadio is more complicated than expected.
+ \item GPS is only good for coarse localization.
+ \item Magnetometer was hard
+\end{itemize}
+Based on the development process, the team came up with the following recomendations:
+\begin{itemize}
+ \item Smarter channel measuring/deciding (instead of just reading one) (doing a frequency sweep)
+ \item TX/RX in air
+ \item More sensor integration for localization
+ \item 5 GHz drone ctl
+\end{itemize}
 
 \section{Future Work}
 The primary focus of this MQP was to create an aerial SDR testbed, on which more 
