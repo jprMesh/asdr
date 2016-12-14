@@ -64,15 +64,31 @@ The complete system mounted on the drone is shown in Figure \ref{fig:drone_and_b
 \section{Code Framework}
 \section{Drone Control}
 \section{Spectrum Sensing}
+%RSS part of things.
+%IQ_TO_FILE
 In addition to calculating RSS values, a C++ program separate from the code framework
 was written. This program, called iq\_to\_file, was created as a foundation with 
 which to work with. It became the testbed for specific elements of MASDR, since it
 was already capable of logging.The code for this section is in Appendix \ref{app:iq_to_file}. 
-This program is built on the rx_samples_to_file example that Ettus Research provides 
+This program is built on the rx\_samples\_to\_file example that Ettus Research provides 
 with the UHD. This program already had the desired base functionality, so it proved
 to be a good starting point. The program was then stripped of unnecessary functionality,
 including the command-line interface. \par
+With the extraneous functionality removed, components of the MASDR framework were
+added, in order to test them separately. The matched filter, RSS measurements, 
+and GPS modules were added. This allowed for post-process localization. In order to 
+save these values properly, they were packed into the complex type that was being
+used to save IQ samples. In order to make it possible to pull these values out
+in post-processing, they were given an unrealistic imaginary value. with each different 
+module getting a different imaginarry value. The matched filter outputs got 
+a flag of 1000. GPS X, Y and Z coordinates were given flags of 2000, 3000, and 4000,
+respectively. RSS values got a flag of 5000. These values were written with each 
+buffer of samples received. This makes it easier to align results when processing.\par
+%MATLAB
+Once a data file was recorded, it was processed using a MATLAB script. This script 
+is in Appendix \ref{app:matlab_proc}.
 
 \section{Spectrum Localization}
+
 \section{Transmit To Ground}
 \section{Summary}
