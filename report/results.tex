@@ -120,9 +120,41 @@ was modelled in MATLAB. The script can be found in \ref{app:kf_sim}. The script
 initializes the matrices as described in section \ref{methods:kf}. A noisy input
 with a constant x velocity 1 and y velocity 1 is initialized. Arbitrary variance
 values are used in $\matr{P}$ and for the noise covariance matrices $\matr{Q}$
-and $\matr{R}$.
-
-
+and $\matr{R}$. Plots of the resulting predictions are shown below. 
+\begin{figure}[ht!]
+\begin{minipage}{.5\textwidth}
+  \centering
+\includegraphics[scale=0.5]{img/kf_xpos.png}
+\caption{X position predictions from Kalman filter simulation.}
+\label{fig:kf_xpos}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\centering
+\includegraphics[scale=0.5]{img/kf_ypos.png}
+\caption{X position predictions from Kalman filter simulation.}
+\label{fig:kf_ypos}
+\end{minipage}
+\end{figure}
+\begin{figure}[ht!]
+\begin{minipage}{.5\textwidth}
+  \centering
+\includegraphics[scale=0.5]{img/kf_xvel.png}
+\caption{X velocity predictions from Kalman filter simulation.}
+\label{fig:kf_xpos}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\centering
+\includegraphics[scale=0.5]{img/kf_yvel.png}
+\caption{Y velocity predictions from Kalman filter simulation.}
+\label{fig:kf_ypos}
+\end{minipage}
+\end{figure}\par
+As seen above, the resulting predictiosn that come from the Kalman Filter are
+decent, but not too much of an improvement. This is due to a number of factors.
+The first factor is the fact that there are no direct measurements of velocity.
+Because of this, the resulting velocity measurements already introduce some error.
+Another factor is the choosing of the various parameters. This was done in a fairly
+arbitrary manner, due to time constraints. 
 
 \section{Transmit To Ground}
 \section{Summary}
