@@ -86,7 +86,12 @@ respectively. RSS values got a flag of 5000. These values were written with each
 buffer of samples received. This makes it easier to align results when processing.\par
 %MATLAB
 Once a data file was recorded, it was processed using a MATLAB script. This script 
-is in Appendix \ref{app:matlab_proc}.
+is in Appendix \ref{app:matlab_proc}. This script reads in the .dat file produced 
+by iq\_to\_file, as floats. It then separates the data into in-phase and quadrature
+components. Then, after pre-allocating buffers, the script pulls out the non-IQ 
+samples. The matched filter values and the RSS measurements are then plotted. The
+script used to plot the received signal, but with longer record times, this
+becomse impractical or impossible.
 
 \section{Spectrum Localization}
 
