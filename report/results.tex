@@ -213,11 +213,32 @@ The formatted strings are inserted into a template html file, primarily composed
 
 In order to reduce the amount of processing done onboard the drone, a ground receiver was created.  This ground receiver receives important information such as the location, power level, and frequency in which a signal was detected at.  This information is transmitted from the MASDR platform to a ground-based RTL-SDR.  
 
-Differential binary phase shift keying or DBPSK modulation was used as the communication protocol for transmission to the ground receiver. This ensured a reduced bit error rate. A DBPSK receiver and transmitter was implemented using GNURadio. The receiver side of the system used the flowgraph shown below:
-\textbf{KYLE IS THERE SUPPOSED TO BE A PICTURE HERE OR SOMETHING?}
-This program receives a binary file source which is an array of the data to be sent. This passes through a packet encoder, which encapsulates all of the data from the binary file into a packet with a preamble and an access code.  This is ensures that the receiver will sync correctly to decode the transmitted data.  After \textbf{WHAT IS SOME ADDITIONAL HANDLING, ROOT RAISED COSINE?} some additional handling of the data, it is then transmitted using the USRP with a central frequency of 905 MHz.  Before using the receiver, a spectrum monitoring tool for the RTL-SDR called SDR\# is used to confirm that the USRP is transmitting on this frequency.
-\textbf{KYLE PUT SOME PICTURES HERE LOL}
-This signal is then received by the RTL-SDR.  However, significant handling of the signal must be taken care of before the correct information can be demodulated. After this a Frequency Translating FIR Filter was used as a bandpass filter, removing extra signals that might be around that band. After this, a series of three blocks were used: a polyphase clock sync, a CMA equalizer, and a costas loop. The polyphase clock sync is used to perform timing synchronization with the transmitter. This is done by using two filter banks that use a matched filter on a signal’s pulse shape.  A root raised cosine filter for our pulse shape since our transmitter is using a root raised cosine filter. This synchronized signal is then sent through a CMA Equalizer and a Costas Loop\textbf{TWICE?} in order to provide adequate phase correction.  Our results after all of this signal processing are as expected with the received BPSK signal. 
+Differential binary phase shift keying or DBPSK modulation was used as the communication protocol for transmission to the ground receiver. This ensures a reduced bit error rate. A DBPSK receiver and transmitter was implemented using GNURadio. The receiver side of the system used the flowgraph shown below:
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.70\textwidth]{img/rxflow.PNG}
+  \caption{This flowgraph was created in GNU Radio to receive and demodulate the received DBPSK waveform. This is done by using the QT GUI development environment in GNU Radio}
+  \label{fig:rxflow}
+\end{figure}
+
+This program receives a binary file source which is an array of the data to be sent. This passes through a packet encoder, which encapsulates all of the data from the binary file into a packet with a preamble and an access code.  This is ensures that the receiver will sync correctly to decode the transmitted data.  Then after this, it goes through a constellation modulator that modulates the binary information into a corresponding analog waveform. It is then transmitted using the USRP with at central frequency of 905 MHz.  Before using the receiver, a spectrum monitoring tool for the RTL-SDR called SDR\# is used to confirm that the USRP is transmitting on this frequency.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.70\textwidth]{img/rxspectrum.PNG}
+  \caption{This photo shows an FFT with a center frequency of 905 MHz which is what frequency our USRP is transmitting at.  This waveform was created by using SDR\# on an RTL-SDR.}
+  \label{fig:rxspectrum}
+\end{figure}
+
+This signal is then received by the RTL-SDR.  However, significant handling of the signal must be taken care of before the correct information can be demodulated. After this a Frequency Translating FIR Filter was used as a bandpass filter, removing extra signals that might be around that band. After this, a series of three blocks were used: a polyphase clock sync, a CMA equalizer, and a costas loop. The polyphase clock sync is used to perform timing synchronization with the transmitter. This is done by using two filter banks that use a matched filter on a signal’s pulse shape.  A root raised cosine filter for our pulse shape was used since our transmitter is using a root raised cosine filter. This synchronized signal is then sent through a CMA Equalizer and a Costas Loop\textbf{TWICE?} in order to provide adequate phase correction.  Our results after all of this signal processing are as expected with the received BPSK signal. 
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.70\textwidth]{img/constellation.PNG}
+  \caption{This is a photo of our received constellation when we are finished performing the timing offset and phase correction on the transmitted signal.  This constellation is taken when the signal strength was at -55 dBm which is the expected signal strength when the drone is receiving signals in the air.}
+  \label{fig:constellation}
+\end{figure}
 
 This constellation is then sent through a differential decoderand a packet decoder, to extract the payload out of the packetized binary information. This data is then uploaded to results file on the ground receiver’s main computer.
 
