@@ -4,7 +4,7 @@ The main goal of this system is to be able to detect wireless signals. In order 
 \subsection{Energy Detection}
 The system detects transmissions based off of energy detection. This type of detection is done by measuring our received signal’s strength along a desired central frequency, and comparing it to an ideal threshold. In order to determine the energy of the received signal, the following equation was used:
 \[E = \int_{-\infty}^{\infty}| x(t) |^2dt\]
-This energy measurement is then compared to a threshold energy of -90 dBm. This threshold was chosen due to it being high enough to ensure a low chance of false alarm while still sensing signals from a significant distance, which is necessary since the drone will be high in the air. \par
+This energy measurement is then compared to a threshold energy of -85 dBm. This threshold was chosen due to it being high enough to ensure a low chance of false alarm while still sensing signals from a significant distance, which is necessary since the drone will be high in the air. \par
 
 In order to categorize WiFi signals at the 2.4GHz band, an OFDM detector was implemented. In order to detect OFDM, the receiver will detect beacon frames by correlating upon the WiFi’s L-STF structure. The L-STF structure is a specific spacing and timing of transmissions over various subcarriers. This structure is also used for calculating the coarse frequency offset. The subcarriers and transmissions used in L-STF are shown in Figure \ref{fig:ofdm_subcarriers}. \par 
 \begin{figure}[ht!]
