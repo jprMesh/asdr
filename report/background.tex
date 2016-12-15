@@ -292,7 +292,7 @@ GNU Radio users throughout the years have created a number of different module b
 Although GNU Radio is appealing to users for it's power and ease of use, it can use up a lot of processing power as well as use up a lot of memory due to all of the overhead the entire software has.  Therefore, in order to reduce this amount of overhead, people use a more basic developement environment called UHD.\par
 
 %UHD:
-UHD (or USRP Hardware Driver) is a set of C++ libraries created by Ettus Research to allow for control of their USRP SDR platform within C++ programs. %\cite{http://files.ettus.com/manual/}
+UHD (or USRP Hardware Driver) is a set of C++ libraries created by Ettus Research to allow for control of their USRP SDR platform within C++ programs \cite{uhd_manual}.
 It provides a thorough set of commands with which different aspects of the SDR can be used, including synchronization, transmission and receiving.  GNU Radio, with its prebuilt blocks, is built on top of UHD, using the UHD commands for lower level operation. By using the lower-level environment, there is less latency. Unlike GNU Radio, there are not very many prebuilt blocks, instead focusing on having the programmer implement these details. In some cases, this is good. With many of the GNU Radio blocks, there are many sub-blocks built in, making it more difficult to understand its performance. With UHD, it is very clear what each block does, as it has to be programmed. However, this makes the development time of any sistem much higher. This is the main tradeoff between the two platforms.
 
 \section{Aerial Platforms}
