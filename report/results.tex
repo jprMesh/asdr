@@ -231,7 +231,7 @@ This program receives a binary file source which is an array of the data to be s
   \label{fig:rxspectrum}
 \end{figure}
 
-This signal is then received by the RTL-SDR.  However, significant handling of the signal must be taken care of before the correct information can be demodulated. After this a Frequency Translating FIR Filter was used as a bandpass filter, removing extra signals that might be around that band. After this, a series of three blocks were used: a polyphase clock sync, a CMA equalizer, and a costas loop. The polyphase clock sync is used to perform timing synchronization with the transmitter. This is done by using two filter banks that use a matched filter on a signal’s pulse shape.  A root raised cosine filter for our pulse shape was used since our transmitter is using a root raised cosine filter. This synchronized signal is then sent through a CMA Equalizer and a Costas Loop\textbf{TWICE?} in order to provide adequate phase correction.  Our results after all of this signal processing are as expected with the received BPSK signal. 
+This signal is then received by the RTL-SDR.  However, significant handling of the signal must be taken care of before the correct information can be demodulated. After this a Frequency Translating FIR Filter was used as a bandpass filter, removing extra signals that might be around that band. After this, a series of three more functions were used. First, a polyphase clock sync is used to perform timing synchronization with the transmitter. This is done by using two filter banks that use a matched filter on a signal’s pulse shape. A root raised cosine filter for our pulse shape since our transmitter is using a root raised cosine filter. This synchronized signal is then sent through a CMA Equalizer which equalizes modulated baseband signals. Then, a Costas Loop is used in order to provide adequate phase correction so that the received signal's constellation is locked in phase for the entirety of the transmission.  Our results after all of this signal processing are as expected with the received BPSK signal. 
 
 \begin{figure}[h]
   \centering
@@ -240,7 +240,7 @@ This signal is then received by the RTL-SDR.  However, significant handling of t
   \label{fig:constellation}
 \end{figure}
 
-This constellation is then sent through a differential decoderand a packet decoder, to extract the payload out of the packetized binary information. This data is then uploaded to results file on the ground receiver’s main computer.
+This constellation is then sent through a differential decoder and a packet decoder, to extract the payload out of the packetized binary information. This data is then uploaded to results file on the ground receiver’s main computer.
 
 \section{Summary}
 In this section, the results achieved in this MQP were discussed. This focused primarily on the design and implementation of the system, as well as the processing of the data collected. Overall, the team was able to create a good foundation on which aerial sensing methods can be applied.
