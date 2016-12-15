@@ -193,8 +193,7 @@ Because of this, the resulting velocity measurements already introduce some erro
 Another factor is the choosing of the various parameters. This was done in a fairly
 arbitrary manner, due to time constraints.
 \subsection{Mapping Script}
-The script used to display the measured signal strengths was designed for post-proccesing use, taking in a text file of locations and their corresponding RSS values. The processing portion of the script is written in python, and can be found in Appendix \ref{app:map_script}. Equation \ref{eq:rss_dist} is used to calculate the raw distance to the signal. The Pythagorean Theorem is then used to eliminate the altitude component of the distance as can be seen in Figure \ref{fig:dist_pyth}. %You forgot to change the name in the picture figure ya dingus
-The latitude, longitude, and land-based distance are then formatted into a template string for each point at which a signal was detected.\par
+The script used to display the measured signal strengths was designed for post-proccesing use, taking in a text file of locations and their corresponding RSS values. The processing portion of the script is written in python, and can be found in Appendix \ref{app:map_script}. Equation \ref{eq:rss_dist} is used to calculate the raw distance to the signal. The Pythagorean Theorem is then used to eliminate the altitude component of the distance as can be seen in Figure \ref{fig:dist_pyth}. The latitude, longitude, and land-based distance are then formatted into a template string for each point at which a signal was detected.\par
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/distance_pythag_diagram.png}

@@ -12,7 +12,7 @@ The MASDR Application is structured as a central C++ class with a few additional
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/masdr_state_diagram.png}
-\caption{MASDR State Diagram \textbf{THIS FIGURE NEEDS TO BE UPDATED.}}
+\caption{MASDR State Diagram. Software states change according to the graph described in the image.}
 \label{fig:state_diagram}
 \end{figure}
 The onboard software is the majority of the project, however there are other essential pieces. On the ground station side, a GNU radio receiver receives and decodes all transmissions from the aerial platform. Additionally, a mapping tool was created to calculate the approximate distance to signals and draw circles on a map to visually locate signals. The mapping tool consists of a python script that performs the distance calculations and populates a javascript list of gps locations and distances. The javascript calls into the Google Maps API to display the distance rings on a map. Finally, a python script was written to command the drone to autonomously spin 360 degrees.
