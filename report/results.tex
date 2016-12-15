@@ -2,7 +2,7 @@
 In this chapter, the results of the project will be discussed.
 
 \section{System Integration}
-This section details the physical system and the integration of the hardware. This includes power consumption, system layout, and component failures or difficulties. The system diagram shown in Figure \ref{masdr_system_diagram} will be explained in detail in this section.
+This section details the physical system and the integration of the hardware. This includes power consumption, system layout, and component failures or difficulties. The system diagram shown in Figure \ref{fig:masdr_system_diagram} will be explained in detail in this section.
 \begin{figure}[ht!]
 	\centering
 	\includegraphics[width=0.70\textwidth]{img/masdr_system_diagram.png}
@@ -40,17 +40,20 @@ The magnetometer was to be connected to the UP Board using the I2C pins. Communi
 
 The B-200 mini was attached to the bottom panel of the casing. It communicated to the UP Board through a wired USB connection. The 900MHz and 2.4GHz antennas were connected to the SMA connectors on the mini. The 2.4GHz antenna required an adapter because the connector on the board was a smaller size than the one on the antenna. During testing, it was realized that the transmission from the board was not working. Upon further inspection it was noticed that a component had broken off the board. Another board was borrowed from a lab to verify that the original board was faulty. The transmission test ran successfully on the board from the lab. A working board and the broken board are shown in the Figure \ref{fig:working_mini} and Figure \ref{fig:broken_mini} respectively.
 \begin{figure}[ht!]
-	\centering
-	\includegraphics[width=0.70\textwidth]{img/working_mini.jpg}
-	\caption{The functional B200-mini}
-	\label{fig:working_mini}
+\begin{minipage}{.5\textwidth}
+  \centering
+\includegraphics[width=0.9\textwidth]{img/working_mini.jpg}
+\caption{The functional B200-mini}
+\label{fig:working_mini}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\centering
+\includegraphics[width=0.9\textwidth]{img/broken_mini.jpg}
+\caption{The nonfunctional B200-mini}
+\label{fig:broken_mini}
+\end{minipage}
 \end{figure}
-\begin{figure}[ht!]
-	\centering
-	\includegraphics[width=0.70\textwidth]{img/broken_mini.jpg}
-	\caption{The non-functional B200-mini}
-	\label{fig:broken_mini}
-\end{figure}
+
 This component may have broken off during transport to and from meetings or because of vibrations during in flight testing. \par
 
 The complete system mounted on the drone is shown in Figure \ref{fig:drone_and_box}.
@@ -63,7 +66,7 @@ The complete system mounted on the drone is shown in Figure \ref{fig:drone_and_b
 \par
 
 \section{Code Framework}
-What kind of results are even here?
+What kind of results are even here? How the framework works I think
 
 \section{Drone Control}
 To reduce interference when sensing signals, the WiFi cards on the controller and drone had to be replaced because the communication frequency and the sensing frequency matched. In order to replace these WiFi cards, research had to be done to determine the ath9k driver used which was compatible with a wide range of Atheros based cards. Despite the guarantee of compatibility, the first purchase of the R11e-5HnD MikroTik MiniPCI-E wireless card was unused due to the large heat sink that could not fit conveniently into both the controller and drone. Furthermore the connectors would also require adapters to connect to the antennas. This led to the second purchase of the SparkLAN WPEA-121N MiniPCI-E Half-Size wireless card, which required a bracket to be mounted. The replacement of the WiFi cards in the controller was done first for precaution and testing purposes. The replacement went smoothly, however the controller was still communicating at 2.4GHz. Upon checking the software, it detected that the WiFi card installed was capable of communicating at 5GHz. Therefore the controller's networking scheme was modified such that it would persistently communicate at a specific channel (5GHz). After these changes, SSHing into the controller was not possible. It was suspected that the antennas are incapable of transmitting at 5GHz. Limited with time and the scope of the project, it was not possible to obtain antennas to replace on the controller and drone. Due to this reason, the drone's WiFi card was not replaced, and both the controller and drone were factory reset to operate at 2.4GHz. \par
@@ -85,20 +88,20 @@ Therefore, in order to have an accurate RSSI, one must make sure they filter out
 Using corresponding RSSI values, we used these values to estimate the distance of the transmission that we sensed.  Our localization algorithm depended upon this calculation in order to accurately locate where a signal source was coming from.  Our resulting distance equation was:
 
  \begin{align}
-\label{eq:rssi} RSSI &= 10\alpha log(d) \\ 
-\label{eq:rssi_dist} d &= 10^{(RSSI-RSSI_{calibration})(-10\alpha)} + d_{calibration}
-\end{align}
-
+\label{eq:rss} RSSI &= 10\alpha log(d) \\ 
+d &= 10^{(RSSI-RSSI_{calibration})(-10\alpha)} + d_{calibration} \label{eq:rss_dist}
+\end{align}\\
+These equations were mentioned previously in Section \ref{back:radio_loc}
 Based on some field testing, this equation has been fairly accurate.\par
 
 \begin{table}[ht]
 \centering
 \label{table:RSSI_Results}
-\begin{tabular}{l|l|l|}
+\begin{tabular}{|l|l|l|} \hline
   RSSI (dBm) & Observed Distance (Meters) & Theoretical Distance (Meters) \\ \hline
   -50 & 3 & 3.2 \\
   -60 & 9 & 10 \\
-  -70 & 26 & 31.62 \\
+  -70 & 26 & 31.62 \\ \hline
 \end{tabular}
 \caption{As you can see by our observed RSSI values, our RSSI to distance calculation allows us to reasonably relate received signal strength to how far away a transmitter is located.}
 \end{table}\par
@@ -192,12 +195,13 @@ Because of this, the resulting velocity measurements already introduce some erro
 Another factor is the choosing of the various parameters. This was done in a fairly
 arbitrary manner, due to time constraints.
 \subsection{Mapping Script}
-The script used to display the measured signal strengths was designed for post-proccesing use, taking in a text file of locations and their corresponding RSS values. The processing portion of the script is written in python. Equation \textbf{I NEED A REF} is used to calculate the raw distance to the signal. The Pythagorean Theorem is then used to eliminate the altitude component of the distance as can be seen in Figure \textbf{NO REFERENCE TO THIS?} \ref{fig:dist_pyth}. The latitude, longitude, and land-based distance are then formatted into a template string for each point at which a signal was detected.\par
+The script used to display the measured signal strengths was designed for post-proccesing use, taking in a text file of locations and their corresponding RSS values. The processing portion of the script is written in python. Equation \ref{eq:rss_dist} is used to calculate the raw distance to the signal. The Pythagorean Theorem is then used to eliminate the altitude component of the distance as can be seen in Figure \ref{fig:dist_pyth}. %You forgot to change the name in the picture figure ya dingus
+The latitude, longitude, and land-based distance are then formatted into a template string for each point at which a signal was detected.\par
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/distance_pythag_diagram.png}
 \caption{Diagram showing right triangle used to calculate land-based distance from the calculated distance and a known altitude.}
-\label{fig:map_localize}
+\label{fig:dist_pyth}
 \end{figure}
 The formatted strings are inserted into a template html file, primarily composed of a javascript block that calls into the Google Maps API. Using the drawing tools in the API, rings are drawn on the map corresponding to the calculated distance. An example output screenshot of a generated map has been included in Figure \ref{fig:map_localize}. The actual output is a webpage with a Google Maps instance running in it, so the map is fully interactive, with the ability to zoom in and scroll around as well.
 \begin{figure}[ht]
