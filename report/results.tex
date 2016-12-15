@@ -119,7 +119,7 @@ to be a good starting point. The program was then stripped of unnecessary functi
 including the command-line interface. \par
 With the extraneous functionality removed, components of the MASDR framework were
 added, in order to test them separately. The matched filter, RSS measurements, 
-and GPS modules were added. This allowed for post-process localization. In order to 
+and GPS modules were the sections added. This allowed for post-process localization. In order to 
 save these values properly, they were packed into the complex type that was being
 used to save IQ samples. In order to make it possible to pull these values out
 in post-processing, they were given an unrealistic imaginary value. with each different 
@@ -193,7 +193,7 @@ Because of this, the resulting velocity measurements already introduce some erro
 Another factor is the choosing of the various parameters. This was done in a fairly
 arbitrary manner, due to time constraints.
 \subsection{Mapping Script}
-The script used to display the measured signal strengths was designed for post-proccesing use, taking in a text file of locations and their corresponding RSS values. The processing portion of the script is written in python. Equation \ref{eq:rss_dist} is used to calculate the raw distance to the signal. The Pythagorean Theorem is then used to eliminate the altitude component of the distance as can be seen in Figure \ref{fig:dist_pyth}. %You forgot to change the name in the picture figure ya dingus
+The script used to display the measured signal strengths was designed for post-proccesing use, taking in a text file of locations and their corresponding RSS values. The processing portion of the script is written in python, and can be found in Appendix \ref{app:map_script}. Equation \ref{eq:rss_dist} is used to calculate the raw distance to the signal. The Pythagorean Theorem is then used to eliminate the altitude component of the distance as can be seen in Figure \ref{fig:dist_pyth}. %You forgot to change the name in the picture figure ya dingus
 The latitude, longitude, and land-based distance are then formatted into a template string for each point at which a signal was detected.\par
 \begin{figure}[ht]
 \centering
@@ -211,16 +211,15 @@ The formatted strings are inserted into a template html file, primarily composed
 
 \section{Transmit To Ground}
 
-In order to reduce the amount of processing done onboard the drone, a ground receiver was created.  This ground receiver receives important information such as the location, power level, and frequency in which a signal was detected at.  This information is transmitted by our USRP that is attached to 
-the 3DR solo, and received by a ground-based RTL-SDR.  
+In order to reduce the amount of processing done onboard the drone, a ground receiver was created.  This ground receiver receives important information such as the location, power level, and frequency in which a signal was detected at.  This information is transmitted from the MASDR platform to a ground-based RTL-SDR.  
 
-For our communication protocol, we decided to use differential binary phase shift keying or DBPSK modulation for our communication interface.  This was to ensure that we could reduce bit error rate as much as possible.  Therefore, we designed a DBPSK receiver and transmitter using GNURadio. For the receiver side of our transmission we used the following gnuradio program:
+Differential binary phase shift keying or DBPSK modulation was used as the communication protocol for transmission to the ground receiver. This ensured a reduced bit error rate. A DBPSK receiver and transmitter was implemented using GNURadio. The receiver side of the system used the flowgraph shown below:
+\textbf{KYLE IS THERE SUPPOSED TO BE A PICTURE HERE OR SOMETHING?}
+This program receives a binary file source which is an array of the data to be sent. This passes through a packet encoder, which encapsulates all of the data from the binary file into a packet with a preamble and an access code.  This is ensures that the receiver will sync correctly to decode the transmitted data.  After \textbf{WHAT IS SOME ADDITIONAL HANDLING, ROOT RAISED COSINE?} some additional handling of the data, it is then transmitted using the USRP with a central frequency of 905 MHz.  Before using the receiver, a spectrum monitoring tool for the RTL-SDR called SDR\# is used to confirm that the USRP is transmitting on this frequency.
+\textbf{KYLE PUT SOME PICTURES HERE LOL}
+This signal is then received by the RTL-SDR.  However, significant handling of the signal must be taken care of before the correct information can be demodulated. After this a Frequency Translating FIR Filter was used as a bandpass filter, removing extra signals that might be around that band. After this, a series of three blocks were used: a polyphase clock sync, a CMA equalizer, and a costas loop. The polyphase clock sync is used to perform timing synchronization with the transmitter. This is done by using two filter banks that use a matched filter on a signal’s pulse shape.  A root raised cosine filter for our pulse shape since our transmitter is using a root raised cosine filter. This synchronized signal is then sent through a CMA Equalizer and a Costas Loop\textbf{TWICE?} in order to provide adequate phase correction.  Our results after all of this signal processing are as expected with the received BPSK signal. 
 
-This program receives an input binary file source which is an array of our data.  This is then sent into a packet encoder which encapsulates all of the data into the binary file into packet with a preamble and access code.  This is to ensure that our receiver will be able to sync correctly to our transmitted data.  After some additional handling of the data, our data is then transmitted using the USRP with a central frequency of 905 MHz.  Before using our receiver, we can see our USRP transmitting on this frequency by monitoring its transmitting spectrum by using a spectrum monitoring tool for the RTL-SDR called SDR\#
-
-This signal is then received by the RTL-SDR.  However, significant handling of the signal must be taken care of before we can demodulate the correct information. This cues upon multiple signal processing blocks before our final constellation. First, we used a Frequency Xlating FIR Filter which acts as a type of bandpass filter to filter out all of the extra signals that might be around that band.  After this we use a series of three blocks: a polyphase clock sync, a CMA equalizer, and a costas loop.  The polyphase clock sync is used to perform timing synchronization with the transmitter.  This is done by the use of two filter bank that use a match filter on a signal’s pulse shape.  In our case, we used a root raised cosine filter for our pulse shape since our transmitter is using a root raised cosine filter.  This synchronized signal is then sent through a CMA Equalizer and a Costas Loop in order to provide adequate phase correction.  Our results after all of this signal processing are as expected with the received BPSK signal. 
-
-This constellation is then sent through a differential decoder, and then the demodulated binary information goes through a packet decoder to extract the payload out of the packetized binary information. This data is then uploaded to results file on the ground receiver’s main computer.
+This constellation is then sent through a differential decoderand a packet decoder, to extract the payload out of the packetized binary information. This data is then uploaded to results file on the ground receiver’s main computer.
 
 \section{Summary}
-I am going to wait until everything is pushed to write this one.
+In this section, the results achieved in this MQP were discussed. This focused primarily on the design and implementation of the system, as well as the processing of the data collected. Overall, the team was able to create a good foundation on which aerial sensing methods can be applied.
