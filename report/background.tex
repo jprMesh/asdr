@@ -12,16 +12,15 @@ The spectrum of radio frequencies used for wireless communications is managed by
 \caption{United States Frequency Allocation Chart \cite{FCC_Info}}
 \label{fig:freq_chart}
 \end{figure}
-As seen from Figure \ref{fig:freq_chart}, the spectrum is divided into smaller chunks where only specified entities can utilize legally. The usage of each chunk is determined by whether the NTIA and FCC require a license to use the band or not. Only government licensed operators can communicate in the licensed bands, with uses that include AM broadcasting, FM broadcasting, and cellular communication. However, unlicensed bands are open to any entity that wants to utilize them, but they must still follow certain guidelines for usage. Technologies that use unlicensed bands include microwave, bluetooth, and WiFi. \textbf{Maybe talk about the history of this a little, why it's split up like this and why the certain bands were unlicensed}
+As seen from Figure \ref{fig:freq_chart}, the spectrum is divided into smaller chunks where only specified entities can utilize legally. The usage of each chunk is determined by whether the NTIA and FCC require a license to use the band or not. Only government licensed operators can communicate in the licensed bands, with uses that include AM broadcasting, FM broadcasting, and cellular communication. However, unlicensed bands are open to any entity that wants to utilize them, but they must still follow certain guidelines for usage. Technologies that use unlicensed bands include microwave, bluetooth, and WiFi. \textbf{Maybe talk about the history of this a little, why it's split up like this and why the certain bands were unlicensed(KYLE)}
 
 \subsection{WiFi}
-WiFi first came about in 1985, when the FCC decided to open up several bands of wireless spectrum for use without a government license. In the early 1990s, the Institute of Electrical and Electronics Engineers (IEEE) realized that wireless communications needed to be standardized. A committee was formed that focused on providing a reliable, fast and robust wireless solution that would be able to scale for years to come. Therefore, the IEEE made an addition to its 802 standard which is used for local area networks, and thus the 802.11 standard was created in order to assure these things. Since then, there has been multiple iterations of the standard, and five sub-standards have been established for wireless communications called:802.11a, 802.11b, 802.11g, 802.11n, and 802.11ac. \cite{bergieee}
+WiFi first came about in 1985, when the FCC decided to open up several bands of wireless spectrum for use without a government license. In the early 1990s, the Institute of Electrical and Electronics Engineers (IEEE) realized that wireless communications needed to be standardized. A committee was formed that focused on providing a reliable, fast and robust wireless solution that would be able to scale for years to come. Therefore, the IEEE made an addition to its 802 standard which is used for local area networks, and thus the 802.11 standard was created in order to assure these things. Since then, there has been multiple iterations of the standard, and five sub-standards have been established for wireless communications called:802.11a, 802.11b, 802.11g, 802.11n, and 802.11ac \cite{bergieee}. 
+The first standard was 802.11, which was originally created in 1997. The data rate was capped at 2 Mbps and transmitters transmitted on a frequency from 2.4 to 2.483 GHz. These transmitters used time-division duplexing which allows them to send uplink and downlink wireless traffic on the same RF channel. The transmitters also use interference mitigation techniques such as DSSS and FHSS which are protocols that switch wireless channels when there is other wireless interference present on that channel.\par
 
-The first creation of the standard was 802.11 which was originally created in 1997. The data rate was capped at 2 Mbps and transmitters transmitted on a frequency from 2.4 to 2.483 GHz. These transmitters used time-division duplexing which allows them to send uplink and downlink wireless traffic on the same RF channel. The transmitters also use interference mitigation techniques such as DSSS and FHSS which are protocols that switch wireless channels when there is other wireless interference present on that channel.
+All the wireless standards also use a media access layer which is also known as the MAC layer. This layer is used to assist the transmission by providing frame synchronization, and encryption. 802.11 uses encryption by using Wired Equivalent Privacy or WEP. WEP consists of a 40 bit key that is used in order to access communication with a Wi-Fi transceiver.
 
-In addition to this, all the wireless standards also use a media access layer which is also known as the MAC layer.  This layer is used to assist the transmission by providing frame synchronization, and encryption.  802.11 uses encryption by using Wired Equivalent Privacy or WEP.  WEP consists of a 40 bit key that is used in order to access communication with a Wi-Fi transceiver.
-
-WEP encryption, dynamic frequency selection, and the OFDM preamble are all have all been carried on from one standard to the next.  However, WiFi traffic can be transmitted using a variety of bandwidths dependant on their respective 802.11 standard.  Wi-Fi traffic can transmit using a 20 MHz, 40 MHz or 80 MHz bandwidth dependant on their 802.11 standard. 
+WEP encryption, dynamic frequency selection, and the OFDM preamble have all been carried from one standard to the next. However, WiFi traffic can be transmitted using a variety of bandwidths dependant on their respective 802.11 standard. Wi-Fi traffic can transmit using a 20 MHz, 40 MHz or 80 MHz bandwidth dependant on their 802.11 standard. This is described in Table \label{table:wifi_protocols}. 
 \begin{table}[ht]
 \centering
 \caption{This table outlines the bandwidth, frequency spectrum and modulation type of each corresponding 802.11 interface. As the wifi protocols become newer from starting with 802.11a and ending with 802.11ac as the most recent, the protocols utilize wider bandwidths for communication, and offer a range of operating frequencies. MIMO-OFDM was also developed for later 802.11 protocols such as 802.11n and 802.11ac in order to support multipath propagation.}
@@ -36,7 +35,7 @@ WEP encryption, dynamic frequency selection, and the OFDM preamble are all have 
          802.11ac &      20, 40, 80 &                  5 &  MIMO-OFDM \\ \hline
 \end{tabular}
 \end{table}\par
-These transmissions can vary when it comes to the entire frames information. However, each standard has the same preamble that signifies the start of a transmission, and what central frequency the transmission is on.  For 802.11, a wifi transmission is concentrated in one or more 20 MHz wide wifi channels or bins. At the 2.4 GHz band, Wi-Fi is allocated throughput 11 wireless channels ranging from 1 to 11.  However, only 3 of these channels (1, 6, and 11) are used due to each channel only being 5 MHz wide.  Since transmissions on the 2.4 GHz band are 20 MHz wide, the utilized channels are spaced enough to mitigate co-channel interference. This is shown in Figure \ref{fig:2.4GHz_channel}.
+These transmissions can vary when it comes to the frame's information. However, each standard has the same preamble that signifies the start of a transmission, and what central frequency the transmission is on.  For 802.11, a wifi transmission is concentrated in one or more 20 MHz wide wifi channels or bins. At the 2.4 GHz band, Wi-Fi is allocated throughput 11 wireless channels ranging from 1 to 11.  However, only 3 of these channels (1, 6, and 11) are used due to each channel only being 5 MHz wide.  Since transmissions on the 2.4 GHz band are 20 MHz wide, the utilized channels are spaced enough to mitigate co-channel interference. This is shown in Figure \ref{fig:2.4GHz_channel}.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/2_GHz_Channels.png}
@@ -50,7 +49,7 @@ Also, for protocols 802.11a, 802.11n and 802.11 ac, they also use the 5 GHz freq
 \caption{The 5GHz band allocates channels for higher bandwidth transmissions.  Wi-Fi channels at 5GHz cater to transmitting information at either 20, 40 or 80 MHz. Each wifi transmission on a specified channel will adapt to a higher or lower bandwidth setting based on the corresponding signal strength and interference between a transmitter and receiver.}
 \label{fig:5GHz_channel}
 \end{figure}
-What first signifies a transmission on any of these wifi channels is the detection of the OFDM PLCP preamble which signifies which channel the information is being transmitted on. This preamble consists of  In addition to the preamble, you could also decode the information from the Data fields, however, all of that data is usually encrypted so that it prevents any unauthorized user from accessing it. \cite{wifi_book}
+The detection of the OFDM PLCP preamble signifies a transmission, as well as which channel the information is being transmitted on. In addition to the preamble, you could also decode the information from the Data fields, however, all of that data is usually encrypted so that it prevents any unauthorized user from accessing it. \cite{wifi_book}
 
 \subsubsection{MAVLink}
 The Micro Aerial Vehicle Link (MAVLink) protocol is a free open source wireless communication protocol for controlling small unmanned aerial vehicles. This protocol first came about in 2009 by Lorenz Meier under LGPL license. \cite{MAVLINK_Website}  This protocol was designed to be a lightweight, header-only message marshaling library.  MAVLINK was first most commonly used with autopiloting software, but is trying to become the worldwide standard in drone communication. This communication protocol consists of communication with a slave drone and a master ground controller.  MAVlink controllers most commonly transmit data on the 2.4 GHz band along-side 802.11 wireless communications. Therefore, an airborne receiver must be able to classify what type of signal it has received. To classify a MAVLink transmission, this can be done by demodulating MAVLink's GFSK modulated data, and decoding its data frame. 
@@ -95,7 +94,7 @@ The simplest method of non-cooperative sensing is energy detection. In this appr
 \label{fig:energy_detection}
 \end{figure}\par
 
-This method of detection is the most simple as it does not require information about the signal ignoring key aspects of signals such as modulation method and pulse shaping. \textbf{THIS SENTENCE IS AWKWARD} Because of this, it is the simplest detection method to implement. However, an assumption made in using energy detection is that the signals being searched for have significantly more power than the noise and interference of the channel. This does not always prove to be true. In addition to this, energy detection cannot be used to distinguish signals using the frequencies measured, as no pulse shape information is determined.
+This method of detection is the most simple as it only uses the presence of the signal, ignoring key aspects of signals such as modulation method and pulse shaping. Because of this, it is the simplest detection method to implement. However, an assumption made in using energy detection is that the signals being searched for have significantly more power than the noise and interference of the channel. This does not always prove to be true. In addition to this, energy detection cannot be used to distinguish signals using the frequencies measured, as no pulse shape information is determined.
 
 \subsection{Matched Filter}
 Another approach to spectrum sensing is through the use of matched filters. Matched filters are designed to maximize the signal to noise ratio (SNR) given an input signal, which will be called $s_{in}$ \cite{sensing_energy}. To sense signals through matched filtering, prior knowledge of the reference signal (or $s_{ref}$) to be detected must be known. The $s_{in}$ will then be correlated with $s_{ref}$. This produces a value m, that will be compared to a threshold value. This process is described in Equation \ref{eq:matched} below and in Figure \ref{figure:matched_filter}
@@ -153,24 +152,6 @@ One of the major benefits of CFD is that it is not nearly as affected by noise. 
 \label{fig:cyclic_scf_qpsk}
 \end{minipage}
 \end{figure}
-
-% \begin{figure}[ht!]
-% \includegraphics[scale=0.4]{img/cyclic_scf_bpsk.png}
-% \caption{cyclic scf BPSK \textbf{Needs to be 2-3 sentences -Narut}}
-% \label{fig:cyclic_scf_bpsk}
-% \end{figure}
-
-% % \begin{subfigure}{0.5\textwidth}
-
-% %\end{subfloat}
-% \end{figure}
-% % \begin{figure}[ht]
-% \centering
-
-% \end{figure}
-% \begin{figure}[ht]
-
-% \end{figure}
 
 The primary downside to Cyclostationary Feature Detection is the complexity and time required to properly utilize it. The complexity lies in the number of integrals and correlations that need to be computed in order to implement CFD. In addition, the system needs to listen for signal long enough for the Cyclostationary Process to repeat. Because of these downsides, it is not common to be used on embedded systems. \par
 
