@@ -1,18 +1,31 @@
-# Read in measurements from file
-# with open('masdr_data.dat', 'rb') as datafile:
-#     flots = struct.unpack('f', datafile.read(4))
 
 from math import sqrt
 
-altitude = 30 # in meters
+# Read in measurements from file
+measurements = []
+with open('gps_vals.txt', 'r') as gps_vals:
+    gps = gps_vals.readlines()
+    with open('rss_vals.txt', 'r') as rss_vals:
+        rss = rss_vals.readlines()
+        rss_scale = len(rss)/len(gps)
+        offset_b = 6000
+        offset_e = 1500
+        reduction = 15
+        for i in range((len(gps) - offset_b - offset_e) / reduction):
+            measurements.append((float(gps[offset_b+reduction*i]),
+                                 float(gps[offset_b+reduction*i+1]),
+                                 float(rss[(offset_b+reduction*i)*rss_scale])))
+
+altitude = 100 # in meters
 # (Lat, Long, RSSI value)
-measurements = [(42.274744, -71.8084369, -84.3),
-                (42.275376, -71.8085379, -85.3),
-                (42.275342, -71.8075235, -85.9)]
+# measurements = [(42.274744, -71.8084369, -84.3),
+#                 (42.275376, -71.8085379, -85.3),
+#                 (42.275342, -71.8075235, -85.9)]
+
 # Distance calculation
 # Pythagorean theorem to eliminate altitude
 rss_dist_meas = [(meas[0], meas[1],
-                  sqrt((10**((meas[2]/-20))/100)**2 - altitude**2))
+                  (10**((meas[2]/-20))/100))
                  for meas in measurements]
 
 # Populate js list of points to plot
