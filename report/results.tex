@@ -242,7 +242,7 @@ This signal is then received by the RTL-SDR.  However, significant handling of t
 This constellation is then sent through a differential decoder and a packet decoder, to extract the payload out of the packetized binary information. This data is then uploaded to results file on the ground receiver’s main computer.
 
 \section{Platform Deployment}
-The platform on the 3DR Solo was tested in the two most applicable scenarios, the rural environment and the urban environment. The tests were conducted in secluded areas to prioritize privacy and safety concerns. The tests consisted of mounting the platform onto the 3DR Solo, flying the drone in a procedural flight path as seen in \ref{fig:test_setup} to collect IQ data, and processing the data for the mapping and the localization of signals around that area.
+The platform on the 3DR Solo was tested in the two most applicable scenarios, the rural environment and the urban environment. The tests were conducted in secluded areas to prioritize privacy and safety concerns. The tests consisted of mounting the platform onto the 3DR Solo, flying the drone in a procedural flight path as seen in \ref{fig:test_setup} to collect IQ data, and processing the data for the mapping and the localization of signals around that area. The signals in our case, would be the controller access point.
 
 \begin{figure}[ht!]
 	\centering
@@ -255,8 +255,8 @@ The simulation of the rural environment was organized at Professor Wyglinski's p
 
 \begin{figure}[ht!]
 	\centering
-	\includegraphics[width=0.70\textwidth]{img/filler.png}
-	\caption{\textbf{rural test results from jonas's script}}
+	\includegraphics[width=0.70\textwidth]{img/ruraltest.png}
+	\caption{The result of the test flight in a rural environment. The red dot shows where the actual access point was located. The black dots represent the GPS locations of where the drone traveled, and the their shades illustrate the length of time the drone was at that location. The black hollow circle depicts the localization of where the drone thinks the access point may be based on GPS and RSSI measurements.}
 	\label{fig:rural_test}
 \end{figure} \par
 
