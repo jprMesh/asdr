@@ -241,5 +241,24 @@ This signal is then received by the RTL-SDR.  However, significant handling of t
 
 This constellation is then sent through a differential decoder and a packet decoder, to extract the payload out of the packetized binary information. This data is then uploaded to results file on the ground receiver’s main computer.
 
+\section{Platform Deployment}
+The platform on the 3DR Solo was tested in the two most applicable scenarios, the rural environment and the urban environment. The tests were conducted in secluded areas to prioritize privacy and safety concerns. The tests consisted of mounting the platform onto the 3DR Solo, flying the drone in a procedural flight path as seen in \ref{fig:test_setup} to collect IQ data, and processing the data for the mapping and the localization of signals around that area.
+
+\begin{figure}[ht!]
+	\centering
+	\includegraphics[width=0.70\textwidth]{img/filler.png}
+	\caption{\textbf{3x3 diagram of test flight plan}}
+	\label{fig:test_setup}
+\end{figure} \par
+
+The simulation of the rural environment was organized at Professor Wyglinski's property \textbf{Not sure if I should specify the location and stuffs for Wyglinski's privacy?}, where he kindly turned off his WiFi and authorized the flight of the drone. The testing environment consisted of high rise trees that surrounded the area and grew up to an average of 80ft. The resulting mapping and localization of the area is provided in \ref{rural_test}.
+
+\begin{figure}[ht!]
+	\centering
+	\includegraphics[width=0.70\textwidth]{img/filler.png}
+	\caption{\textbf{rural test results from jonas's script}}
+	\label{fig:rural_test}
+\end{figure} \par
+
 \section{Summary}
 In this section, the results achieved in this MQP were discussed. This focused primarily on the design and implementation of the system, as well as the processing of the data collected. Overall, the team was able to create a good foundation on which aerial sensing methods can be applied.
