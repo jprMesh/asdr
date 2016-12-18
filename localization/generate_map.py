@@ -3,18 +3,18 @@ from math import sqrt
 
 # Read in measurements from file
 measurements = []
-with open('gps_vals.txt', 'r') as gps_vals:
+with open('gps_vals_urban.txt', 'r') as gps_vals:
     gps = gps_vals.readlines()
-    with open('rss_vals.txt', 'r') as rss_vals:
+    with open('rss_vals_urban.txt', 'r') as rss_vals:
         rss = rss_vals.readlines()
         rss_scale = len(rss)/len(gps)
-        offset_b = 6000
-        offset_e = 1500
+        offset_b = 1000
+        offset_e = 500
         reduction = 15
         for i in range((len(gps) - offset_b - offset_e) / reduction):
-            measurements.append((float(gps[offset_b+reduction*i]),
-                                 float(gps[offset_b+reduction*i+1]),
-                                 float(rss[(offset_b+reduction*i)*rss_scale])))
+            measurements.append((float(str(gps[offset_b+reduction*i]).split()[0]),
+                                 float(str(gps[offset_b+reduction*i]).split()[1]),
+                                 float(rss[(offset_b+reduction*i)*rss_scale].strip('\n,'))))
 
 altitude = 100 # in meters
 # (Lat, Long, RSSI value)
