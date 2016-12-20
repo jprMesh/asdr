@@ -3,7 +3,6 @@
 /******************************************************************************/
 KalmanFilter::KalmanFilter() {
 
-    /// 12/06/16 MHLI: Jonas if you want you can use memset here, just doing it this way for now.
     int i,j;
     for (i = 0; i < 4; i++) {
         x[i] = 0;
@@ -86,7 +85,7 @@ void KalmanFilter::predict() {
             tempx[i] += A[i][j] * x[j];
         }
     }
-    //Maybe changable to pointer change. (x = tempx)
+
     for(i = 0; i < 4; i++) {
         x[i] = tempx[i];
     }
@@ -119,27 +118,6 @@ void KalmanFilter::update(float pos_x, float pos_y, float e_x, float e_y) {
     //Save current location
     pos_x_last = pos_x;
     pos_y_last = pos_y; 
-
-
-    // IF K is constant, this isn't necessary.
-    //S = HPH^T + RS
-    // for(i = 0; i < 4; i++) {
-    //     for(j = 0; j < 4; j++) {
-    //         hph = 0; 
-    //         rs = 0;
-    //         for(k = 0; k < 4; k++){
-    //             hph += H[i][k] * P[k][j] *H[k][i];
-    //             rs += R[i][k] * S[k][j];
-    //         }
-    //         temp[i][j] = hph + rs;
-    //     }
-    // }
-    // for(i=0;i<4;i++){
-    //     for(j=0;j<4;j++){
-    //         S[i][j] = temp[i][j];
-    //     }
-    // }
-    //K=PH^TS^-1K //K will be set to a constant
 
     //X = x+KY
     for(i = 0; i < 4; i++) {
