@@ -63,19 +63,21 @@ The Micro Aerial Vehicle Link (MAVLink) protocol is a free open source wireless 
 \end{figure} \par
 \begin{table}[ht]
 \centering
-\caption{This table shows the contents of a MAVLink packet.  All of this information is transmitted from a base station controller to a drone that a user is operating upon.  This data is not encrypted and can be sniffed by anyone who is using a MAVLink decoder. \textbf{FIX TABLE}}
-\begin{tabular}{|l|l|l|l|} %p{0.25\linewidth}
-  \hline
-  Byte Index & Content & Value &  Purpose \\ \hline
-          0 &	Packet start sign &                  0xFE &       Indicates start of a new packet\\
-          1 &   Payload length &                0 - 255 &       Indicates length of the following payload \\
-          2 &   Packet Sequence &               0 - 255 &       Enables packet loss detection because each component counts up its send sequence \\
+\caption{This table shows the contents of a MAVLink packet.  All of this information is transmitted from a base station controller to a drone that a user is operating upon.  This data is not encrypted and can be sniffed by anyone who is using a MAVLink decoder.}
+\begin{tabular}{|l|l|l|p{7cm}|}
+        \hline
+        Byte Index & Content & Value &  Purpose \\ \hline
+          0 &	Packet start sign &       0xFE &  Indicates start of a new packet\\
+          1 &   Payload length &       0 - 255 &  Indicates length of the following payload \\
+          2 &   Packet Sequence &      0 - 255 &  Enables packet loss detection because each component counts up its send sequence \\
           3 &   System ID &            1 - 225 &  Identifies the sending system; enables multiple platforms to use the same network \\
           4 &   Component ID &         0 - 255 &  Identifies the sending component; allows for multiple components on the same platform \\
           5 &	Message ID &		   0 - 255 &  Identifies the message being sent defines the payload and how it should be decoded \\
           6 - n+6 &	Data & 			   0 - 255 & Data of the message depends on message ID \\
-          n+7-n+8 & Checksum & & ITU hash of bytes including MAVLINK parameter computed from message fields to prevent decoding from a different protocol version \\ \hline
-\end{tabular}\end{table}
+          n+7-n+8 & Checksum & & ITU hash of bytes including MAVLINK parameter computed from message fields to prevent decoding from a different protocol version \\
+        \hline
+\end{tabular}
+\end{table}
 \par
 As opposed to WiFi signals, MAVLink transmissions are all non-encrypted, making it more vulnerable to threats such as network attacks or an unauthorized user operating the drone. Any user can send signals to a drone using a GFSK transmitter and the drone has no knowledge on who the correct user is \cite{mavlink_vuln}.
 
