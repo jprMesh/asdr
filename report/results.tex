@@ -69,7 +69,7 @@ The complete system mounted on the drone is shown in Figure \ref{fig:drone_and_b
 % What kind of results are even here? How the framework works I think
 % If you don't do that you should do the other thing.
 \section{Drone Control}
-To reduce interference when sensing signals, the WiFi cards on the controller and drone had to be replaced because the communication frequency and the sensing frequency were the same value. In order to replace these WiFi cards, research had to be done to determine which driver was used on the drone. This ended up being the ath9k driver, which was compatible with a wide range of Atheros based cards. Despite the guarantee of compatibility, the first purchase of the R11e-5HnD MikroTik MiniPCI-E wireless card ended up unused, due to the large heat sink that could not fit conveniently into both the controller and drone. Furthermore, the connectors would also require adapters to connect to the antennas. This led to the second purchase of the SparkLAN WPEA-121N MiniPCI-E Half-Size wireless card, which required a bracket to be mounted. The replacement of the WiFi cards in the controller was done first, because the controller acts as a WiFi base station. This makes it easier to test 5 GHz functionality. The replacement went smoothly. However, the controller was still communicating at 2.4GHz. Upon checking the software, it detected that the WiFi card installed was capable of communicating at 5GHz. Therefore, the controller's networking scheme was modified such that it would persistently communicate at a specific channel (5GHz). After these changes, there was trouble SSHing into the controller. One possible explaination is that the antennas are incapable of transmitting at 5GHz. Limited with time and the scope of the project, it was not possible to obtain antennas to replace on the controller and drone. Due to this reason, the drone's WiFi card was not replaced, and both the controller and drone were factory reset to operate at 2.4GHz. \par
+To reduce interference when sensing signals, the WiFi cards on the controller and drone had to be replaced because the communication frequency and the sensing frequency were the same value. In order to replace these WiFi cards, research had to be done to determine which driver was used on the drone. This ended up being the ath9k driver, which was compatible with a wide range of Atheros based cards. Despite the guarantee of compatibility, the first purchase of the R11e-5HnD MikroTik MiniPCI-E wireless card ended up unused, due to the large heat sink that could not fit conveniently into both the controller and drone. Furthermore, the connectors would also require adapters to connect to the antennas. This led to the second purchase of the SparkLAN WPEA-121N MiniPCI-E Half-Size wireless card, which required a bracket to be mounted. The replacement of the WiFi cards in the controller was done first, because the controller acts as a WiFi base station. This makes it easier to test 5 GHz functionality. The replacement went smoothly. However, the controller was still communicating at 2.4GHz. Upon checking the software, it detected that the WiFi card installed was capable of communicating at 5GHz. Therefore, the controller's networking scheme was modified such that it would persistently communicate at a specific channel (5GHz). After these changes, there was trouble SSHing into the controller. One possible explanation is that the antennas are incapable of transmitting at 5GHz. Limited with time and the scope of the project, it was not possible to obtain antennas to replace on the controller and drone. Due to this reason, the drone's WiFi card was not replaced, and both the controller and drone were factory reset to operate at 2.4GHz. \par
 
 A python script was written to briefly take control of the drone and rotate while holding a constant position and altitude. The script used the Dronekit API provided by 3DR. The script was packed up with all necessary libraries and sent to the drone awaiting execution. When the command is given by a computer connected to the controller's WiFi network, the script runs, taking over control of the drone and rotating it. The API did not provide a way to set a constant rate of rotation, so instead a nonblocking call to rotate a certain amount was used in conjunction with timed sleeps to achieve a continuous rotation of 360 degrees. Attempts to map the script to a button on the controller were unsuccessful. The 3DR developers guide notes a future API called \"Smart Shots\" that allows commands to be mapped to buttons on the controller, but it was not available at the time of this project.
 
@@ -80,7 +80,7 @@ In order to monitor the signal strength of our received data, the RSSI localizat
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.70\textwidth]{img/rss_vals_test.png}
-	\caption{This graph shows how the RSSI of our received signal can dramatically change.  These sharp transitions in RSSI values are due to the transmitter not always continually transming.}
+	\caption{This graph shows how the RSSI of our received signal can dramatically change.  These sharp transitions in RSSI values are due to the transmitter not always continually transmitting.}
 	\label{fig:rss_values}
 \end{figure}
 In order to have an accurate RSSI, RSSI reports that are under the noise floor must be filtered out. A detection threshold of -85 dBm which was selected, as it is above the noise floor.  The output for our RSSI measurements only record noticeable signals.  
@@ -112,7 +112,7 @@ When the drone was tested, received signal strengths were between -65 to -80 dBm
 In addition to calculating RSS values, a C++ program separate from the code framework
 was written. This program, called iq\_to\_file, was created as a foundation with 
 which to work with. It became the testbed for specific elements of MASDR, since it
-was already capable of logging.The code for this section is in Appendix \ref{app:iq_to_file}. 
+was already capable of logging. The code for this section is in Appendix \ref{app:iq_to_file}. 
 This program is built on the rx\_samples\_to\_file example that Ettus Research provides 
 with the UHD. This program already had the desired base functionality, so it proved
 to be a good starting point. The program was then stripped of unnecessary functionality,
@@ -123,7 +123,7 @@ and GPS modules were the sections added. This allowed for post-process localizat
 save these values properly, they were packed into the complex type that was being
 used to save IQ samples. In order to make it possible to pull these values out
 in post-processing, they were given an unrealistic imaginary value. with each different 
-module getting a different imaginarry value. The matched filter outputs got 
+module getting a different imaginary value. The matched filter outputs got 
 a flag of 1000. GPS X, Y and Z coordinates were given flags of 2000, 3000, and 4000,
 respectively. RSS values got a flag of 5000. These values were written with each 
 buffer of samples received. This makes it easier to align results when processing.\par
@@ -134,14 +134,14 @@ by iq\_to\_file, as floats. It then separates the data into in-phase and quadrat
 components. Then, after pre-allocating buffers, the script pulls out the non-IQ 
 samples. The matched filter values and the RSS measurements are then plotted. The
 script used to plot the received signal, but with longer record times, this
-becomse impractical or impossible.
+becomes impractical or impossible.
 
 \section{Spectrum Localization}
 %GPS
-The GPS was to be used to gather location data to allow for post processing. Unfortunately the GPS was non-functional during the test due to it being unable to locate sattelites during the tests. Therefore, in order to use the data gathered in the test conducted on December 11, 2016, GPS 
+The GPS was to be used to gather location data to allow for post processing. Unfortunately the GPS was non-functional during the test due to it being unable to locate satellites during the tests. Therefore, in order to use the data gathered in the test conducted on December 11, 2016, GPS 
 data was pulled from the drone. This was done using a command-line interface that 
 3DR provided online \cite{3dr_devguide}. Unlike the other logs that were pulled using this method,
-the GPS information was loggeed in a Dataflash log. This format saves the information
+the GPS information was logged in a Dataflash log. This format saves the information
 in MAVlink packets, making it easier to transmit to a base station but harder
 to post-process. To deal with this, the Ardupilot Mission Planner software was 
 installed \ref{ard_mplanner}. This software is capable of taking the dataflash logs
@@ -152,8 +152,8 @@ the larger data set. \par
 %Probably put script here
 
 %KF Simulation
-Because of the complications with the GPS measurements, the 4-state kalman filter
-was modelled in MATLAB. The script can be found in \ref{app:kf_sim}. The script 
+Because of the complications with the GPS measurements, the 4-state Kalman filter
+was modeled in MATLAB. The script can be found in \ref{app:kf_sim}. The script 
 initializes the matrices as described in section \ref{methods:kf}. A noisy input
 with a constant x velocity 1 and y velocity 1 is initialized. Arbitrary variance
 values are used in $\matr{P}$ and for the noise covariance matrices $\matr{Q}$
