@@ -121,25 +121,6 @@ void *poll_gps(void *unused){
                     gps_buff[gps_buf_head][0] = gps_data__.fix.latitude;
                     gps_buff[gps_buf_head][1] = gps_data__.fix.longitude;
                     gps_buff[gps_buf_head][2] = gps_data__.fix.time;
-                    // use gps_data__.fix.--- to access
-                    // int    mode;        /* Mode of fix */
-                    //   #define MODE_NOT_SEEN   0/* mode update not seen yet */
-                    //   #define MODE_NO_FIX     1    /* none */
-                    //   #define MODE_2D         2    /* good for latitude/longitude */
-                    //   #define MODE_3D         3    /* good for altitude/climb too */
-                    // double ept;         /* Expected time uncertainty */
-                    // double latitude;    /* Latitude in degrees (valid if mode >= 2) */
-                    // double epy;         /* Latitude position uncertainty, meters */
-                    // double longitude;   /* Longitude in degrees (valid if mode >= 2) */
-                    // double epx;         /* Longitude position uncertainty, meters */
-                    // double altitude;    /* Altitude in meters (valid if mode == 3) */
-                    // double epv;         /* Vertical position uncertainty, meters */
-                    // double track;       /* Course made good (relative to true north) */
-                    // double epd;         /* Track uncertainty, degrees */
-                    // double speed;       /* Speed over ground, meters/sec */
-                    // double eps;         /* Speed uncertainty, meters/sec */
-                    // double climb;       /* Vertical speed, meters/sec */
-                    // double epc;         /* Vertical speed uncertainty */
 
                     //Loop buffer
                     gps_buf_head = (gps_buf_head + 1) % GPS_BUF_SIZE;
@@ -172,53 +153,4 @@ void rem_gps(){
     gps_close (&gps_data__);
 }
 
-
-/******************************************************************************/
-void init_mag(){
-
-    int opResult = 0; // for error checking of operations
-    
-    //i2cHandle = open("/dev/i2c-2", O_RDWR);
- 
-    // Tell the I2C peripheral that the device address isn't a 10-bit
-    //if(ioctl(i2cHandle, I2C_TENBIT, 0) != 0){
-    //    perror("Error setting address length");
-    //}
-   
-    // Tell the I2C peripheral what the address of the magnetometer is
-    //and set the magnetometer to the slave
-    //if(ioctl(i2cHandle, I2C_SLAVE, MAG_I2C_ADDRESS) != 0){
-     //   perror("Error setting device address");
-    //}
-    //int temp = lsm303dlhc_mag_init();
-    
-    
-
-  
-}
-
-
-/******************************************************************************/
-float read_mag(){
-//    MagAxesRaw_t axes;
-//    axes.AXIS_X=0;
-//    axes.AXIS_Y=0;
-//    axes.AXIS_Z=0;
-    //if(MEMS_ERROR == GetMagAxesRaw(&axes) ){
-    //    perror("Error reading Magnetometer data\n");
-    //}
-    float Pi = 3.14159;
-    float heading =0;
-    // Calculate the angle of the vector y,x
-//    float heading = (atan2((float)axes.AXIS_Y,(float)axes.AXIS_X) * 180) / Pi;
-  
-    // Normalize to 0-360
-//    if (heading < 0)
-//    {
-//      heading = 360 + heading;
-    //}
-    return heading;
-    
-}
-/******************************************************************************/
 

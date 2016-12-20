@@ -66,14 +66,6 @@ Masdr::Masdr() {
             ofdm_head[i][1] = 0;
         }
     }
-    /// 12/4/16 MHLI: Still have to figure out what omega, Ts, N_RRC should be.
-
-    //     The RRC impulse response is given by:
-    // h(t) =     pi^2      4at cos(t(a+b))+pi sin(t(b-a))
-    //        ----------- * ------------------------------
-    //         pi(a-b)-4a         t(16t^2 a^2 - pi^2)
-    // where b= 2 pi f   (f is usually half of your symbol rate)
-    // and   a= 2 pi excess bandwidth
 
     float time;
     // Maybe internal freq should be 905e6,idk
@@ -90,9 +82,6 @@ Masdr::Masdr() {
             rrcBuf[i] = (sin(PI*time/Ts*(1-excess))+4*excess*time/Ts*cos(PI*time/Ts*(1+excess))) 
                         /(PI*time/Ts*(1-(4*excess*time/Ts)*(4*excess*time/Ts)));
 
-        //    rrcBuf[i] = PI*PI/(PI*(a-b)-4*a) * 
-        //                4*a*time*cos(time*(a+b))+ PI *sin(time*(b-a)) /
-        //                    time*(16 * time * time * a * a - PI * PI);
         }
     }
 
@@ -136,11 +125,8 @@ void Masdr::initialize_uhd() {
     std::string wirefmt = "sc16"; //or sc8
     int setup_time = 1.0; //sec setup
 
-    //int bw =10e6; ///10/31/16 MHLI: UP to 56e6
-    //Only care about 16.6 MHz of the 20 (or 8.3MHz of 10)
     int rx_bw = 20e6; //11/16/16 MHLI: Should this be 10e6 and will it do half above half below?
     int tx_bw = 300e3;
-    // int tx_bw = 0;
 
     //Create USRP object
     usrp = uhd::usrp::multi_usrp::make((std::string)"");
@@ -186,7 +172,6 @@ void Masdr::initialize_uhd() {
 /***************************STATE TRANSITIONS**********************************/
 /******************************************************************************/
 void Masdr::update_status() {
-    ///10/31/16 MHLI: FILLER INFORMATION,REPLACE WITH CORRECT UPDATING
     phy_status.heading = 0;
     phy_status.is_stat_and_rot = false;
     phy_status.location[0] = 0;
@@ -271,7 +256,7 @@ void Masdr::begin_processing() {
             run_fft(proc_buf[rb_index].samples);
             float has_wifi =  match_filt();
             if(has_wifi != -1)
-                rss();
+                usrp->get_rx_sensor("rssi",0).to_real(); ///Not stored to anything rn
         }
     }
 }
@@ -336,22 +321,15 @@ float Masdr::match_filt() {
 }
 
 /******************************************************************************/
-float* Masdr::rss() {
-    // I think this is pretty much just going to be the RSS energy level for the
-    //   buffer currently being looked at. -Jonas 12/7
-    return NULL;
-}
-
-/******************************************************************************/
 /*********************************TRANSMISSION*********************************/
 /******************************************************************************/
 void Masdr::transmit_data() {
-    /*
+    
     if (trans_head == NULL) {
         std::cout << "No values to transmit" << std::endl;
         return;
     }
-    */
+    
     int i; // looping
     int bias = 0; // compensating shift for adding more data
     TransNode* trans_temp = trans_head;
@@ -363,7 +341,7 @@ void Masdr::transmit_data() {
         int output;
     } data;
 
-    /*
+    
     std::cout << "Starting packaging" << std::endl;
     while (trans_temp != NULL) {
         //packing 33 start bits
@@ -405,68 +383,6 @@ void Masdr::transmit_data() {
         for(i = 0; i < 33; i++) {
             transmitBuffer[i+bias] = std::complex<float>(-1,0);
         }
-        */
-        /// 12/4/15 MHLI:Deal with root raised cosine.
-
-        /* //BEGIN RRC
-	for(i=0;i<TBUF_SIZE;i++){
-	    if(i%2)
-                transmitBuffer[i] = std::complex<float>(1,0);
-            else
-                transmitBuffer[i] = std::complex<float>(1,0);//-1,0);
-        }
-        std::complex<float> transmitBuffer_rrc[SPS*TBUF_SIZE + N_RRC];
-        std::complex<float> transmitBuffer_final[SPS*TBUF_SIZE + N_RRC];
-        for(i = 0; i < SPS*TBUF_SIZE+ N_RRC; i++){
-            if(!i%SPS && i < SPS*TBUF_SIZE)
-                transmitBuffer_rrc[i] = transmitBuffer[i/SPS];
-            else
-                transmitBuffer_rrc[i] = 0;
-        }
-
-        int j,k;
-        float accum = 0;
-        //Convolve w/ root raised cosine.
-        for(i=0; i < SPS*TBUF_SIZE+N_RRC;i++){
-            for(j=0; j < N_RRC;j++){
-                k = i-j;
-                if(!k)
-                    accum += 0;
-                else
-                    accum += transmitBuffer_rrc[k].real()*rrcBuf[j];
-            }
-            transmitBuffer_final[i] = std::complex<float>(accum,0);
-        }
-        */ //END RRC
-
-        /*
-        std::cout << "Transmitting..." << std::endl;
-        transmit(transmitBuffer, TBUF_SIZE);
-        trans_temp = trans_temp->next;
-    }
-
-    // delete the values after sending
-    delete trans_head;
-    // set to null for checking when filling in the linkedlist
-    trans_head = NULL;
-    curr_trans_buf = NULL;
-    */
-
-    //TESTING
-    //Use DBPSK in transmission ASSUME NO CHANGE IS 0.
-    std::cout << "Start transmit" << std::endl;
-    // for(i = 0; i < TBUF_SIZE; i++) {
-    //     // if(i%6 == 0 || 6 == 5)
-    //     //     transmitBuffer[i] = std::complex<float>(1,0);
-    //     // else
-    //         transmitBuffer[i] = std::complex<float>(-1,0);
-
-    // }
-    
-    for(i = 0; i < TBUF_SIZE; i++) {
-        transmitBuffer[i] = std::complex<float>(1,0);
-    }
-    
 
     std::ofstream ofs;
     ofs.open ("/home/mqp/Results.bin", std::ofstream::out | std::ofstream::app);
@@ -476,21 +392,16 @@ void Masdr::transmit_data() {
 
     ofs.close();
 
-    uhd::tx_metadata_t md;
-    md.start_of_burst = false;
-    md.end_of_burst = false;
+    // uhd::tx_metadata_t md;
+    // md.start_of_burst = false;
+    // md.end_of_burst = false;
 
     while(1) {
-        //transmit(transmitBuffer, TBUF_SIZE);
-        //Temporarily step out of transmit function
-        tx_stream->send(transmitBuffer,TBUF_SIZE, md);
-         //Transmit root raised cosined signals
-        //tx_stream->send(transmitBuffer_final, SPS* TBUF_SIZE + N_RRC, md);
+        // tx_stream->send(transmitBuffer,TBUF_SIZE, md);
 
-        //Transmit Unmodulated signal.
-        //tx_stream->send(transmitBuffer, TBUF_SIZE, md);
     }
     std::cout << "Done with transmit" << std::endl;
+}
 }
 
 /******************************************************************************/
@@ -528,40 +439,6 @@ void Masdr::rx_test() {
 
     if(DEBUG_THRESH)
         while (1){//(i < 5000) {
-        // accum = 0;
-        // rx_stream->recv(testbuf, RBUF_SIZE, md, 3.0, false);
-
-        // for(j=0;j<RBUF_SIZE;j++) {
-        //     mag_squared = (sqrt(testbuf[j].real() *testbuf[j].real()
-        //               + testbuf[j].imag()*testbuf[j].imag()));
-        //     accum += mag_squared;
-
-        //     if(mag_squared > max_inBuf)
-        //         max_inBuf = mag_squared;
-        //     if(mag_squared > max_total)
-        //         max_total = mag_squared;
-        //     if(mag_squared > max_periodic)
-        //         max_periodic = mag_squared;
-        // }
-        // if(!(i%20)){
-        //     std::cout<<(int)accum*SCALE_ACC;
-        //     for (i=0; i < (int)accum*SCALE_ACC; i++){
-        //         std::cout << "#";
-        //     }
-        //    std::cout<<std::endl;
-        //     // std::cout<< i <<": ";
-        // //std::cout<< "Max in buf: "<<max_inBuf <<std::endl;
-        // //std::cout<< "Max in total"<< max_total <<std::endl;
-        // // std::cout << "Max in Periodic: "<<max_periodic <<std::endl;
-        // }
-        // max_inBuf = 0;
-        // //std::cout << "Received Value: "<<accum<<std::endl;
-        // ++i;
-        // if(i > 5000){
-        //     i = 0;
-        //     max_periodic = 0;
-        // }
-
         rx_stream->recv(testbuf, RBUF_SIZE, md, 3.0, false);
         rssi = usrp->get_rx_sensor("rssi",0).to_real();
         if(rssi > -78){
@@ -614,18 +491,6 @@ void Masdr::tx_test() {
 }
 
 /******************************************************************************/
-void Masdr::mag_test() {
-    float deg;
-    init_mag();
-    while(1) {
-        deg=read_mag();
-        std::cout << "Mag Reading: " << deg << std::endl;
-        usleep(4000000);
-    }
-
-}
-
-/******************************************************************************/
 void Masdr::match_test() {
     //Test match filt stuff.
     float test_val;
@@ -654,64 +519,6 @@ void Masdr::transmit_data_test() {
 }
 
 /******************************************************************************/
-void Masdr::fft_test() {
-    int i;
-    int numTests = 100;
-    int max_index = 0;
-    int real_index;
-    int freq = 3000000;
-    int freq_scale = 25000000;
-    double max_mag = 0;
-    double magnitude;
-    fftw_plan p2;
-
-    fftw_complex* fft_in2 = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N_FFT);
-    p2 = fftw_plan_dft_1d(N_FFT, fft_out, fft_in2, FFTW_BACKWARD, FFTW_MEASURE);
-
-    for(i = 0; i < N_FFT; ++i) {
-        fft_in[i][0] = cos(2 * PI * freq * i / freq_scale);
-        fft_in[i][1] = 0;
-    }
-
-    std::cout<< "Test Forward" << std::endl << std::endl;
-    fftw_execute(fft_p); /* repeat as needed */
-    for (i = 0; i < N_FFT; ++i) {
-        magnitude = sqrt(fft_out[i][0] * fft_out[i][0]
-                         + fft_out[i][1] * fft_out[i][1]);
-        if (magnitude > max_mag) {
-            max_mag = magnitude;
-            max_index = i;
-        }
-        std::cout << "Real: "<<fft_out[i][0]<< "\tImaginary: " << fft_out[i][1]<<std::endl;
-    }
-
-    std::cout << "Max Magnitude: "<<max_mag<< " at index: " << max_index<<std::endl;
-    std::cout << "Bucket represents " <<max_index * freq_scale /2/ N_FFT <<std::endl;
-
-    std::cout<< "Test Backward" <<std::endl<<std::endl;
-    // for(i = 0; i < N_FFT; i++){
-    //     out[i][0] = 0;
-    //     out[i][1] = 0;
-    // }
-    // out[0][N_FFT/2] = 1;
-    max_mag = 0;
-    fftw_execute(p2);
-    for (i = 0; i < N_FFT; i++){
-            magnitude =sqrt(fft_in2[i][0]*fft_in2[i][0] + fft_in2[i][1]*fft_in2[i][1]);
-            if(magnitude > max_mag){
-                max_mag = magnitude;
-                max_index = i;
-            }
-        std::cout << "Real: "<<fft_in2[i][0]<< "\tImaginary: " << fft_in2[i][1]<<std::endl;
-    }
-
-
-        std::cout << "Max Magnitude: "<<max_mag<< " at index: " << max_index<<std::endl;
-        std::cout << "Bucket represents " <<max_index * freq_scale /2/ N_FFT <<std::endl;
-
-}
-
-/******************************************************************************/
 int UHD_SAFE_MAIN(int argc, char *argv[]) {
     std::signal(SIGINT, handle_sigint);
     Masdr masdr;
@@ -720,8 +527,6 @@ int UHD_SAFE_MAIN(int argc, char *argv[]) {
         if (DEBUG_THRESH) masdr.rx_test();
         if (DEBUG_TX) masdr.tx_test();
         if (DEBUG_MATCH) masdr.match_test();
-        if (DEBUG_MAG) masdr.mag_test();
-        if (DEBUG_FFT) masdr.fft_test();
         if (DEBUG_TX_DATA) masdr.transmit_data_test();
     }
 

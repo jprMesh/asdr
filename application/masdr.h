@@ -32,28 +32,21 @@
 #define G_DEBUG 1
 #if G_DEBUG
     #define DEBUG_THRESH 0
-    #define DEBUG_MATCH 0
     #define DEBUG_TX 0
-    #define DEBUG_MAG 0
-    #define DEBUG_FFT 0
+    #define DEBUG_MATCH 0
     #define DEBUG_TX_DATA 1
     #define SCALE_ACC 0
 #else
     #define DEBUG_THRESH 0
     #define DEBUG_MATCH 0
     #define DEBUG_TX 0
-    #define DEBUG_MAG 0
-    #define DEBUG_FFT 0
     #define DEBUG_TX_DATA 0
     #define SCALE_ACC 0
 #endif
 
-    ///11/16/16 MHLI: At a sample rate of 45MHz, OFDM transmitted 360 samps.
-#define N_FFT 1024  ///11/16/16 MHLI: 16384 is a bit overkill, 
-                    ///considering the ofdm carrier is binned w/ 64 bin fft.
-                    ///Going to use 1024 for now.
-
-#define N_RRC 1024 /// 12/4/16 MHLI: Currently not the right number
+   
+#define N_FFT 1024
+#define N_RRC 1024 
 
 #define RBUF_BLOCKS 16 /// Num blocks in rolling buffer. MUST BE POWER OF 2.
 #define WRAP_RBUF(x) (x & (RBUF_BLOCKS - 1)) /// Wrap buffer around
@@ -104,7 +97,6 @@ public:
      * @brief Test the receive functionality.
      * 
      * Test the functionality of the rx calling within the program.
-     * Probably remove in a bit.
      */
     void rx_test();
 
@@ -112,32 +104,19 @@ public:
      * @brief Test the transmit functionality.
      * 
      * Test the functionality of the tx calling within the program.
-     * Probably remove in a bit.
      */
     void tx_test();
     
-    /** 
-     * @brief Test the magnetometer functionality.
-     * 
-     * Test the functionality of the mag calling within the program.
-     * Probably remove in a bit.
-     */
-    void mag_test();
-    
     /**
-     * @brief Test the match filter amount. REMOVE LATER
+     * @brief Test the match filter amount. 
      */
     void match_test();
 
     /**
-     * @brief Test the transmit data. REMOVE LATER
+     * @brief Test the transmit data. 
      */
     void transmit_data_test();
 
-    /**
-     * @brief Figuring out how fftw works, REMOVE LATER
-     */
-    void fft_test();
 
 private:
     /**
@@ -181,11 +160,6 @@ private:
      * @brief Look for OFDM header.
      */
     float match_filt();
-
-    /**
-     * @brief Locate signal. Returns x,y coordinates based on GPS.
-     */
-    float* rss();
 
     /**
      * @brief Command the SDR to stop taking samples.

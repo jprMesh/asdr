@@ -205,14 +205,4 @@ void get_gps_data(double *latitude, double *longitude, double *time);
  */
 void rem_gps();
 
-/**
- * Initializes Magnetometer
- */
-void init_mag();
-
-/**
- * Reads data from  Magnetometer
- */
-float read_mag();
-
 #endif // __utils_h__
