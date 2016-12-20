@@ -8,15 +8,15 @@ with open('gps_vals_urban.txt', 'r') as gps_vals:
     with open('rss_vals_urban.txt', 'r') as rss_vals:
         rss = rss_vals.readlines()
         rss_scale = len(rss)/len(gps)
-        offset_b = 1000
-        offset_e = 500
-        reduction = 15
+        offset_b = 900
+        offset_e = 200
+        reduction = 90
         for i in range((len(gps) - offset_b - offset_e) / reduction):
             measurements.append((float(str(gps[offset_b+reduction*i]).split()[0]),
                                  float(str(gps[offset_b+reduction*i]).split()[1]),
                                  float(rss[(offset_b+reduction*i)*rss_scale].strip('\n,'))))
 
-altitude = 100 # in meters
+altitude = 20.0 # in meters
 # (Lat, Long, RSSI value)
 # measurements = [(42.274744, -71.8084369, -84.3),
 #                 (42.275376, -71.8085379, -85.3),
@@ -25,7 +25,7 @@ altitude = 100 # in meters
 # Distance calculation
 # Pythagorean theorem to eliminate altitude
 rss_dist_meas = [(meas[0], meas[1],
-                  (10**((meas[2]/-20))/100))
+                 (10**((meas[2]/-20))/100) / 25)
                  for meas in measurements]
 
 # Populate js list of points to plot
