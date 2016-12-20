@@ -12,7 +12,7 @@ The spectrum of radio frequencies used for wireless communications is managed by
 \caption{United States Frequency Allocation Chart \cite{FCC_Info}}
 \label{fig:freq_chart}
 \end{figure}
-As seen from Figure \ref{fig:freq_chart}, the spectrum is divided into smaller chunks where only specified entities can utilize legally. The usage of each chunk is determined by whether the NTIA and FCC require a license to use the band or not. Only government licensed operators can communicate in the licensed bands, with uses that include AM broadcasting, FM broadcasting, and cellular communication. However, the NTIA and FFC also have allocated unlicensed bands that are open to any entity that wants to use them, provided that they still follow certain guidelines for usage. \textbf{I don't think that this word should be technologies, microwaves and WIFI are in a separate class -Max}\hl{Technologies} that use unlicensed bands include microwaves, bluetooth, and WiFi. \hl{This band of frequency} was allocated to be used for general purpose use in 1947, in response to the rise in microwave cooking technology.  \hl{This band of frequencies}\textbf{same words used twice in a row - Max} was called the industrial, scientific, and medical (ISM) radio band. The FCC chose these frequencies as the ideal choice because microwaves are able to better transmit heat for various foods at that frequency band than at any any other.  Therefore, the FCC opened up \hl{those two}\textbf{Which two? -Max} frequency ranges as unlicensed bands so that users could operate microwaves within their household hassle-free. \cite{FCC1947}
+As seen from Figure \ref{fig:freq_chart}, the spectrum is divided into smaller chunks where only specified entities can utilize legally. The usage of each chunk is determined by whether the NTIA and FCC require a license to use the band or not. Only government licensed operators can communicate in the licensed bands, with uses that include AM broadcasting, FM broadcasting, and cellular communication. However, the NTIA and FFC also have allocated unlicensed bands that are open to any entity that wants to use them, provided that they still follow certain guidelines for usage. Communication technologies that use frequencies in unlicensed bands include bluetooth, and WiFi. Microwaves also use frequencies in unlicensed bands some of which were allocated to be used for general purpose use in 1947, in response to the rise in microwave cooking technology \cite{FCC1947}. These band of frequencies, which includes frequencies around 2.4 GHz, was called the industrial, scientific, and medical (ISM) radio band. The FCC chose these frequencies as the ideal choice because microwaves are able to better transmit heat for various foods at that frequency band than at any any other.  Therefore, the FCC opened up the requency ranges as unlicensed bands so that users could operate microwaves within their household hassle-free. 
 
 \subsection{WiFi}
 %@KYLE pls check that I didn't bs this when dealing with the date conflict.
@@ -107,7 +107,7 @@ Another approach to spectrum sensing is through the use of matched filters. Matc
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/match_filter.png}
-\caption{Flow Diagram of matched filter. \textbf{WORDS}}
+\caption{Flow Diagram of Matched Filter.}
 \label{figure:matched_filter}
 \end{figure}\par
 Matched filters rely on prior knowledge of the characteristics of signals to be detected, otherwise this method will not be accurate. The prior knowledge constraint limits the use of signal detection when unexpected signals are involved. Furthermore, matched filter detection is optimal with stationary gaussian noise to hinder distortion. This will limit the real world applications for signal detection with matched filtering as most channels are time-varying and non-gaussian \cite{channel_fade}. A MATLAB example of Energy Detection is provided in Appendix \ref{app:matched_filter}.
@@ -141,15 +141,15 @@ One of the major benefits of CFD is that it is not nearly as affected by noise. 
 
 \end{figure}
 \begin{figure}[ht!]
-\begin{minipage}{.5\textwidth}
+\begin{minipage}{.4\textwidth}
   \centering
-\includegraphics[scale=0.4]{img/cyclic_scf_bpsk.png}
+\includegraphics[scale=0.3]{img/cyclic_scf_bpsk.png}
 \caption{The SCF of a simple signal, modulated with BPSK.}
 \label{fig:cyclic_scf_bpsk}
 \end{minipage}
-\begin{minipage}{0.5\textwidth}
+\begin{minipage}{0.4\textwidth}
 \centering
-\includegraphics[scale=0.4]{img/cyclic_scf_qpsk.png}
+\includegraphics[scale=0.3]{img/cyclic_scf_qpsk.png}
 \caption{The SCF of a simple signal, modulated with QPSK.}
 \label{fig:cyclic_scf_qpsk}
 \end{minipage}
@@ -175,13 +175,13 @@ Table \ref{table:local_methods} shows the most important details of the localiza
 \centering
 \caption{Localization Methods}
 \label{table:local_methods}
-\begin{tabular}{|l|l|l|l|}
+\begin{tabular}{|l|l|l|}
     \hline
-  Localization Method   & Mathematical Technique    & Needs Unknown Node Participation? & \\ \hline
-         TDoA           & Distance                  & Yes                               & \\
-          ToA           & Distance                  & Yes                               & \\
-          RSS           & Distance                  & No                                & \\
-          AoA           & Angle                     & No                                & \\
+  Localization Method   & Mathematical Technique    & Needs Unknown Node Participation? \\ \hline
+         TDoA           & Distance                  & Yes                                \\
+          ToA           & Distance                  & Yes                                \\
+          RSS           & Distance                  & No                                 \\
+          AoA           & Angle                     & No                                 \\
     \hline
 \end{tabular}
 \end{table}\par

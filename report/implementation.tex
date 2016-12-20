@@ -1,13 +1,12 @@
 \chapter{Implementation}
 
-\section{Introduction}
 This chapter details the implementation of the MASDR platform. The description has been divided into software and hardware for clarity.
 
 \section{Software Implementation}
 The software for the MASDR system was written in C++ and can be found in the appendix to this report. Documentation was done with doxygen, allowing for dynamic updates to the docs whenever changes were made. The final version of the documentation can also be found in the appendix. Additionally, some scripts were written to assist in other aspects of the project.
 \subsection{C++ vs GNU Radio}
 During the design phase, there was discussion over whether to use GNU radio or C++ for the MASDR application. GNU radio would allow for more complex signal processing patterns to be constructed more easily in comparison to C++, but would increase the overhead on development and potentially at runtime as well. Using C++, the application would have to be coded entirely from scratch, interfacing with the USRP Hardware Driver (UHD) libraries, but would have much lower overhead. Based on the skills of the team members, as well as the desire for the application to be as low power and simple as possible, C++ was chosen for the application.
-\subsection{Application Structure} \textbf{NEEDS TO BE UPDATED}
+\subsection{Application Structure} 
 The MASDR Application is structured as a central C++ class with a few additional utility functions external to the class. The class contains methods for initialization, sampling, processing, and transmission among others. Certain services, notably updating the GPS and taking in samples, are performed in separate threads to allow for the parallelization of tasks. In the application’s main loop, an instance of the MASDR class updates its status and begins or changes its task based on the new status. Status is composed of both physical status, namely location, and software status, representing the current processing state. The physical status structure includes a member variable for heading, although this is unused in the current version of the platform. The processing state is an enumerated type with values PROCESS, TRANSMIT, and IDLE. The state of the device determines what the processor will be doing. During operation, the application will flow from state to state as described in the state transition diagram in Figure \ref{fig:state_diagram}. \par
 \begin{figure}[ht]
 \centering
