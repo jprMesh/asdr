@@ -62,9 +62,11 @@ The rate field gives us information such as the modulation, coding rate, and dat
 
 \begin{table}[ht!]
 	\centering
+		\caption{This table gives the corresponding modulation, coding rate, and data rate based on the received binary information from the L-STG field. These fields can then be used to further demodulate the received signal.}
 	\begin{tabular}{|l|l|l|l|l|}
 		\hline
-		Rate(bits 0-3) & Modulation & Coding Rate (R) & 20 MHz data rate (Mb/s)\\
+		Rate(bits 0-3) & Modulation & Coding Rate (R) & 20 MHz data rate (Mb/s) & \\
+		\hline
 		1101 & Modulation & BPSK & 1/2 & 6 \\
 		1111 & Modulation & BPSK & 3/4 & 9 \\
 		0101 & Modulation & QPSK & 1/2 & 12 \\
@@ -75,16 +77,9 @@ The rate field gives us information such as the modulation, coding rate, and dat
 		0011 & Modulation & 64-QAM & 3/4 & 54 \\						
 		\hline
 	\end{tabular}
-	\caption{This table gives the corresponding modulation, coding rate, and data rate based on the received binary information from the L-STG field. These fields can then be used to further demodulate the received signal.}
 	\label{table:ofdm_rate_table}
 \end{table} \par
 
-\begin{figure}[ht!]
-	\centering
-	\includegraphics[width=0.70\textwidth]{img/filler}
-	\caption{Rate Field Table \textbf{WE GONNA NEED THIS TO NOT BE FILLER}}
-	\label{fig:ofdm_rate_table}
-\end{figure}\par
 Using the rate information, the received packet's 802.11 frame can be further analyzed to find the broadcast SSID of our received transmission frame. The SSID field which starts at the 36th byte of the beacon frame header is the only desired information here as it allows the identification of separate access points.
 \begin{figure}[ht!]
 	\centering
@@ -93,7 +88,7 @@ Using the rate information, the received packet's 802.11 frame can be further an
 	\label{fig:beacon_frame}
 \end{figure}\par
 By converting these bits to ASCII, the SSID of the received transmission will be obtained.
-\subsection{Signal Detection Summary}
+\subsection{Spectrum Sensing Summary}
 Using a combination of energy detection and match filtering on OFDM beacon frames, the MASDR system will be able to identify the desired signals with a high probability of detection and a low probability of false alarm. Additionally, this will allow accurate determination of the received SSID.
 
 \section{Fusion and Localization}
@@ -154,10 +149,10 @@ Both $\matr{Q}$ and $\matr{R}$ are noise covariance matrices; $\matr{Q}$ is the 
 Var_v * \begin{bmatrix}\frac{dt^4}{4} & 0 & \frac{dt^3}{2} & 0\\0 & \frac{dt^4}{4} & 0 & \frac{dt^3}{2}\\\frac{dt^3}{2} & 0 & dt^2 & 0 \\ 0 & \frac{dt^3}{2} & 0 & dt^2  \end{bmatrix}
 \end{align} \\
 The variance is chosen to best fit the data. \par
-$\matr{K}$ is the Kalman gain of the system. With a constant noise and variance, this matrix is constant. This is beneficial, as the matrix inverse (or pseudoinverse) that is needed to compute $\matr{k}$. In this implementation, the MATLAB simulation will approximate $\matr{K}$, and the resulting values will be used. \par
+$\matr{K}$ is the Kalman gain of the system. With a constant noise and variance, this matrix is constant. This is beneficial, as the matrix inverse (or pseudo inverse) that is needed to compute $\matr{k}$. In this implementation, the MATLAB simulation will approximate $\matr{K}$, and the resulting values will be used. \par
 Equations \ref{eq:state_up} and \ref{eq:var_up} are used to update the state and state covariance with the most recent measurement.
 
-\subsection{Localization Summary}
+\subsection{Fusion and Localization Summary}
 Both of the two measured values play a role in the localization of a beacon. The GPS location provides a base location from which to reason about the location of the beacon. This location is produced from a Kalman filter, reducing the variance of the measurements. Then, using the RSS measurement of the signal, a ring of possible locations is found around the GPS location. Eventually, measurements from multiple points are used together to get an accurate location of the beacon. Both of these values also have some noise inherent to the process that they are measuring. By taking multiple measurements and calculating the intersections of the rings to signals, the accuracy of the localization is improved.
 
 \section{Drone Control and Communications}
@@ -165,7 +160,7 @@ When dealing with multiple frequencies, interference is an issue that must be co
 
 \subsection{Drone Control}
 With the choice of using remote controlled drones to sense WiFi signals comes the problem of interference between the control signal and the WiFi being searched for. This problem is relevant with the use of the 3DR Solo, as the chosen WiFi detection frequency is 2.4 GHz and the Solo’s operating frequency is also at 2.4 GHz. To alleviate the possible skew of data that the control signal may cause, the 2.4 GHz wireless card of the drone and the controller was changed to a dual band card that supports the 5.7 GHz band. Real time data transmission from the aerial platform to the ground station uses the 900 MHz band. Between the two additional bands used, the 5.7 GHz band was chosen to be the control frequency because of its shorter range due to higher frequencies losing energy faster. The logic behind the decision is that if the drone can not be controlled properly, then the data obtained from the transmission would not be of significance. Furthermore if the control frequency was 900 MHz, then the drone would be controllable farther away than it would be able to transmit data back to the user, which is not a useful feature.\par 
-With the popularity of the 3DR Solo and its customizability, an online discussion board was created for 3DR Solo users to share their experiences with other fellow users. This discussion board provides relevant information on the capabilities and drivers of this commercial drone and customizations that different users have tried. In one thread, a user significantly improved the controls communication range of the drone by swapping the 2.4 GHz wireless card to a higher powered one. This example was the basis of changing the wireless card from 2.4 GHz to 5.7 GHz.\par 
+With the popularity of the 3DR Solo and its ability to be customized, an online discussion board was created for 3DR Solo users to share their experiences with other fellow users. This discussion board provides relevant information on the capabilities and drivers of this commercial drone and customizations that different users have tried. In one thread, a user significantly improved the controls communication range of the drone by swapping the 2.4 GHz wireless card to a higher powered one. This example was the basis of changing the wireless card from 2.4 GHz to 5.7 GHz.\par 
 The wireless cards used on the 3DR Solo are mini PCIe and are based on the Atheros AR9382 chip. Both the controller and the 3DR Solo have these cards for transmission and receiving. The 3DR Solo also uses the ath9k driver that works with a range of Atheros based cards. Based off these requirements, the possible wireless cards that were suitable for replacing the ones on the 3DR Solo were limited. The decision was made to use the MikroTik R11e-5HnD card because it fit the required specifications to be compatible with the 3DR Solo. When physically replacing the wireless card, a youtube tutorial was used for guidance. \par 
 
 \subsection{Drone Communications}
@@ -185,5 +180,5 @@ The next test will be to move the SDR with a stationary transmitter within the l
 \subsection{Distinguishing Between WiFi Signals}
 Tests will be conducted to verify that the SDR is able to distinguish between WiFi signals. This is done by looking at the header information of a beacon frame of a WiFi transmitter. Beacon frames are sent out at a default rate of 10Hz. These frames contain information about the transmitter, including the Service Set Identifier (SSID). Multiple WiFi transmitters will be setup and the SDR will log the different SSIDs and their received signal strength. The log will be verified to have the correct addresses and received signal strength of each. 
 
-\section{Summary}
+\subsection{Testing Summary}
 These tests will verify that the system is working correctly. Each test increases in complexity and will exercise the system to observe its performance in different environments. The first test is simple to verify that the components are working correctly. The second test is done to measure the signal strength at different distances and angles relative to the antenna to be able to evaluate the range at which a transmitter can be detected. The final tests will be to localize the signals and distinguish between multiple transmitters.

@@ -2,29 +2,30 @@
 This chapter will introduce various fundamental topics that were taken into consideration in the design of the aerial software defined radio platform developed in this MQP. The topics proposed include spectrum allocation, energy detection, wireless transmitter localization, software defined radios, and aerial flight platforms.
 
 \section{Spectrum}
-Wireless communications are transmitted through the use of the electromagnetic spectrum. The spectrum consists of a multitude of frequency bands that have been allocated for specific uses.
+Wireless communications are transmitted through the use of the electromagnetic spectrum. The spectrum consists of a multitude of frequency bands that have been allocated for specific uses. This section will explain how the spectrum is allocated, as well as details about the uses that are more relevant to this project.
 
 \subsection{Spectrum Usage}
-The spectrum of radio frequencies used for wireless communications is managed by the government to promote efficient use and net social benefit. The National Telecommunications and Information Administration (NTIA) and the Federal Communications Commission (FCC) regulate the allocation of these frequencies in the United States as shown in Figure \ref{fig:freq_chart} \cite{FCC_Info}. 
-\begin{figure}[ht]
+The spectrum of radio frequencies used for wireless communications is managed by the government to promote efficient use and net social benefit. In the United States, the National Telecommunications and Information Administration (NTIA) and the Federal Communications Commission (FCC) regulate the allocation of these frequencies as shown in Figure \ref{fig:freq_chart} \cite{FCC_Info}. 
+\begin{figure}[h!]
 \centering
 \includegraphics[width=0.70\textwidth]{img/the_radio_spectrum.jpg}
 \caption{United States Frequency Allocation Chart \cite{FCC_Info}}
 \label{fig:freq_chart}
 \end{figure}
-As seen from Figure \ref{fig:freq_chart}, the spectrum is divided into smaller chunks where only specified entities can utilize legally. The usage of each chunk is determined by whether the NTIA and FCC require a license to use the band or not. Only government licensed operators can communicate in the licensed bands, with uses that include AM broadcasting, FM broadcasting, and cellular communication. However, the NTIA and FFC also have allocated unlicensed bands that are open to any entity that wants to use them, but they must still follow certain guidelines for usage. Technologies that use unlicensed bands include microwaves, bluetooth, and WiFi. This band of frequency was allocated to be used for general purpose use in 1947 when there was a rise in microwave cooking technology.  This band of frequencies was called the industrial, scientific, and medical (ISM) radio band. The FCC chose these frequencies as the most ideal choice due to microwaves being able to penetrate heat for various foods at that frequency better than any other.  Therefore, the FCC opened up those two frequency ranges as unlicensed bands so that users could operate microwaves within their household hassle-free. \cite{FCC1947}
+As seen from Figure \ref{fig:freq_chart}, the spectrum is divided into smaller chunks where only specified entities can utilize legally. The usage of each chunk is determined by whether the NTIA and FCC require a license to use the band or not. Only government licensed operators can communicate in the licensed bands, with uses that include AM broadcasting, FM broadcasting, and cellular communication. However, the NTIA and FFC also have allocated unlicensed bands that are open to any entity that wants to use them, provided that they still follow certain guidelines for usage. Communication technologies that use frequencies in unlicensed bands include bluetooth, and WiFi. Microwaves also use frequencies in unlicensed bands some of which were allocated to be used for general purpose use in 1947, in response to the rise in microwave cooking technology \cite{FCC1947}. These band of frequencies, which includes frequencies around 2.4 GHz, was called the industrial, scientific, and medical (ISM) radio band. The FCC chose these frequencies as the ideal choice because microwaves are able to better transmit heat for various foods at that frequency band than at any any other.  Therefore, the FCC opened up the requency ranges as unlicensed bands so that users could operate microwaves within their household hassle-free. 
 
 \subsection{WiFi}
-Building upon the usage of this unlicensed spectra, WiFi first came about in 1985. In the early 1990s, the Institute of Electrical and Electronics Engineers (IEEE) realized that wireless communications needed to be standardized. A committee was formed that focused on providing a reliable, fast and robust wireless solution that would be able to scale for years to come. Therefore, the IEEE made an addition to its 802 standard which is used for local area networks, and thus the 802.11 standard was created in order to assure these things. Since then, there has been multiple iterations of the standard, and five sub-standards have been established for wireless communications called:802.11a, 802.11b, 802.11g, 802.11n, and 802.11ac \cite{bergieee}. 
+%@KYLE pls check that I didn't bs this when dealing with the date conflict.
+Building upon this unlicensed spectrum, commercialized wireless comunications first came about in 1985. In the early 1990s, the Institute of Electrical and Electronics Engineers (IEEE) realized that wireless communications needed to be standardized. A committee was formed that focused on providing a reliable, fast and robust wireless solution that would scale for years to come. To do this, the IEEE made an addition to its 802 standard that is used for local area networks, and thus the 802.11 standard was created. Since then, there have been multiple iterations of the standard, with five sub-standards established for wireless communications: 802.11a, 802.11b, 802.11g, 802.11n, and 802.11ac \cite{bergieee}. 
 
-The first standard was 802.11, which was originally created in 1997. The data rate was capped at 2 Mbps and transmitters transmitted on a frequency from 2.4 to 2.483 GHz. These transmitters used time-division duplexing which allows them to send uplink and downlink wireless traffic on the same RF channel. The transmitters also use interference mitigation techniques such as DSSS and FHSS which are protocols that switch wireless channels when there is other wireless interference present on that channel.\par
+The first standard, 802.11, was originally created in 1997. The data rate was capped at 2 Mbps, and transmitters transmitted on a frequency from 2.4 to 2.483 GHz. These transmitters used time-division duplexing (TDD) which allows them to send uplink and downlink wireless traffic on the same RF channel. The transmitters also use interference mitigation techniques such as Direct Sequence Spread Spectrum (DSSS) and Frequency Hopping Spread Spectrum (FHSS), are protocols that switch wireless channels when there is other wireless interference present on that channel.\par
 
-All the wireless standards also use a media access layer which is also known as the MAC layer. This layer is used to assist the transmission by providing frame synchronization, and encryption. 802.11 uses encryption by using Wired Equivalent Privacy or WEP. WEP consists of a 40 bit key that is used in order to access communication with a Wi-Fi transceiver.
+All the wireless standards use a media access layer, also known as the MAC layer. This layer is used to assist the transmission by providing frame synchronization and encryption. 802.11 uses encrypts using the Wired Equivalent Privacy (WEP) standard \cite{bergieee}. WEP consists of a 40 bit key that is used in order to access communication with a Wi-Fi transceiver.
 
-WEP encryption, dynamic frequency selection, and the OFDM preamble have all been carried from one standard to the next. However, WiFi traffic can be transmitted using a variety of bandwidths dependant on their respective 802.11 standard. Wi-Fi traffic can transmit using a 20 MHz, 40 MHz or 80 MHz bandwidth dependant on their 802.11 standard. This is described in Table \label{table:wifi_protocols}. 
+WEP encryption, dynamic frequency selection, and an OFDM preamble have all been carried from one standard to the next. However, WiFi traffic can be transmitted using a variety of bandwidths dependent on their respective 802.11 standard. Wi-Fi traffic can transmit using a 20 MHz, 40 MHz or 80 MHz bandwidth dependent on their 802.11 standard. This is described in Table \ref{table:wifi_protocols}. 
 \begin{table}[ht]
 \centering
-\caption{This table outlines the bandwidth, frequency spectrum and modulation type of each corresponding 802.11 interface. As the wifi protocols become newer from starting with 802.11a and ending with 802.11ac as the most recent, the protocols utilize wider bandwidths for communication, and offer a range of operating frequencies. MIMO-OFDM was also developed for later 802.11 protocols such as 802.11n and 802.11ac in order to support multipath propagation.}
+\caption{This table outlines the bandwidth, frequency spectrum and modulation type of each corresponding 802.11 interface, from oldest protocol to newest. As the wifi protocols become newer, the protocols utilize wider bandwidths for communication, and offer a range of operating frequencies. MIMO-OFDM was also developed for later 802.11 protocols such as 802.11n and 802.11ac in order to support multipath communication.}
 \label{table:wifi_protocols}
 \begin{tabular}{|l|l|l|l|}
   \hline
@@ -36,14 +37,14 @@ WEP encryption, dynamic frequency selection, and the OFDM preamble have all been
          802.11ac &      20, 40, 80 &                  5 &  MIMO-OFDM \\ \hline
 \end{tabular}
 \end{table}\par
-These transmissions can vary when it comes to the frame's information. However, each standard has the same preamble that signifies the start of a transmission, and what central frequency the transmission is on.  For 802.11, a wifi transmission is concentrated in one or more 20 MHz wide wifi channels or bins. At the 2.4 GHz band, Wi-Fi is allocated throughput 11 wireless channels ranging from 1 to 11.  However, only 3 of these channels (1, 6, and 11) are used due to each channel only being 5 MHz wide.  Since transmissions on the 2.4 GHz band are 20 MHz wide, the utilized channels are spaced enough to mitigate co-channel interference. This is shown in Figure \ref{fig:2.4GHz_channel}.
+The information contained in a frame can vary depending on the standard used. However, each standard has the same preamble that signifies the start of a transmission, and what central frequency the transmission is on.  For 802.11, a wifi transmission is concentrated in one or more 20 MHz wide wifi channels. At the 2.4 GHz band, Wi-Fi is allocated throughput 11 wireless channels ranging from 1 to 11.  However, only 3 of these channels (1, 6, and 11) are used, due to each channel only being 5 MHz wide.  Since transmissions on the 2.4 GHz band are 20 MHz wide, the utilized channels are spaced to mitigate co-channel interference. This is shown in Figure \ref{fig:2.4GHz_channel}.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/2_GHz_Channels.png}
-\caption{This image shows the allocation for 802.11 channels in the 2.4 GHz band. Each channel is 20 MHz wide and also has 10 MHz allocated as a gaurd channel. Channels 2-5 and 7-10 are not used as a wireless channel since it would be overlapping in 2 primary wifi channels.}
+\caption{This image shows the allocation for 802.11 channels in the 2.4 GHz band. Each channel is 20 MHz wide and also has 10 MHz allocated as a guard channel. Channels 2-5 and 7-10 are not used as a wireless channel since it would be overlapping in 2 primary wifi channels.}
 \label{fig:2.4GHz_channel}
 \end{figure}
-Also, for protocols 802.11a, 802.11n and 802.11 ac, they also use the 5 GHz frequency band which contains a range of 45 channels from 36 to 165 spanning spectrally from 5180 MHz to 5825 MHz.  This is shown in Figure \ref{fig:5GHz_channel}.
+For protocols 802.11a, 802.11n and 802.11 ac, the 5 GHz frequency band is also used, which contains a range of 45 channels from 36 to 165 spanning spectrally from 5180 MHz to 5825 MHz.  This is shown in Figure \ref{fig:5GHz_channel}.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/5_GHz_Channels.png}
@@ -53,16 +54,16 @@ Also, for protocols 802.11a, 802.11n and 802.11 ac, they also use the 5 GHz freq
 The detection of the OFDM PLCP preamble signifies a transmission, as well as which channel the information is being transmitted on. In addition to the preamble, you could also decode the information from the Data fields, however, all of that data is usually encrypted so that it prevents any unauthorized user from accessing it. \cite{wifi_book}
 
 \subsubsection{MAVLink}
-The Micro Aerial Vehicle Link (MAVLink) protocol is a free open source wireless communication protocol for controlling small unmanned aerial vehicles. This protocol first came about in 2009 by Lorenz Meier under LGPL license. \cite{MAVLINK_Website}  This protocol was designed to be a lightweight, header-only message marshaling library.  MAVLINK was first most commonly used with autopiloting software, but is trying to become the worldwide standard in drone communication. This communication protocol consists of communication with a slave drone and a master ground controller.  MAVlink controllers most commonly transmit data on the 2.4 GHz band along-side 802.11 wireless communications. Therefore, an airborne receiver must be able to classify what type of signal it has received. To classify a MAVLink transmission, this can be done by demodulating MAVLink's GFSK modulated data, and decoding its data frame. 
+The Micro Aerial Vehicle Link (MAVLink) protocol is a free open source wireless communication protocol for controlling small unmanned aerial vehicles. This protocol first came about in 2009 by Lorenz Meier under the LGPL license. \cite{MAVLINK_Website}  It was designed to be a lightweight, header-only message marshaling library.  MAVLink was first most commonly used with autopiloting software, but is becoming the worldwide standard in drone communication. It consists of communication between a slave drone and a master ground controller.  MAVLink controllers most commonly transmit data on the 2.4 GHz band along-side 802.11 wireless communications. Therefore, an airborne receiver must be able to classify what type of signal it has received. Classifying a MAVLink transmission can be done by demodulating MAVLink's GFSK modulated data, and decoding its data frame. 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/mavlink-packet.png}
-\caption{MAVLink Transmission Frame. The red STX frame signifies the start of a transmission. This frame will always be an 8 bit code of 0xFE used for start of frame detection. The following parameters give information about the payload such as it's size and who the data was meant for.  The payload category is a data field which contains a library-based command for the drone to perform.}
+\caption{MAVLink Transmission Frame. The red STX frame signifies the start of a transmission. This frame will always be an 8 bit code of 0xFE, and is used for start of frame detection. The following parameters give information about the payload such as it's size and it's intended recipient.  The payload category contains a library-based command for the drone to perform.}
 \label{fig:MAVlink_frame}
 \end{figure} \par
 \begin{table}[ht]
 \centering
-\caption{This table shows what the contents are for every MAVLink packet.  All of this information is transmitted from a base station controller to a drone that a user is operating upon.  All of this data is not encrypted and can be sniffed by anyone who is using a MAVLink decoder.}
+\caption{This table shows the contents of a MAVLink packet.  All of this information is transmitted from a base station controller to a drone that a user is operating upon.  This data is not encrypted and can be sniffed by anyone who is using a MAVLink decoder. \textbf{FIX TABLE}}
 \begin{tabular}{|l|l|l|l|} %p{0.25\linewidth}
   \hline
   Byte Index & Content & Value &  Purpose \\ \hline
@@ -76,18 +77,18 @@ The Micro Aerial Vehicle Link (MAVLink) protocol is a free open source wireless 
           n+7-n+8 & Checksum & & ITU hash of bytes including MAVLINK parameter computed from message fields to prevent decoding from a different protocol version \\ \hline
 \end{tabular}\end{table}
 \par
-Also, opposed to WiFi signals, MAVLink transmissions are all non-encrypted, making it vulnerable to threats such as network attacks or an unauthorized user operating the drone. Any user can send signals to a drone using a GFSK transmitter and the drone has no knowledge on who the correct user \cite{mavlink_vuln}.
+As opposed to WiFi signals, MAVLink transmissions are all non-encrypted, making it more vulnerable to threats such as network attacks or an unauthorized user operating the drone. Any user can send signals to a drone using a GFSK transmitter and the drone has no knowledge on who the correct user is \cite{mavlink_vuln}.
 
 \subsection{GPS}
 Global Positioning System, or GPS, provides highly accurate location information to a user with a receiver module. This technology was developed during the height of the cold war in the 1960s \cite{gps_info}. GPS works by using a network of 24 satellites that are transmitting on 1575.42Mhz using a division coding scheme. The individual satellites send out information such as the current system time, and their locations. Given the locations of the satellites, as well as the calculated time of travel from the satellites to the receiver, the GPS receiver then performs localization based on this received information. The accurate time stamping required to perform this localization is only possible because each GPS satellite is capable of maintaining a highly accurate clock, and each receiver determines its current time through the interpretation of satellite data. This accurate clock information is used for the synchronization of clocks across cellular telephone systems, and other time critical applications \cite{GPS_Book}.
 
 \section{Spectrum Sensing}
-As described in the previous section, the electromagnetic radio spectrum is becoming increasingly crowded, with this issue only accelerating as the Internet of Things becomes more widespread \cite{sensing_iot}. With the conventional approach of spectrum management, users are assigned a specific frequency band. This method becomes less sustainable with the increasing number of users, especially in the unlicensed frequency bands. In order to combat this, Cognitive Radio (or CR) was created to utilize spectrum more efficiently \cite{wyglinski_book}. Cognitive radios are designed to provide a highly reliable connections for all users of the network, by sensing what frequencies are being used at any given moment, and utilizing the unused parts of the spectrum. The types of signals to be sensed are divided into two different groups: uncooperative users and cooperative users \cite{spectrum_sense_methods}. \par
+The electromagnetic radio spectrum is becoming increasingly crowded, with this issue accelerating as the Internet of Things becomes more widespread \cite{sensing_iot}. With the conventional approach of spectrum management, users are assigned a specific frequency band. This method becomes less sustainable with the increasing number of users, especially in unlicensed frequency bands. In order to combat this, Cognitive Radio (or CR) was created to utilize spectrum more efficiently \cite{wyglinski_book}. Cognitive radios are designed to provide a highly reliable connections for all users of the network, by sensing what frequencies are being used at any given moment, and utilizing the unused parts of the spectrum. Cognitive radios will be discussed in more detail in Section \ref{back:sdr}. The types of signals to be sensed are divided into two different groups: uncooperative users and cooperative users \cite{spectrum_sense_methods}. \par
 The process of spectrum sensing is made more complicated by uncertainties in the received data, including channel uncertainty and noise uncertainty. With channel uncertainty, the received signal strength can fluctuate based on characteristics of the channel, such as channel fading or shadowing. Noise uncertainty refers to the fact that the power of the noise is unknown to the receiver, making it difficult to achieve a specific sensitivity \cite{spectrum_sense_methods}. In order to have a functioning CR, both uncertainties need to be addressed. \par
-As the types of signals to be sensed are split into non-cooperative and cooperative systems, so too are the methods of sensing. The present MQP involves passive sensing of the spectrum, where only the methods concerning the former will be discussed.
+As the types of signals to be sensed are split into non-cooperative and cooperative systems, so too are the methods of sensing. The present MQP involves passive sensing of the spectrum, so only the methods concerning non-cooperative systems will be discussed.
 
 \subsection{Energy Detection}
-The simplest method of non-cooperative sensing is energy detection. In this approach, the power spectral density (or PSD) of the received signal is taken\cite{sensing_energy}. The PSD represents the measure of a signal’s intensity in the frequency domain computed through the fast fourier transform of a signal. This is then bandpass filtered to contain only the frequency bands being watched. These frequency bands are then integrated, to determine how much energy is present in the band. If this passes a certain threshold, the frequency band is marked as occupied. A MATLAB example of Energy Detection is provided in Appendix \ref{app:energy_detection}, and a flow diagram of Energy detection is shown in Figure \ref{fig:energy_detection}.
+The simplest method of non-cooperative sensing is energy detection. In this approach, the power spectral density (PSD) of the received signal is taken\cite{sensing_energy}. The PSD represents the measure of a signal’s intensity in the frequency domain computed with the fast fourier transform of a signal. This is then bandpass filtered to contain only the frequency bands being watched. These frequency bands are integrated, to determine how much energy is present in the band. If this passes a certain threshold, the frequency band is marked as occupied. A MATLAB example of Energy Detection is provided in Appendix \ref{app:energy_detection}, and a flow diagram of Energy detection is shown in Figure \ref{fig:energy_detection}.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/energy_detection.png}
@@ -95,40 +96,40 @@ The simplest method of non-cooperative sensing is energy detection. In this appr
 \label{fig:energy_detection}
 \end{figure}\par
 
-This method of detection is the most simple as it only uses the presence of the signal, ignoring key aspects of signals such as modulation method and pulse shaping. Because of this, it is the simplest detection method to implement. However, an assumption made in using energy detection is that the signals being searched for have significantly more power than the noise and interference of the channel. This does not always prove to be true. In addition to this, energy detection cannot be used to distinguish signals using the frequencies measured, as no pulse shape information is determined.
+This method of detection is the simplest, as it only uses the presence of the signal, ignoring key aspects of signals such as modulation method and pulse shaping. Because of this, it is the simplest detection method to implement. However, an assumption that is made while using energy detection is that the signals being searched for have significantly more power than the noise and interference of the channel. This does not always prove to be true. In addition to this, energy detection cannot be used to distinguish signals using the frequencies measured, as no pulse shape information is determined.
 
 \subsection{Matched Filter}
-Another approach to spectrum sensing is through the use of matched filters. Matched filters are designed to maximize the signal to noise ratio (SNR) given an input signal, which will be called $s_{in}$ \cite{sensing_energy}. To sense signals through matched filtering, prior knowledge of the reference signal (or $s_{ref}$) to be detected must be known. The $s_{in}$ will then be correlated with $s_{ref}$. This produces a value m, that will be compared to a threshold value. This process is described in Equation \ref{eq:matched} below and in Figure \ref{figure:matched_filter}
+Another approach to spectrum sensing is through the use of matched filters. Matched filters are designed to maximize the signal to noise ratio (SNR) given an input signal, which will be called $s_{in}$ \cite{sensing_energy}. To sense signals through matched filtering, prior knowledge of the reference signal ($s_{ref}$) to be detected must be known. $s_{in}$ will then be correlated with $s_{ref}$. This produces a value m, that will be compared to a threshold value. This process is described in Equation \ref{eq:matched} below and in Figure \ref{figure:matched_filter}
 . N represents the length of the reference signal, in samples. 
 \begin{align} \label{eq:matched}
-    m &= \sum_{k = 0}^{N}s_{in}[t-k]s_ref[N-k] 
+    m &= \sum_{k = 0}^{N}s_{in}[t-k]s_{ref}[N-k] 
 \end{align}
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/match_filter.png}
-\caption{Flow Diagram of matched filter. WORDS}
+\caption{Flow Diagram of Matched Filter.}
 \label{figure:matched_filter}
 \end{figure}\par
 Matched filters rely on prior knowledge of the characteristics of signals to be detected, otherwise this method will not be accurate. The prior knowledge constraint limits the use of signal detection when unexpected signals are involved. Furthermore, matched filter detection is optimal with stationary gaussian noise to hinder distortion. This will limit the real world applications for signal detection with matched filtering as most channels are time-varying and non-gaussian \cite{channel_fade}. A MATLAB example of Energy Detection is provided in Appendix \ref{app:matched_filter}.
 
 \subsection{Cyclostationary Feature Detection} \label{Cyclostationary Feature Detection}
-Cyclostationary Feature Detection (or CFD) depends on the fact that all communication schemes have some sort of signal repetition as a core aspect. A signal with this kind of repetition is called a Cyclostationary Process\cite{cyclostat_journal}. Because of this property, when you correlate the signal with itself (or autocorrelation), there will be repeated peaks. The periodic nature of the signal also means that the autocorrelation will be periodic as well. This allows it to be expressed as a Fourier Series, called the Cyclic Autocorrelation Function (CAF) and denoted by $R_x^\alpha(\tau)$\cite{cyclostat_text}.\par 
+Cyclostationary Feature Detection (or CFD) is a method of spectrum sensing that depends on the fact that all communication schemes have some sort of signal repetition as a core aspect. A signal with this kind of repetition is called a Cyclostationary Process\cite{cyclostat_journal}. Because of this property, when you correlate the signal with itself (or autocorrelation), there will be repeated peaks. The periodic nature of the signal also means that the autocorrelation will be periodic as well. This allows it to be expressed as a Fourier Series, called the Cyclic Autocorrelation Function (CAF) and denoted by $R_x^\alpha(\tau)$\cite{cyclostat_text}.\par 
 
-\begin{align}\label{eq:caf}
-    R_x^{\alpha(\tau)} &= lim(t->\infty) \frac{1}{T} \int_{-T/2}^{T/2} R_x(t,\tau)exp(-j2\pi\alpha t dt)
+\begin{align}\label{eq:scf}
+    R_x^{\alpha(\tau)} &= lim(t->\infty) \frac{1}{T} \int_{-T/2}^{T/2} R_x(t,\tau)exp(-j2\pi\alpha(t) dt)
 \end{align}
 
-Where $R_x(t,\tau)$ is the autocorrelation function of x at t with x at $\tau$. This function gives us an understanding of the times when the signal repeats, but is missing vital information of the repeated frequencies. By taking the fourier transform of $R_x^\alpha(\tau)$, one can get a better understanding of the frequencies in the Cyclostationary Process. This is denoted as $S_x^\alpha(f)$, and is equal to \cite{cyclostat_text}:  \par
+Where $R_x(t,\tau)$ is the autocorrelation function of x at t with x at $\tau$. This function gives us an understanding of the times when the signal repeats, but is missing vital information of the repeated frequencies. By taking the fourier transform of $R_x^\alpha(\tau)$, one can get a better understanding of the frequencies in the Cyclostationary Process. This is denoted as $S_x^\alpha(f)$, and is equal to \ref{eq:scf}:  \par
 
 \begin{align}\label{eq:scf}
 S_x^\alpha(f)=\int_{-\infty}^{\infty} R_x^\alpha(\tau)exp(-j2\pi f\tau d\tau) 
 \end{align}
 \par
 
-This is called the Spectral Correlation Function (SCF). When it is normalized, it becomes the Spectral Coherence Function (SOF) \cite{cyclostat_text}:
-\begin{align}\label{eq:caf}
-C_x^\alpha(f) = \frac{ S_x^\alpha(f)}{ (S_x^\alpha(f+\alpha/2) S_x^\alpha(f-\alpha/2))^{1/2}}
-\end{align}\par
+This is called the Spectral Correlation Function (SCF). When it is normalized, it becomes the Spectral Coherence Function (SOF) \ref{eq:caf}:
+\begin{align}
+C_x^\alpha(f) = \frac{ S_x^\alpha(f)}{ (S_x^\alpha(f+\alpha/2) S_x^\alpha(f-\alpha/2))^{1/2}} \label{eq:caf}
+\end{align} \par
 The SOF is between 0 and 1, and represents the strength of the periodicity at that point. By plotting this value, the unique response of the Cyclostationary Process can be found, allowing for it to be categorized.\par
 
 One of the major benefits of CFD is that it is not nearly as affected by noise. Under the generally held assumption that noise is white and Gaussian, there is no periodic response, and as such noise is not factored into CFD. Example plots from an implementation of CFD are shown in Figure \ref{fig:cyclic_scf}, Figure \ref{fig:cyclic_scf_bpsk}, and Figure \ref{fig:cyclic_scf_qpsk}. \par
@@ -140,15 +141,15 @@ One of the major benefits of CFD is that it is not nearly as affected by noise. 
 
 \end{figure}
 \begin{figure}[ht!]
-\begin{minipage}{.5\textwidth}
+\begin{minipage}{.4\textwidth}
   \centering
-\includegraphics[scale=0.4]{img/cyclic_scf_bpsk.png}
+\includegraphics[scale=0.3]{img/cyclic_scf_bpsk.png}
 \caption{The SCF of a simple signal, modulated with BPSK.}
 \label{fig:cyclic_scf_bpsk}
 \end{minipage}
-\begin{minipage}{0.5\textwidth}
+\begin{minipage}{0.4\textwidth}
 \centering
-\includegraphics[scale=0.4]{img/cyclic_scf_qpsk.png}
+\includegraphics[scale=0.3]{img/cyclic_scf_qpsk.png}
 \caption{The SCF of a simple signal, modulated with QPSK.}
 \label{fig:cyclic_scf_qpsk}
 \end{minipage}
@@ -158,14 +159,14 @@ The primary downside to Cyclostationary Feature Detection is the complexity and 
 
 
 \section{Radio Localization} \label{back:radio_loc}
-Once a signal has been identified on a measured frequency, the next step is localization. Localization refers to the act of determining the location of a transmitted signal \cite{local_conf}. There are many different methods for localization. However, many of them become impractical for mobile passive sensing. In the following section, a variety of localization techniques will be discussed, as well as the practicality of implementing each of them.\par
-For each of the techniques discussed below, the same basic concept is used. Three different receivers are placed around the transmitter being located, as shown in Figure \ref{fig:node_localization}.  They will be called stationary nodes and the unknown node, respectively. Each stationary node gets information about its location relative to the unknown node simultaneously. For Time Difference of Arrival (TDoA), Time of Arrival (ToA), and Received Signal Strength (RSS) Localization, each stationary node calculates the distance to the unknown node. This information is used with the known locations of the stationary nodes to localize the unknown node. Angle of Arrival (AoA) functions differently and will be described in a separate section. \par
+Once a signal has been identified on a measured frequency, the next step is localization. Localization refers to the act of determining the location of a transmitted signal \cite{local_conf}. There are many different methods to do this. However, many of them become impractical for mobile passive sensing. In the following section, a variety of localization techniques will be discussed, as well as the practicality of implementing each of them.\par
+For each of the techniques discussed below, the same basic concept is used. Three different receivers are placed around the transmitter being localized, as shown in Figure \ref{fig:node_localization}.  They will be called stationary nodes and the unknown node, respectively. Each stationary node gets information about its location relative to the unknown node simultaneously. For Time Difference of Arrival (TDoA), Time of Arrival (ToA), and Received Signal Strength (RSS) Localization, each stationary node calculates the distance to the unknown node. This information is used with the known locations of the stationary nodes to localize the unknown node. Angle of Arrival (AoA) functions differently and will be described in a separate section. \par
 
 %12/5/16 A Page break should go here, assuming nothing changes. Max
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.5]{img/node-localization-lines.png}
-\caption{Node Localization \textbf{Needs 2-3 sentences}}
+\caption{Node Localization based on three stationary nodes to detect the location of the unknown node.}
 \label{fig:node_localization}
 \end{figure}\par
 
@@ -174,13 +175,13 @@ Table \ref{table:local_methods} shows the most important details of the localiza
 \centering
 \caption{Localization Methods}
 \label{table:local_methods}
-\begin{tabular}{|l|l|l|l|}
+\begin{tabular}{|l|l|l|}
     \hline
-  Localization Method   & Mathematical Technique    & Needs Unknown Node Participation? & \\ \hline
-         TDoA           & Distance                  & Yes                               & \\
-          ToA           & Distance                  & Yes                               & \\
-          RSS           & Distance                  & No                                & \\
-          AoA           & Angle                     & No                                & \\
+  Localization Method   & Mathematical Technique    & Needs Unknown Node Participation? \\ \hline
+         TDoA           & Distance                  & Yes                                \\
+          ToA           & Distance                  & Yes                                \\
+          RSS           & Distance                  & No                                 \\
+          AoA           & Angle                     & No                                 \\
     \hline
 \end{tabular}
 \end{table}\par
@@ -204,13 +205,13 @@ Using the Time of Arrival (or ToA) approach is similar to TDoA in concept \cite{
 Like TDoA, ToA requires the synchronization of the nodes involved \cite{local_conf}. In most implementations, this is done using digital timestamps. It also requires the participation of the unknown node. Similarly to TDoA, these requirements make ToA an impractical fit for this MQP. \par
 
 %RSSi Localization
-Unlike the previous two methods, which depend on knowing the time a signal was sent, received signal strength localization uses the strength of a received signal to localize the unknown node \cite{local_conf}. Each of the stationary nodes receives the signal being output by the unknown node. Using the Equation \ref{eq:rssi} and Equation\ref{eq:rssi_dist}, the stationary nodes can calculate the distance to the unknown node \cite{rss_calc}. From this, they can triangulate the location as described before.\par
+Unlike the previous two methods, which depend on knowing the time a signal was sent, received signal strength (RSS) localization uses the strength of a received signal to localize the unknown node \cite{local_conf}. Each of the stationary nodes receives the signal being output by the unknown node. Using the Equation \ref{eq:rssi} and Equation \ref{eq:rssi_dist}, the stationary nodes can calculate the distance to the unknown node \cite{rss_calc}. From this, they can triangulate the location as described before.\par
 \begin{align}
 \label{eq:rssi} RSSI &= 10\alpha log(d) \\ 
 \label{eq:rssi_dist} d &= 10^{(RSSI-RSSI_{calibration})(-10\alpha)} + d_{calibration}
 \end{align}
 \par
-Because RSSI localization depends on the measurement of the signal strength, it is adversely affected by sources of noise and interference, like channel fading and multipath interference \cite{local_conf}. This makes the technique have lower accuracy. The effects of noise and shifting channels can be somewhat mitigated by averaging the RSS data.
+Because RSS localization depends on the measurement of the signal strength, it is adversely affected by sources of noise and interference, like channel fading and multipath interference \cite{local_conf}. This makes the technique have lower accuracy. The effects of noise and shifting channels can be somewhat mitigated by averaging the RSS data.
 %Angle of Arrival
 Unlike the previously described methods, some localization techniques use the angle that the signal arrives at relative to a reference direction, or the Angle of Arrival (AoA) \cite{local_aoa}. To use this method, antenna arrays or directional antennas are used to determine the angle at which the signal arrived at. Similarly to TDoA, the stationary nodes wait for a signal from the unknown node. Using the directional antenna or the antenna array, the AoA is calculated at each stationary node. From each of these nodes, a ray can be drawn originating from the node that follows the angle of arrival. The unknown node is located based on where the rays intersect.
 
@@ -246,7 +247,7 @@ The first set of equations predicts the current state given the last state. The 
 The second set of equations updates the Kalman filter to take into account the most recent measurement. $\vec{y}$,sometimes called innovation, is the difference between the measurement received and the last state prediction. 
 $\matr{S}$ is an intermediate matrix, used so that the calculation of the Kalman gain $\matr{K}$ is not too complicated in one step. Some documentation on Kalman filtering skip this step.  $\matr{R}$ is the covariance of the noise of the model. The calculated Kalman gains are then used to update the state and state covariance to take into account the updated model and input. \par
 
-\section{Software Defined Radio}
+\section{Software Defined Radio}\label{back:sdr}
 Due to the rapidly increasing number of users dependent on efficient spectrum allocation for communication, the use of reprogrammable radios has become an integral part of designing communication systems. Radios exist in a wide range of devices, such as cell phones, cars, televisions, garage door openers, and computers. A radio is any device that transmits or receives wireless signals that are within the radio frequency band of the electromagnetic spectrum. A software defined radio (SDR) is defined as a “radio in which some or all of the physical layer functions are software defined” \cite{sdr_forum}. Traditional hardware based radios are nearly impossible to modify post-production, and have limited ways to be repurposed. SDRs, on the other hand, are comparatively inexpensive, highly reusable, and are easily configurable to support multiple waveform standards.\par
 There are multiple different families of SDRs, two of which are RTL and Universal Software Radio Peripheral (USRP). An RTL is a low cost SDR that uses a DVB-T TV tuner dongle based on the RTL2832U chipset \cite{rtl_sdr}. The DVB-T TV tuner was converted to be used as a wideband SDR using a new software driver. The RTL-SDR can be used for many applications including listening to aircraft traffic control, decoding ham radio packets, and sniffing GSM signals. The USRP is a flexible transceiver that is able to use a standard PC to prototype wireless systems. USRPs are able to prototype a wide range of single-channel and multi-input multi output (MIMO) wireless communication systems \cite{USRP_NI}. USRPs can be programmed using software frameworks including GNU Radio, Matlab, Simulink, LabVIEW, C++.\par
 SDRs can be implemented on field programmable gate arrays (FPGA), digital signal processors (DSP), programmed System on Chips (SoC), general purpose processors (GPP), personal computers (PC), or other reprogrammable application specific integrated circuits (ASICs). The use of these reprogrammable technologies allows for the possibility of constant updates or dynamic radio systems without the need to add additional hardware. The primary goal of designing an SDR is to implement as much of the radio in the digital space, minimizing the use of analog components. The digital portion of an SDR performs the data compression, encoding, modulation, demodulation, decoding, and decompression in software. The only analog components are a digital to analog converter (DAC), an analog to digital converter (ADC), and a RF circuit. The RF circuitry on the transmitter consists of a smoothing filter to reduce the hard edges of the baseband signal that the DAC outputs as well as circuitry to upconvert the baseband signal. The RF circuitry on the receiver side consists of a downconverter to move the signal to the baseband as well as filters to remove noise from the signal. The DAC and ADC serve as the bridge between the analog and digital realms enabling the software defined signal to be converted to an analog one to transmit and receive, then converted back to digital on the receiving end shown below in Figure \ref{fig:sdr_flow_diagram}.
@@ -264,7 +265,7 @@ A software defined radio, such as an adaptive radio, has the capability to be mu
 \caption{The relationship between SDR, adaptive radio, cognitive radio, and intelligent radio}
 \label{fig:sdr_relationship_diagram}
 \end{figure}\par
-There are three major groups of algorithms that intelligent radios are based on: machine learning, genetic algorithms, and fuzzy control \cite{amraoui2012intelligent}. Neural networks are a type of machine learning that use large group of nodes to solve problems similarly to how the human brain operates. When new information is aquired, this information is incorporated into the algorithim to be used to improve the output \cite{amini2011universal}. This technique is used to estimate the performances of WiFi networks and respond to changes in the network. Fuzzy logic is usually combined with neural networks that adapt to the environment during the operation of an intelligent radio. A fuzzy logic control system is used to find the solution to a problem given imperfect information \cite{amraoui2012intelligent}. There are three main components in a fuzzy logic controller: fuzzifier, fuzzy logic processor, and defuzzifier.The fuzzifier maps the inputs into fuzzy sets, the fuzzy logic processor determines a fuzzy output based on a set of rules, and the defuzzifier transforms the fuzzy output into a crisp output. One of the main advantages to fuzzy logic is its low complexity, which is extremely useful in real-time radio applications. Another example of an algorithm used in intelligent SDRs is the wireless system genetic algorithm (WSGA). This algorithm is a multi-objective genetic algorithm (MOGA) designed for the control of a radio by modeling the physical radio system as a biological organism and optimizing its performance through genetic and evolutionary processes \cite{rondeau2004cognitive}. Each aspect of the radio such as payload size, coding, encryption, and spreading can be considered gene that can be modified through these processes. These genes are combined into a chromosome that is used to evolve the system. The algorithm analyzes the effectiveness of the chomosome through weighted fitness functions defined by performance evaluations of the current radio channel \cite{rondeau2004cognitive}.\par
+There are three major groups of algorithms that intelligent radios are based on: machine learning, genetic algorithms, and fuzzy control \cite{amraoui2012intelligent}. Neural networks are a type of machine learning that use large group of nodes to solve problems similarly to how the human brain operates. When new information is acquired, this information is incorporated into the algorithm to be used to improve the output \cite{amini2011universal}. This technique is used to estimate the performances of WiFi networks and respond to changes in the network. Fuzzy logic is usually combined with neural networks that adapt to the environment during the operation of an intelligent radio. A fuzzy logic control system is used to find the solution to a problem given imperfect information \cite{amraoui2012intelligent}. There are three main components in a fuzzy logic controller: fuzzifier, fuzzy logic processor, and defuzzifier. The fuzzifier maps the inputs into fuzzy sets, the fuzzy logic processor determines a fuzzy output based on a set of rules, and the defuzzifier transforms the fuzzy output into a crisp output. One of the main advantages to fuzzy logic is its low complexity, which is extremely useful in real-time radio applications. Another example of an algorithm used in intelligent SDRs is the wireless system genetic algorithm (WSGA). This algorithm is a multi-objective genetic algorithm (MOGA) designed for the control of a radio by modeling the physical radio system as a biological organism and optimizing its performance through genetic and evolutionary processes \cite{rondeau2004cognitive}. Each aspect of the radio such as payload size, coding, encryption, and spreading can be considered gene that can be modified through these processes. These genes are combined into a chromosome that is used to evolve the system. The algorithm analyzes the effectiveness of the chromosome through weighted fitness functions defined by performance evaluations of the current radio channel \cite{rondeau2004cognitive}.\par
 SDRs are used in a variety of different applications and are becoming more sophisticated. They are more modular than the analog equivalent and are capable of adapting to their environment. They are also very easily updated and modified as opposed to using an analog circuit. The SDR is widely used because of these benefits over the analog design. \par
 \subsection{Interfacing with SDRs}
 One development framework that was used, was a free software called GNU Radio.  GNU Radio was first released in 2001 by Eric Blossom, and is is a software defined radio framework where users are, not only taking use out of the software, but also continue to aid in its development \cite{GNURadioHistory}.
@@ -274,7 +275,7 @@ Although GNU Radio is appealing to users for it's power and ease of use, it can 
 
 %UHD:
 UHD (or USRP Hardware Driver) is a set of C++ libraries created by Ettus Research to allow for control of their USRP SDR platform within C++ programs \cite{uhd_manual}.
-It provides a thorough set of commands with which different aspects of the SDR can be used, including synchronization, transmission and receiving.  GNU Radio, with its pre built blocks, is built on top of UHD, using the UHD commands for lower level operation. By using the lower-level environment, there is less latency. Unlike GNU Radio, there are not very many pre built blocks, instead focusing on having the programmer implement these details. In some cases, this is good. With many of the GNU Radio blocks, there are many sub-blocks built in, making it more difficult to understand its performance. With UHD, it is very clear what each block does, as it has to be programmed. However, this makes the development time of any system much higher. This is the main tradeoff between the two platforms.
+It provides a thorough set of commands with which different aspects of the SDR can be used, including synchronization, transmission and receiving.  GNU Radio, with its pre-built blocks, is built on top of UHD, using the UHD commands for lower level operation. By using the lower-level environment, there is less latency. Unlike GNU Radio, there are not very many pre-built blocks, instead focusing on having the programmer implement these details. In some cases, this is good. With many of the GNU Radio blocks, there are many sub-blocks built in, making it more difficult to understand its performance. With UHD, it is very clear what each block does, as it has to be programmed. However, this makes the development time of any system much higher. This is the main trade off between the two platforms.
 
 \section{Aerial Platforms}
 The inspiration behind this MQP was to discover how much information could be gathered from the wireless spectrum when observed from the air. Aerial platforms have been used in the past for surveying tasks like geographical mapping. \cite{geomap_patent} These systems generally use a camera to capture visual images from above. To facilitate flying our sensory system, three main mobile methods of elevating the sensory unit were considered: kites, fixed-wing aircraft, and multicopters, each of which will be described in detail below.
@@ -318,7 +319,7 @@ Fixed-wing RC aircraft have been used in the past for similar tasks. In one exam
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/fixed-wing.jpg}
-\caption{A fixed-wing RC aircraft. This is a flying wing style craft with a rear propellor. Its flight would be greatly hindered by any protrusion of the mounting system.}
+\caption{A fixed-wing RC aircraft. This is a flying wing style craft with a rear propeller. Its flight would be greatly hindered by any protrusion of the mounting system.}
 \label{fig:fixed_wing}
 \end{figure}\par
 A fixed-wing aircraft is able to cover large distances flying laterally, but it is not able to stop mid-flight and hover in place \cite{airplane_book}. Its turning radius is often quite large, and it must not drop below a certain speed to remain airborne. While fixed-wing aircraft are mobile, they are not very agile. Most fixed-wing aircraft require a long flat runway to takeoff and land on, limiting the number of locations in which they could reasonably launch. In addition, fixed-wing aircraft are much larger and are commonly disassembled for transport.\par
@@ -340,7 +341,7 @@ A multicopter, sometimes also called a drone, is a flying device with two or mor
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/quad_force_diagram.jpg}
-\caption{Quadcopter force diagram. Motors and propellers alternate in direction of rotation so that the drone is stable around the vertical axis. The torque generated by each propellor is cancelled by the propellor opposite it \cite{multicopter_dynamics_3}.}
+\caption{Quadcopter force diagram. Motors and propellers alternate in direction of rotation so that the drone is stable around the vertical axis. The torque generated by each propeller is canceled by the propeller opposite it \cite{multicopter_dynamics_3}.}
 \label{fig:quad_diagram}
 \end{figure}\par
 \begin{figure}[ht]
