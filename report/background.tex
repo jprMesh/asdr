@@ -69,12 +69,12 @@ The Micro Aerial Vehicle Link (MAVLink) protocol is a free open source wireless 
         Byte Index & Content & Value &  Purpose \\ \hline
           0 &	Packet start sign &       0xFE &  Indicates start of a new packet\\
           1 &   Payload length &       0 - 255 &  Indicates length of the following payload \\
-          2 &   Packet Sequence &      0 - 255 &  Enables packet loss detection because each component counts up its send sequence \\
-          3 &   System ID &            1 - 225 &  Identifies the sending system; enables multiple platforms to use the same network \\
-          4 &   Component ID &         0 - 255 &  Identifies the sending component; allows for multiple components on the same platform \\
-          5 &	Message ID &		   0 - 255 &  Identifies the message being sent defines the payload and how it should be decoded \\
+          2 &   Packet Sequence &      0 - 255 &  Enables packet loss detection \\
+          3 &   System ID &            1 - 225 &  Identifies the sending system \\
+          4 &   Component ID &         0 - 255 &  Identifies the sending component \\
+          5 &	Message ID &		   0 - 255 &  Identifies the message being sent \\
           6 - n+6 &	Data & 			   0 - 255 & Data of the message depends on message ID \\
-          n+7-n+8 & Checksum & & ITU hash of bytes including MAVLINK parameter computed from message fields to prevent decoding from a different protocol version \\
+          n+7-n+8 & Checksum & & ITU hash of bytes \\
         \hline
 \end{tabular}
 \end{table}
