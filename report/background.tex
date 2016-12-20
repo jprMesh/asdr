@@ -63,7 +63,7 @@ The Micro Aerial Vehicle Link (MAVLink) protocol is a free open source wireless 
 \end{figure} \par
 \begin{table}[ht]
 \centering
-\caption{This table shows the contents of a MAVLink packet.  All of this information is transmitted from a base station controller to a drone that a user is operating upon.  This data is not encrypted and can be sniffed by anyone who is using a MAVLink decoder.}
+\caption{This table shows the contents of a MAVLink packet.  All of this information is transmitted from a base station controller to a drone that a user is operating upon.  This data is not encrypted and can be sniffed by anyone who is using a MAVLink decoder. \textbf{FIX TABLE}}
 \begin{tabular}{|l|l|l|l|} %p{0.25\linewidth}
   \hline
   Byte Index & Content & Value &  Purpose \\ \hline
@@ -115,7 +115,7 @@ Matched filters rely on prior knowledge of the characteristics of signals to be 
 \subsection{Cyclostationary Feature Detection} \label{Cyclostationary Feature Detection}
 Cyclostationary Feature Detection (or CFD) is a method of spectrum sensing that depends on the fact that all communication schemes have some sort of signal repetition as a core aspect. A signal with this kind of repetition is called a Cyclostationary Process\cite{cyclostat_journal}. Because of this property, when you correlate the signal with itself (or autocorrelation), there will be repeated peaks. The periodic nature of the signal also means that the autocorrelation will be periodic as well. This allows it to be expressed as a Fourier Series, called the Cyclic Autocorrelation Function (CAF) and denoted by $R_x^\alpha(\tau)$\cite{cyclostat_text}.\par 
 
-\begin{align}\label{eq:caf}
+\begin{align}\label{eq:scf}
     R_x^{\alpha(\tau)} &= lim(t->\infty) \frac{1}{T} \int_{-T/2}^{T/2} R_x(t,\tau)exp(-j2\pi\alpha(t) dt)
 \end{align}
 
@@ -126,9 +126,9 @@ S_x^\alpha(f)=\int_{-\infty}^{\infty} R_x^\alpha(\tau)exp(-j2\pi f\tau d\tau)
 \end{align}
 \par
 
-This is called the Spectral Correlation Function (SCF). When it is normalized, it becomes the Spectral Coherence Function (SOF) \ref{eq:caf}}:
-\begin{align}\label{eq:caf}
-C_x^\alpha(f) = \frac{ S_x^\alpha(f)}{ (S_x^\alpha(f+\alpha/2) S_x^\alpha(f-\alpha/2))^{1/2}}
+This is called the Spectral Correlation Function (SCF). When it is normalized, it becomes the Spectral Coherence Function (SOF) \ref{eq:caf}:
+\begin{align}
+C_x^\alpha(f) = \frac{ S_x^\alpha(f)}{ (S_x^\alpha(f+\alpha/2) S_x^\alpha(f-\alpha/2))^{1/2}} \label{eq:caf}
 \end{align} \par
 The SOF is between 0 and 1, and represents the strength of the periodicity at that point. By plotting this value, the unique response of the Cyclostationary Process can be found, allowing for it to be categorized.\par
 
@@ -159,8 +159,8 @@ The primary downside to Cyclostationary Feature Detection is the complexity and 
 
 
 \section{Radio Localization} \label{back:radio_loc}
-Once a signal has been identified on a measured frequency, the next step is localization. Localization refers to the act of determining the location of a transmitted signal \cite{local_conf}. There are many different methods for localization. However, many of them become impractical for mobile passive sensing. In the following section, a variety of localization techniques will be discussed, as well as the practicality of implementing each of them.\par
-For each of the techniques discussed below, the same basic concept is used. Three different receivers are placed around the transmitter being located, as shown in Figure \ref{fig:node_localization}.  They will be called stationary nodes and the unknown node, respectively. Each stationary node gets information about its location relative to the unknown node simultaneously. For Time Difference of Arrival (TDoA), Time of Arrival (ToA), and Received Signal Strength (RSS) Localization, each stationary node calculates the distance to the unknown node. This information is used with the known locations of the stationary nodes to localize the unknown node. Angle of Arrival (AoA) functions differently and will be described in a separate section. \par
+Once a signal has been identified on a measured frequency, the next step is localization. Localization refers to the act of determining the location of a transmitted signal \cite{local_conf}. There are many different methods to do this. However, many of them become impractical for mobile passive sensing. In the following section, a variety of localization techniques will be discussed, as well as the practicality of implementing each of them.\par
+For each of the techniques discussed below, the same basic concept is used. Three different receivers are placed around the transmitter being localized, as shown in Figure \ref{fig:node_localization}.  They will be called stationary nodes and the unknown node, respectively. Each stationary node gets information about its location relative to the unknown node simultaneously. For Time Difference of Arrival (TDoA), Time of Arrival (ToA), and Received Signal Strength (RSS) Localization, each stationary node calculates the distance to the unknown node. This information is used with the known locations of the stationary nodes to localize the unknown node. Angle of Arrival (AoA) functions differently and will be described in a separate section. \par
 
 %12/5/16 A Page break should go here, assuming nothing changes. Max
 \begin{figure}[ht]
@@ -205,13 +205,13 @@ Using the Time of Arrival (or ToA) approach is similar to TDoA in concept \cite{
 Like TDoA, ToA requires the synchronization of the nodes involved \cite{local_conf}. In most implementations, this is done using digital timestamps. It also requires the participation of the unknown node. Similarly to TDoA, these requirements make ToA an impractical fit for this MQP. \par
 
 %RSSi Localization
-Unlike the previous two methods, which depend on knowing the time a signal was sent, received signal strength localization uses the strength of a received signal to localize the unknown node \cite{local_conf}. Each of the stationary nodes receives the signal being output by the unknown node. Using the Equation \ref{eq:rssi} and Equation\ref{eq:rssi_dist}, the stationary nodes can calculate the distance to the unknown node \cite{rss_calc}. From this, they can triangulate the location as described before.\par
+Unlike the previous two methods, which depend on knowing the time a signal was sent, received signal strength (RSS) localization uses the strength of a received signal to localize the unknown node \cite{local_conf}. Each of the stationary nodes receives the signal being output by the unknown node. Using the Equation \ref{eq:rssi} and Equation \ref{eq:rssi_dist}, the stationary nodes can calculate the distance to the unknown node \cite{rss_calc}. From this, they can triangulate the location as described before.\par
 \begin{align}
 \label{eq:rssi} RSSI &= 10\alpha log(d) \\ 
 \label{eq:rssi_dist} d &= 10^{(RSSI-RSSI_{calibration})(-10\alpha)} + d_{calibration}
 \end{align}
 \par
-Because RSSI localization depends on the measurement of the signal strength, it is adversely affected by sources of noise and interference, like channel fading and multipath interference \cite{local_conf}. This makes the technique have lower accuracy. The effects of noise and shifting channels can be somewhat mitigated by averaging the RSS data.
+Because RSS localization depends on the measurement of the signal strength, it is adversely affected by sources of noise and interference, like channel fading and multipath interference \cite{local_conf}. This makes the technique have lower accuracy. The effects of noise and shifting channels can be somewhat mitigated by averaging the RSS data.
 %Angle of Arrival
 Unlike the previously described methods, some localization techniques use the angle that the signal arrives at relative to a reference direction, or the Angle of Arrival (AoA) \cite{local_aoa}. To use this method, antenna arrays or directional antennas are used to determine the angle at which the signal arrived at. Similarly to TDoA, the stationary nodes wait for a signal from the unknown node. Using the directional antenna or the antenna array, the AoA is calculated at each stationary node. From each of these nodes, a ray can be drawn originating from the node that follows the angle of arrival. The unknown node is located based on where the rays intersect.
 
