@@ -216,7 +216,7 @@ Differential binary phase shift keying or DBPSK modulation was used as the commu
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.70\textwidth]{img/rxflow.PNG}
+  \includegraphics[width=0.90\textwidth]{img/rxflow.PNG}
   \caption{This flowgraph was created in GNU Radio to receive and demodulate the received DBPSK waveform. This is done by using the QT GUI development environment in GNU Radio}
   \label{fig:rxflow}
 \end{figure}
@@ -225,7 +225,7 @@ This program receives a binary file source which is an array of the data to be s
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.70\textwidth]{img/rxspectrum.PNG}
+  \includegraphics[width=0.9\textwidth]{img/rxspectrum.PNG}
   \caption{This photo shows an FFT with a center frequency of 905 MHz which is what frequency our USRP is transmitting at.  This waveform was created by using SDR\# on an RTL-SDR.}
   \label{fig:rxspectrum}
 \end{figure}
@@ -235,7 +235,7 @@ This signal is then received by the RTL-SDR.  However, significant handling of t
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.70\textwidth]{img/constellation.PNG}
-  \caption{This is a photo of our received constellation when we are finished performing the timing offset and phase correction on the transmitted signal.  This constellation is taken when the signal strength was at -55 dBm which is the expected signal strength when the drone is receiving signals in the air.}
+  \caption{This is a photo of our received constellation when the reciever is finished performing the timing offset and phase correction on the transmitted signal.  This constellation is taken when the signal strength was at -55 dBm which is the expected signal strength when the drone is receiving signals in the air.}
   \label{fig:constellation}
 \end{figure}
 
