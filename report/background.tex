@@ -106,7 +106,7 @@ Another approach to spectrum sensing is through the use of matched filters. Matc
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/match_filter.png}
-\caption{Flow Diagram of matched filter. WORDS}
+\caption{Flow Diagram of matched filter. \textbf{WORDS}}
 \label{figure:matched_filter}
 \end{figure}\par
 Matched filters rely on prior knowledge of the characteristics of signals to be detected, otherwise this method will not be accurate. The prior knowledge constraint limits the use of signal detection when unexpected signals are involved. Furthermore, matched filter detection is optimal with stationary gaussian noise to hinder distortion. This will limit the real world applications for signal detection with matched filtering as most channels are time-varying and non-gaussian \cite{channel_fade}. A MATLAB example of Energy Detection is provided in Appendix \ref{app:matched_filter}.
@@ -128,7 +128,7 @@ S_x^\alpha(f)=\int_{-\infty}^{\infty} R_x^\alpha(\tau)exp(-j2\pi f\tau d\tau)
 This is called the Spectral Correlation Function (SCF). When it is normalized, it becomes the Spectral Coherence Function (SOF) \cite{cyclostat_text}:
 \begin{align}\label{eq:caf}
 C_x^\alpha(f) = \frac{ S_x^\alpha(f)}{ (S_x^\alpha(f+\alpha/2) S_x^\alpha(f-\alpha/2))^{1/2}}
-\end{align}\par
+\end{align} \par
 The SOF is between 0 and 1, and represents the strength of the periodicity at that point. By plotting this value, the unique response of the Cyclostationary Process can be found, allowing for it to be categorized.\par
 
 One of the major benefits of CFD is that it is not nearly as affected by noise. Under the generally held assumption that noise is white and Gaussian, there is no periodic response, and as such noise is not factored into CFD. Example plots from an implementation of CFD are shown in Figure \ref{fig:cyclic_scf}, Figure \ref{fig:cyclic_scf_bpsk}, and Figure \ref{fig:cyclic_scf_qpsk}. \par
@@ -165,7 +165,7 @@ For each of the techniques discussed below, the same basic concept is used. Thre
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.5]{img/node-localization-lines.png}
-\caption{Node Localization \textbf{Needs 2-3 sentences}}
+\caption{Node Localization based on three stationary nodes to detect the location of the unknown node.}
 \label{fig:node_localization}
 \end{figure}\par
 
