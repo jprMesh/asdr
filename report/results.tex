@@ -1,4 +1,4 @@
-\chapter{Results}
+\chapter{Experimental Results}
 In this chapter, the results of the project will be discussed. This chapter is split up into System Integration, Drone Control, Spectrum Sensing, Spectrum Localization, and GPS sections.
 
 \section{System Integration}
@@ -9,11 +9,11 @@ This section details the physical system and the integration of the hardware. Th
 	\caption{MASDR system diagram detailing the connections between each component.}
 	\label{fig:masdr_system_diagram}
 \end{figure}\par
-The encasing for the system was designed in SOLIDWORKS. It was fabricated using wood panels and a laser cutter. The encasing was designed to be as minimal as possible to reduce the weight of the system. This was done by cutting holes in the panels to remove as much material as possible and using metal supports instead of wooden walls. The metal supports were used in each of the corners to connect the two wooden panels as seen in Figure \ref{fig:connectors}.
+The encasing for the system was designed in SOLIDWORKS\hl{Add ref to solidworks - Max}. It was fabricated using wood panels and a laser cutter. The encasing was designed to be as minimal as possible to reduce the weight of the system. This was done by cutting holes in the panels to remove as much material as possible and using metal supports instead of wooden walls. The metal supports were used in each of the corners to connect the two wooden panels as seen in Figure \ref{fig:connectors}.
 \begin{figure}[ht!]
 	\centering
 	\includegraphics[width=0.70\textwidth]{img/Overhead_of_box.JPG}
-	\caption{Overhead view of the encasing of the MASDR system}
+	\caption{Overhead view of the encasing of the MASDR system \hl{Add arrows and labels - Max}}
 	\label{fig:overhead_of_box}
 \end{figure}\par
 The two wooden panels were created identically to reduce design time and fabrication time. Screw holes were precut into the wood to ensure mounting the components wouldn't split the wood. This enclosure was mounted to the bottom of the drone using the hardware mount on the drone detailed in Section \ref{Mounting}. \par
@@ -22,7 +22,7 @@ To power the system, an 11V LiPo battery was used in combination with a 5V trans
 \begin{figure}[ht!]
 	\centering
 	\includegraphics[width=0.70\textwidth]{img/connectors.JPG}
-	\caption{Connectors for the battery. The male molex connector (left) is connected to the transformer and the female molex connector (right) is connected to the LiPo battery.}
+	\caption{Connectors for the battery. The male molex connector (left) is connected to the transformer and the female molex connector (right) is connected to the LiPo battery. \hl{Add arrows and labels - Max}}
 	\label{fig:connectors}
 \end{figure}\par
 There were two transformers that were purchased, the Nextrox converter was the one that directly converted 12V down to 5V at 3A, and the DROK converter was the other which was an adjustable knob that ranged from 8V-35V to 1.5V-24V at 5A. Unfortunately, the first transformer only worked for the first few trials and the second outright did not work out of the box. The first transformer that was used in the system failed because it became disconnected from the UP Board while power was applied. This transformer was a buck converter which can fail when an output isn't connected due of the failure of a MOSFET or diode \cite{power_book}. The second transformer's adjustable knob did not change the ratio at which the voltage was being output despite multiple attempts and methods. A new transformer was purchased to replace the malfunctioning transformers. \par
@@ -31,7 +31,7 @@ The UP Board is connected to the 5V transformer using a barrel jack. The male co
 \begin{figure}[ht!]
 	\centering
 	\includegraphics[width=0.70\textwidth]{img/box_usb_view.JPG}
-	\caption{Angled side view of the encasing with the UP Board connected to the top panel with the GPS and USB cable to the B200-Mini. The golden transformer and the battery are positioned directly under the UP Board on the bottom panel. The B200-Mini is connected to the bottom panel and is the closes board to the camera.}
+	\caption{Angled side view of the encasing with the UP Board connected to the top panel with the GPS and USB cable to the B200-Mini. The golden transformer and the battery are positioned directly under the UP Board on the bottom panel. The B200-Mini is connected to the bottom panel and is the closes board to the camera. \hl{Add arrows and labels - Max}}
 	\label{fig:box_usb_view}
 \end{figure}\par
 The GPS is connected to the UP Board using an micro USB to USB adapter. Integration and operation of the GPS proved to be a challenge. The GPSD library that was used to interface with the GPS had permission issues that caused the GPS data to not be read by a C++ program. After the permissions were set correctly, the MASDR program was able to correctly read the GPS data.\par
@@ -43,7 +43,7 @@ The B-200 mini was attached to the bottom panel of the casing. It communicated t
 \begin{minipage}{.5\textwidth}
   \centering
 \includegraphics[width=0.9\textwidth]{img/working_mini.jpg}
-\caption{The functional B200-mini}
+\caption{The functional B200-mini \hl{Add arrows and labels - Max}}
 \label{fig:working_mini}
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
@@ -60,7 +60,7 @@ The complete system mounted on the drone is shown in Figure \ref{fig:drone_and_b
 \begin{figure}[ht!]
 	\centering
 	\includegraphics[width=0.70\textwidth]{img/drone_and_box.jpg}
-	\caption{The complete system mounted on the drone. In flight testing was done with this setup.}
+	\caption{The complete system mounted on the drone. In flight testing was done with this setup. \hl{Add arrows and labels - Max}}
 	\label{fig:drone_and_box}
 \end{figure}
 \par
@@ -69,9 +69,9 @@ The complete system mounted on the drone is shown in Figure \ref{fig:drone_and_b
 % What kind of results are even here? How the framework works I think
 % If you don't do that you should do the other thing.
 \section{Drone Control}\label{results:drone_ctl}
-To reduce interference when sensing signals, the WiFi cards on the controller and drone had to be replaced because the communication frequency and the sensing frequency were the same value. In order to replace these WiFi cards, research had to be done to determine which driver was used on the drone. This ended up being the ath9k driver, which was compatible with a wide range of Atheros based cards. Despite the guarantee of compatibility, the first purchase of the R11e-5HnD MikroTik MiniPCI-E wireless card ended up unused, due to it having a large heat sink that could not fit conveniently into both the controller and drone. Furthermore, the connectors would also require adapters to connect to the antennas. This led to the second purchase of the SparkLAN WPEA-121N MiniPCI-E Half-Size wireless card, which required a bracket to be mounted. The replacement of the WiFi cards in the controller was done first, because the controller acts as a WiFi base station. This makes it easier to test 5 GHz functionality. The replacement went smoothly. However, the controller was still communicating at 2.4GHz. Upon checking the software, it detected that the WiFi card installed was capable of communicating at 5GHz. Because of this, the controller's networking scheme was modified such that it would persistently communicate at a specific channel (5GHz). After these changes, there was trouble communicating with the controller. One possible explanation is that the antennas are incapable of transmitting at 5GHz. Limited with time and the scope of the project, it was not possible to obtain antennas to replace on the controller and drone. Due to this reason, the drone's WiFi card was not replaced, and both the controller and drone were factory reset to operate at 2.4GHz. \par
+To reduce interference when sensing signals, the WiFi cards on the controller and drone had to be replaced because the communication frequency and the sensing frequency were the same value. In order to replace these WiFi cards, research had to be done to determine which driver was used on the drone. This ended up being the ath9k driver, which was compatible with a wide range of Atheros based cards. Despite the guarantee of compatibility, the first purchase of the R11e-5HnD MikroTik MiniPCI-E wireless card ended up unused, due to it having a large heat sink that could not fit conveniently into both the controller and drone. Furthermore, the connectors would also require adapters to connect to the antennas. This led to the second purchase of the SparkLAN WPEA-121N MiniPCI-E Half-Size wireless card, which required a bracket to be mounted. The replacement of the WiFi cards in the controller was done first, because the controller acts as a WiFi base station. This makes it easier to test 5 GHz functionality. The replacement went smoothly. However, the controller was still communicating at 2.4 GHz. Upon checking the software, it detected that the WiFi card installed was capable of communicating at 5 GHz. Because of this, the controller's networking scheme was modified such that it would persistently communicate at a specific channel (5 GHz). After these changes, there was trouble communicating with the controller. One possible explanation is that the antennas are incapable of transmitting at 5 GHz. Limited with time and the scope of the project, it was not possible to obtain antennas to replace on the controller and drone. Due to this reason, the drone's WiFi card was not replaced, and both the controller and drone were factory reset to operate at 2.4GHz. \par
 
-A python script was written to briefly take control of the drone and rotate while holding a constant position and altitude. The script used the Dronekit API provided by 3DR. The script was packed up with all necessary libraries and sent to the drone awaiting execution. When the command is given by a computer connected to the controller's WiFi network, the script runs, taking over control of the drone and rotating it. The API did not provide a way to set a constant rate of rotation, so instead a nonblocking call to rotate a certain amount was used in conjunction with timed sleeps to achieve a continuous rotation of 360 degrees. Attempts to map the script to a button on the controller were unsuccessful. The 3DR developers guide notes a future API called "Smart Shots" that allows commands to be mapped to buttons on the controller, but it was not available at the time of this project.
+A Python script was written to briefly take control of the drone and rotate while holding a constant position and altitude. The script used the Dronekit API provided by 3DR. The script was packed up with all necessary libraries and sent to the drone awaiting execution. When the command is given by a computer connected to the controller's WiFi network, the script runs, taking over control of the drone and rotating it. The API did not provide a way to set a constant rate of rotation, so instead a nonblocking call to rotate a certain amount was used in conjunction with timed sleeps to achieve a continuous rotation of 360 degrees. Attempts to map the script to a button on the controller were unsuccessful. The 3DR developers guide notes a future API called "Smart Shots" that allows commands to be mapped to buttons on the controller, but it was not available at the time of this project.
 
 \section{Spectrum Sensing}
 
@@ -80,7 +80,7 @@ In order to monitor the signal strength of our received data, the RSSI localizat
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.70\textwidth]{img/rss_vals_test.png}
-	\caption{This graph shows how the RSSI of our received signal can dramatically change.  These sharp transitions in RSSI values are due to the transmitter not always continually transmitting.}
+	\caption{This graph shows how the RSSI of our received signal can dramatically change.  These sharp transitions in RSSI values are due to the transmitter not always continually transmitting. \hl{Add arrows and labels - Max}}
 	\label{fig:rss_values}
 \end{figure}
 In order to have an accurate measurement, RSSI reports that are under the noise floor must be filtered out. A detection threshold of -85 dBm was selected, as it is above the noise floor.  The output RSSI measurements only record noticeable signals.  
@@ -152,12 +152,12 @@ the larger data set. \par
 %Probably put script here
 
 %KF Simulation
-Because of the complications with the GPS measurements, the 4-state Kalman filter
+As a result of the complications with the GPS measurements, the 4-state Kalman filter
 was modeled in MATLAB. The script can be found in \ref{app:kf_sim}. The script 
-initializes the matrices as described in section \ref{methods:kf}. A noisy input
+initializes the matrices as described in Section \ref{methods:kf}. A noisy input
 with a constant x velocity 1 and y velocity 1 is initialized. Arbitrary variance
 values are used in $\matr{P}$ and for the noise covariance matrices $\matr{Q}$
-and $\matr{R}$. Plots of the resulting predictions are shown below. 
+and $\matr{R}$. Plots of the resulting predictions are shown in Figure \ref{fig:kf_xpos} and Figure \ref{fig:kf_ypos}. 
 \begin{figure}[ht!]
 \begin{minipage}{.5\textwidth}
   \centering
@@ -186,21 +186,21 @@ and $\matr{R}$. Plots of the resulting predictions are shown below.
 \label{fig:kf_ypos}
 \end{minipage}
 \end{figure}\par
-As seen above, the resulting predictions that come from the Kalman Filter are
+\hl{Explain xpos, ypos plots - Max} As seen above, the resulting predictions that come from the Kalman Filter are
 decent, but not too much of an improvement. This is due to a number of factors.
 The first factor is the fact that there are no direct measurements of velocity.
 Because of this, the resulting velocity measurements already introduce some error.
 Another factor is the choosing of the various parameters. This was done in a fairly
-arbitrary manner, due to time constraints.
-\subsection{Mapping Script}
-The script used to display the measured signal strengths was designed for post-proccesing use, taking in a text file of locations and their corresponding RSS values. The processing portion of the script is written in python, and can be found in Appendix \ref{app:map_script}. Equation \ref{eq:rss_dist} is used to calculate the raw distance to the signal. The Pythagorean Theorem is then used to eliminate the altitude component of the distance as can be seen in Figure \ref{fig:dist_pyth}. The latitude, longitude, and land-based distance are then formatted into a template string for each point at which a signal was detected.\par
+arbitrary manner, due to time constraints. \par 
+%Mapping Script
+The script used to display the measured signal strengths was designed for post-proccesing use, taking in a text file of locations and their corresponding RSS values. The processing portion of the script is written in python, and can be found in Appendix \ref{app:mapping_script}. Equation (\ref{eq:rss_dist}) is used to calculate the raw distance to the signal. The Pythagorean Theorem is then used to eliminate the altitude component of the distance as can be seen in Figure \ref{fig:dist_pyth}. The latitude, longitude, and land-based distance are then formatted into a template string for each point at which a signal was detected.\par
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.70\textwidth]{img/distance_pythag_diagram.png}
 \caption{Diagram showing right triangle used to calculate land-based distance from the calculated distance and a known altitude.}
 \label{fig:dist_pyth}
 \end{figure}
-The formatted strings are inserted into a template html file, primarily composed of a javascript block that calls into the Google Maps API. Using the drawing tools in the API, rings are drawn on the map corresponding to the calculated distance. An example output screenshot of a generated map has been included in Figure \ref{fig:map_localize}. The actual output is a webpage with a Google Maps instance running in it, so the map is fully interactive, with the ability to zoom in and scroll around as well.
+The formatted strings are inserted into a template html file, primarily composed of a Javascript block that calls into the Google Maps API. Using the drawing tools in the API, rings are drawn on the map corresponding to the calculated distance. An example output screenshot of a generated map has been included in Figure \ref{fig:map_localize}. The actual output is a webpage with a Google Maps instance running in it, so the map is fully interactive, with the ability to zoom in and scroll around as well.
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.70\textwidth]{img/localization_map_visualization.png}
@@ -214,6 +214,7 @@ In order to reduce the amount of processing done onboard the drone, a ground rec
 
 Differential binary phase shift keying or DBPSK modulation was used as the communication protocol for transmission to the ground receiver. This ensures a reduced bit error rate. A DBPSK receiver and transmitter was implemented using GNURadio. The receiver side of the system used the flowgraph shown in Figure \ref{fig:rxflow}.
 
+\hl{Make flowgraph on own page, sideways - Max}
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.90\textwidth]{img/rxflow.PNG}
@@ -226,7 +227,7 @@ This program receives a binary file source which is an array of the data to be s
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.9\textwidth]{img/rxspectrum.PNG}
-  \caption{This photo shows an FFT with a center frequency of 905 MHz which is what frequency our USRP is transmitting at.  This waveform was created by using SDR\# on an RTL-SDR.}
+  \caption{An FFT with a center frequency of 905 MHz.  This waveform was created by using SDR\# on an RTL-SDR. \hl{Add arrows and labels - Max}}
   \label{fig:rxspectrum}
 \end{figure}
 
@@ -235,7 +236,7 @@ This signal is then received by the RTL-SDR.  However, significant handling of t
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.70\textwidth]{img/constellation.PNG}
-  \caption{This is a photo of our received constellation when the reciever is finished performing the timing offset and phase correction on the transmitted signal.  This constellation is taken when the signal strength was at -55 dBm which is the expected signal strength when the drone is receiving signals in the air.}
+  \caption{A received constellation when the reciever is finished performing the timing offset and phase correction on the transmitted signal.  This constellation is taken when the signal strength was at -55 dBm which is the expected signal strength when the drone is receiving signals in the air. \hl{Add arrows and labels}}
   \label{fig:constellation}
 \end{figure}
 
@@ -247,11 +248,11 @@ The platform on the 3DR Solo was tested in the two most applicable scenarios, th
 \begin{figure}[ht!]
 	\centering
 	\includegraphics[width=0.70\textwidth]{img/Test_Plan.png}
-	\caption{3x3 diagram of test flight plan. The red circle represents where the controller was placed, and the blue circle represents where the drone was started.}
+	\caption{3x3 diagram of test flight plan. The red circle represents where the controller was placed, and the blue circle represents where the drone was started. \hl{Add legend to the picture - Max}}
 	\label{fig:test_setup}
 \end{figure} \par
 
-The simulation of the rural environment was organized at Professor Wyglinski's property on December 11th, 2016. In order to get the least interfering wifi signals, he turned off his WiFi, and he authorized the flight of the drone on his property. The testing environment consisted of high rise trees that surrounded the area and grew up to an average of 80ft. The resulting mapping and localization of the area is provided in \ref{fig:rural_test}.
+The simulation of the rural environment was organized at Professor Wyglinski's property on December 11th, 2016. In order to get the least interfering wifi signals, he turned off his WiFi, and he authorized the flight of the drone on his property. The testing environment consisted of high rise trees that surrounded the area and grew up to an average of 80ft. The resulting mapping and localization of the area is provided in FIgure \ref{fig:rural_test}.
 
 \begin{figure}[ht!]
 	\centering
@@ -269,5 +270,5 @@ The simulation of the urban environment was organized at the Gateway Park garage
 
 
 
-\section{Summary}
-In this section, the results achieved in this MQP were discussed. This focused primarily on the design and implementation of the system, as well as the processing of the data collected. Overall, the team was able to create a good foundation on which aerial sensing methods can be applied.
+\section{Chapter Summary}
+In this chapter, the experimental results achieved in this MQP were discussed. This focused primarily on the design and implementation of the system, as well as the processing of the data collected. Overall, the team was able to create a good foundation on which aerial sensing methods can be applied.
