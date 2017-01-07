@@ -26,7 +26,7 @@ WEP encryption, dynamic frequency selection, and an OFDM preamble have all been 
 \centering
 \caption{This table outlines the bandwidth, frequency spectrum and modulation type of each corresponding 802.11 interface, from oldest protocol to newest \cite{wifi_book}. As the wifi protocols become newer, the protocols utilize wider bandwidths for communication, and offer a range of operating frequencies. MIMO-OFDM was also developed for later 802.11 protocols such as 802.11n and 802.11ac in order to support multipath communication.}
 \label{table:wifi_protocols}
-\begin{tabular}{|l|l|l|l|} 
+\begin{tabular}{|l|l|l|l|l|} 
   \hline
   Interface & Bandwidth (MHz) & Frequency Spectrum (GHz) & Modulation & Max Data Rate (Mbps)\\ \hline
           802.11a &              20 &                  5 &       OFDM & 52 \\
@@ -292,7 +292,7 @@ One application of kites that concerns the carrying capacity is kite aerial phot
 The pros and cons of a kite as a platform for the SDR system are enumerated in Table \ref{table:kite_pc}.
 \begin{table}[ht]
 \centering
-\caption{Kite pros and cons. \hl{Elaborate caption - Max}}
+\caption{Kite Pros and Cons. Using a kite as the aerial platform would enable a long flight time with a heavy sampling system. However, the time required to deploy the system would be high, and the maneuverability would be extremely minimal.}
 \label{table:kite_pc}
 \begin{tabular}{l|l}
   Pros & Cons \\ \hline
@@ -307,7 +307,7 @@ A fixed-wing aircraft is a rigid structure with one or more rotors oriented forw
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/airfoil_lift.png}
-\caption{Airfoil lift generation. As air flows past the airfoil, it is forced downward, in return forcing the aircraft upward. \hl{Put ref here - Max}}
+\caption{Airfoil lift generation. As air flows past the airfoil, it is forced downward, in return forcing the aircraft upward. \cite{wing_lift_diagram}}
 \label{fig:airfoil_lift}
 \end{figure}\par
 The flight time of most battery powered RC fixed-wing aircraft is around half an hour, assuming some aerial manuvering \cite{airplane_book}. In a surveying role, with the plane flying low circles, the flight time would likely increase slightly. There are also gasoline powered aircraft with small engines onboard to power the main propeller. Gasoline has a very high energy density, so it’s possible to fly for multiple hours with a gasoline powered aircraft.\par
@@ -316,14 +316,14 @@ Fixed-wing RC aircraft have been used in the past for similar tasks. In one exam
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/fixed-wing.jpg}
-\caption{A fixed-wing RC aircraft. This is a flying wing style craft with a rear propeller. Its flight would be greatly hindered by any protrusion of the mounting system \hl{Put ref here - Max}.}
+\caption{A fixed-wing RC aircraft. This is a flying wing style craft with a rear propeller. Its flight would be greatly hindered by any protrusion of the mounting system. \cite{airplane_iqp}}
 \label{fig:fixed_wing}
 \end{figure}\par
 A fixed-wing aircraft is able to cover large distances flying laterally, but it is not able to stop mid-flight and hover in place \cite{airplane_book}. Its turning radius is often quite large, and it must not drop below a certain speed to remain airborne. While fixed-wing aircraft are mobile, they are not very agile. Most fixed-wing aircraft require a long flat runway to takeoff and land on, limiting the number of locations in which they could reasonably launch. In addition, fixed-wing aircraft are much larger and are commonly disassembled for transport.\par
 The pros and cons of a fixed-wing aircraft as a platform for the SDR system are enumerated in Table \ref{table:wing_pc}.
 \begin{table}[ht]
 \centering
-\caption{Fixed-Wing Aircraft Pros and Cons \hl{Elaborate - Max}}
+\caption{Fixed-Wing Aircraft Pros and Cons. Using a fixed-wing aircraft as the aerial platform would enable a long flight time, a high payload capacity, and more maneuverability than a kite. However, it would be more expensive.}
 \label{table:wing_pc}
 \begin{tabular}{l|l}
   Pros & Cons \\ \hline
@@ -344,7 +344,7 @@ A multicopter, sometimes also called a drone, is a flying device with two or mor
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/hexacopter.jpg}
-\caption{A multicopter with 6 rotors. The brushless DC motors allow for very high speeds and a high degree of control \hl{Put ref here - Max}.}
+\caption{A multicopter with 6 rotors. The brushless DC motors allow for very high speeds and a high degree of control. \cite{multicopter_img}}
 \label{fig:multicopter_hex}
 \end{figure}\par
 Multicopters use fixed-pitch propellers to correlate rotor speed with force produced. Lift can be controlled by uniformly increasing or decreasing rotor speed across all rotors. To effect a roll or pitch, one side's rotors are spun up and the other side's are spun down so that the net lift remains the same but the craft tilts to the side with less thrust. Multicopters also have the unique ability to yaw in place by spinning alternating rotors faster and slower. Since the rotors alternate in direction of rotation, spinning one set faster creates an imbalance of torque, which makes the whole platform rotate in place \cite{multicopter_dynamics_2}.\par
@@ -353,7 +353,7 @@ Weight is a very important factor in the operation of a multicopter because the 
 The most advantageous aspect of multicopters is their maneuverability. The nature of their control means it is possible to stop and start, hover in place, rotate in place, and quickly change directions and altitudes. In particular, the ability to stop at a point and rotate at a fixed rate is especially unique. Deployment of a multicopter is very fast as well: there is nothing that needs assembly prior to flight, and there is no need to find a long open space to takeoff. All that is required procedurally  is powering on the device and setting it on the ground, as multicopters are capable of vertical takeoff and landing (VTOL). The high maneuverability and ease of deployment make for an easy user experience, since control of a drone (with good software) is simple and very responsive. The multicopter is a platform that has very good maneuverability, but must sacrifice payload capacity and flight time.
 \begin{table}[ht]
 \centering
-\caption{Multicopter Pros and Cons \hl{Elaborate}}
+\caption{Multicopter Pros and Cons. Using a multicopter as the aerial platform enables a high degree of maneuverability and very quick deployment. However, multicopters have much lower flight time and payload capacity.}
 \label{table:multi_pc}
 \begin{tabular}{l|l}
   Pros & Cons \\ \hline
