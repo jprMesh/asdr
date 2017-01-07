@@ -17,7 +17,7 @@ In order to categorize WiFi signals at the 2.4GHz band, an OFDM detector was imp
 The multiple subcarriers are represented by the various waveform colors in Figure \ref{fig:ofdm_subcarriers}. The spacing of each frequency is denoted by $f$. This series of waveforms are transmitted from the OFDM transmitter over a fixed amount of time. The spacing and frequency behavior of the L-STF field has characteristics defined in Table \ref{table:spacing}: \par
 \begin{table}[ht!]
 	\centering
-	\caption{This table gives an ourline on the L-STF Characteristics for an OFDM transmission. Due to our Wi-Fi signals only being in the 20, 40, and 80 MHz range, the OFDM match filter will use these values in order to perform spectrum sensing. The match filter can filter upon the subcarrier spacing of 312.5 kHz by noticing a change in the center frequency of a transmission.}	
+	\caption{This table gives an outline on the L-STF Characteristics for an OFDM transmission. Due to our Wi-Fi signals being in the 20, 40, and 80 MHz range, the OFDM match filter will use the values in the first row in order to perform spectrum sensing. The match filter will filter upon a subcarrier spacing of 312.5 kHz by noticing a change in the center frequency of a transmission.}	
 \begin{tabular}{|p{3.6cm}|p{4cm}|p{4cm}|p{4.5cm}|}
 	\hline
 	Channel Bandwidth\newline(MHz) & Subcarrier Frequency Spacing, $\Delta_F$ (kHz) &Fast Fourier Transform Period\newline($T_{FFT}=1/\Delta_F$)& L-STF duration \newline($T_{SHORT}=10*T_{FFT}/4$) \\
@@ -32,7 +32,8 @@ The multiple subcarriers are represented by the various waveform colors in Figur
 \end{table} \par 
 	
 Once a beacon transmission is detected using the above techniques, the L-SIG field must be decoded. The rate field gives us information such as the modulation, coding rate, and data rate by relating the rate to its respective binary value. This field is described in the table below.
-\hl{This table isn't used at all (currently commented out). Do we still need it? If we do we need to talk about it - Max No we do not, it was out of place I think i organized it fine now.}
+
+%\hl{This table isn't used at all (currently commented out). Do we still need it? If we do we need to talk about it - Max No we do not, it was out of place I think i organized it fine now.}
 % \begin{table}[ht!]
 % 	\centering
 % 	\caption{Details about Various WiFi Transmission Techniques.}
