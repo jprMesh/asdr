@@ -26,7 +26,7 @@ WEP encryption, dynamic frequency selection, and an OFDM preamble have all been 
 \centering
 \caption{This table outlines the bandwidth, frequency spectrum and modulation type of each corresponding 802.11 interface, from oldest protocol to newest \cite{wifi_book}. As the wifi protocols become newer, the protocols utilize wider bandwidths for communication, and offer a range of operating frequencies. MIMO-OFDM was also developed for later 802.11 protocols such as 802.11n and 802.11ac in order to support multipath communication.}
 \label{table:wifi_protocols}
-\begin{tabular}{|l|l|l|l|l|} 
+\begin{tabular}{|l|l|p{3.7cm}|l|p{3cm}|} 
   \hline
   Interface & Bandwidth (MHz) & Frequency Spectrum (GHz) & Modulation & Max Data Rate (Mbps)\\ \hline
           802.11a &              20 &                  5 &       OFDM & 52 \\
@@ -134,7 +134,7 @@ One of the major benefits of cyclostationary feature detection is that it is not
 \begin{figure}[ht!]
 \centering
   \includegraphics[scale=0.4]{img/cyclic_scf.png}
-\caption{The SCF of a simple signal}
+\caption{The SCF of a simple unmodulated signal. There is one peak around 0 Hz, with noise everywhere else.}
 \label{fig:cyclic_scf}
 
 \end{figure}
@@ -142,23 +142,23 @@ One of the major benefits of cyclostationary feature detection is that it is not
 \begin{minipage}{.4\textwidth}
   \centering
 \includegraphics[scale=0.3]{img/cyclic_scf_bpsk.png}
-\caption{The SCF of a simple signal, modulated with BPSK. \hl{Arrows and labels? - Max}}
+\caption{The SCF of a simple signal, modulated with BPSK. There is a unique response in addition to the peak at 0 Hz. }
 \label{fig:cyclic_scf_bpsk}
 \end{minipage}
 \begin{minipage}{0.4\textwidth}
 \centering
 \includegraphics[scale=0.3]{img/cyclic_scf_qpsk.png}
-\caption{The SCF of a simple signal, modulated with QPSK.}
+\caption{The SCF of a simple signal, modulated with QPSK. There is a response that is unique from the BPSK result.}
 \label{fig:cyclic_scf_qpsk}
 \end{minipage}
 \end{figure}
 
-The primary downside to Cyclostationary Feature Detection is the complexity and time required to properly utilize it. The complexity lies in the number of integrals and correlations that need to be computed in order to implement cyclostationary feature detection. In addition, the system needs to listen for signal long enough for the Cyclostationary Process to repeat. As a result of these downsides, it is not common to be used on embedded systems \hl{Put a ref here - Max}. \par
+The primary downside to Cyclostationary Feature Detection is the complexity and time required to properly utilize it. The complexity lies in the number of integrals and correlations that need to be computed in order to implement cyclostationary feature detection. In addition, the system needs to listen for signal long enough for the Cyclostationary Process to repeat. As a result of these downsides, it is not common to be used on embedded systems \cite{cyclostat_cons}. \par
 
 
 \section{Radio Localization} \label{back:radio_loc}
 Once a signal has been identified on a measured frequency, the next step is localization. Localization refers to the act of determining the location of a transmitted signal \cite{local_conf}. There are many different methods to do this. However, many of them become impractical for mobile passive sensing. In this section, a variety of localization techniques will be discussed, as well as the practicality of implementing each of them.\par
-For each of the techniques discussed below, the same basic concept is used. Three different receivers are placed around the transmitter being localized, as shown in Figure \ref{fig:node_localization}.  They will be called stationary nodes and the unknown node, respectively. Each stationary node gets information about its location relative to the unknown node simultaneously. For Time Difference of Arrival (TDoA), Time of Arrival (ToA), and Received Signal Strength (RSS) Localization, each stationary node calculates the distance to the unknown node \hl{Put a ref here? - Max}. This information is used with the known locations of the stationary nodes to localize the unknown node. Angle of Arrival (AoA) \hl{Put ref here - Max}functions differently and will be described in a separate section. \par
+For each of the techniques discussed below, the same basic concept is used. Three different receivers are placed around the transmitter being localized, as shown in Figure \ref{fig:node_localization}.  They will be called stationary nodes and the unknown node, respectively. Each stationary node gets information about its location relative to the unknown node simultaneously. For Time Difference of Arrival (TDoA), Time of Arrival (ToA), and Received Signal Strength (RSS) Localization, each stationary node calculates the distance to the unknown node \cite{local_conf}. This information is used with the known locations of the stationary nodes to localize the unknown node. Angle of Arrival (AoA) \cite{local_aoa} functions differently and will be described in a separate section. \par
 
 %12/5/16 A Page break should go here, assuming nothing changes. Max
 \begin{figure}[ht]
