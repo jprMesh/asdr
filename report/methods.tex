@@ -168,15 +168,26 @@ For the drone to send data back to the user, the wireless carrier of 900 MHz was
 For this project, two main categories of test environments were selected for testing the aerial software defined radio: rural and urban areas. The initial testing was in the rural areas, where there are limited interfering wireless signals. The testing was done in a forested backyard so that the SDR was isolated from any interfering communications, providing a good model of using the drone for search and rescue tasks \hl{Show diagram of forested backyard}. When testing in urban areas, the drone was used to collect IQ data to map hotspots and eventually locate a specific wireless signal. However, testing in urban areas will require more planning due to air restrictions in cities as the drone can be an issue regarding privacy and possible physical collision. Urban areas are also more likely to have conflicting signals using the 2.4 GHz frequency band. The team will collaborate with Worcester Polytechnic Institute (WPI) to use their parking area in the city to test out the full system. \hl{Add google earth view of the location with coordinates - Max} \par
  
 %SDR Operational Test
-The first test was to ensure that the SDR is functioning properly. In this test, simple transmitter and receiver code was loaded onto the board. The SDR will then transmit a signal which was acknowledged and logged by a receiver. The receiver will then send out a signal that the SDR will receive and log. The logged signals was observed and compared to the expected result. The two environments for testing are compared in Table \ref{table:test_env} below:
-\begin{table}
-\centering
-	\caption{Test environments. \hl{Elaborate, and make table - Max}}	
-\begin{tabular}{|l|l|l|l|}
-	\hline
-\end{tabular} 
-	\label{table:test_env}
-\end{table}
+The first test was to ensure that the SDR is functioning properly. In this test, simple transmitter and receiver code was loaded onto the board. The SDR will then transmit a signal which was acknowledged and logged by a receiver. The receiver will then send out a signal that the SDR will receive and log. The logged signals was observed and compared to the expected result. The test plan is shown below:
+
+\begin{enumerate}
+   \item Turn on receiver
+   \item Turn on SDR
+   \item SDR transmits signal to receiver
+   \item Receiver sends acknowledgement to SDR
+   \item SDR logs acknowledgement
+\end{enumerate}
+
+
+%Dont think we need a table
+%\begin{table}
+%\centering
+%	\caption{Test environments. \hl{Elaborate, and make table - Max}}	
+%\begin{tabular}{|l|l|l|l|}
+%	\hline
+%\end{tabular} 
+%	\label{table:test_env}
+%\end{table}
 \par 
 
 %SDR Localization Algorithm
@@ -184,6 +195,14 @@ The following tests waere conducted using the SDR and a controller as a WiFi tra
 The first test will consisted of the SDR being stationary and the WiFi transmitter moving. The test began with the transmitter being placed directly in front of the SDR. The transmitter was moved in a direction, first straight out from the antenna, then to the side of the antenna, and final to the back of the antenna. This was done at a constant speed and the received signal strength was measured over a period of 30 seconds.\par 
 The next test was to move the SDR with a stationary transmitter within the line of sight of the SDR. The SDR was moved to different points around the transmitter while measuring the received signal strength. At each point, the SDR stopped and rotated 360 degrees at a steady pace with the rotation lasting approximately two and a half seconds. In the urban and rural environments, this test was also run with the transmitter out of the line of sight of the SDR. In the rural area, this was behind a tree and for the urban area behind a car or building. These tests was performed multiple times and the data was analyzed to determine whether the drone was able to locate the transmitter.\hl{Make list of test steps - Max} \par 
 
+\begin{enumerate}
+   \item Position transmitter in a known location (in or out of LOS)
+   \item Turn on drone and controller
+   \item Fly drone to the testing altitutde
+   \item Fly drone in a grid pattern
+   \item Approximately every 20 feet rotate the drone at a constant speed for 2.5 seconds
+   \item Repeat step 5 until grid pattern is complete
+\end{enumerate}
 %Testing summary
 These tests verified that the system is working correctly. Each test increases in complexity and exercised the system to observe its performance in different environments. The first test is simple to verify that the components are working correctly. The second test is done to measure the signal strength at different distances and angles relative to the antenna to be able to evaluate the range at which a transmitter can be detected. The final tests was to localize the signals and distinguish between multiple transmitters.
 
