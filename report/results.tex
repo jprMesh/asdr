@@ -12,8 +12,8 @@ This section details the physical system and the integration of the hardware. Th
 The encasing for the system was designed in SOLIDWORKS\hl{Add ref to solidworks - Max}. It was fabricated using wood panels and a laser cutter. The encasing was designed to be as minimal as possible to reduce the weight of the system. This was done by cutting holes in the panels to remove as much material as possible and using metal supports instead of wooden walls. The metal supports were used in each of the corners to connect the two wooden panels as seen in Figure \ref{fig:connectors}.
 \begin{figure}[ht!]
 	\centering
-	\includegraphics[width=0.70\textwidth]{img/Overhead_of_box.JPG}
-	\caption{Overhead view of the encasing of the MASDR system \hl{Add arrows and labels - Max}}
+	\includegraphics[width=0.70\textwidth]{img/Overhead_of_box_arrows.JPG}
+	\caption{Overhead view of the encasing of the MASDR system. }
 	\label{fig:overhead_of_box}
 \end{figure}\par
 The two wooden panels were created identically to reduce design time and fabrication time. Screw holes were precut into the wood to ensure mounting the components wouldn't split the wood. This enclosure was mounted to the bottom of the drone using the hardware mount on the drone detailed in Section \ref{Mounting}. \par
@@ -21,8 +21,8 @@ The two wooden panels were created identically to reduce design time and fabrica
 To power the system, an 11V LiPo battery was used in combination with a 5V transformer to step down the voltage for use by the UP Board. The battery and converter were connected using connectors seen in Figure \ref{fig:connectors}, so that the battery could be disconnected when not in use. To prevent any mishandling of plugging the battery in backwards, a male molex connector was soldered to the transformer and a female molex connector was soldered to the battery.
 \begin{figure}[ht!]
 	\centering
-	\includegraphics[width=0.70\textwidth]{img/connectors.JPG}
-	\caption{Connectors for the battery. The male molex connector (left) is connected to the transformer and the female molex connector (right) is connected to the LiPo battery. \hl{Add arrows and labels - Max}}
+	\includegraphics[width=0.70\textwidth]{img/connectors_labeled.JPG}
+	\caption{Connectors for the battery. The male molex connector (left) is connected to the transformer and the female molex connector (right) is connected to the LiPo battery.}
 	\label{fig:connectors}
 \end{figure}\par
 There were two transformers that were purchased, the Nextrox converter was the one that directly converted 12V down to 5V at 3A, and the DROK converter was the other which was an adjustable knob that ranged from 8V-35V to 1.5V-24V at 5A. Unfortunately, the first transformer only worked for the first few trials and the second outright did not work out of the box. The first transformer that was used in the system failed because it became disconnected from the UP Board while power was applied. This transformer was a buck converter which can fail when an output isn't connected due of the failure of a MOSFET or diode \cite{power_book}. The second transformer's adjustable knob did not change the ratio at which the voltage was being output despite multiple attempts and methods. A new transformer was purchased to replace the malfunctioning transformers. \par
@@ -30,8 +30,8 @@ There were two transformers that were purchased, the Nextrox converter was the o
 The UP Board is connected to the 5V transformer using a barrel jack. The male connector was soldered onto the output of the transformer. The UP Board is the main system with everything else connected to it through USB or I2C. It was mounted upside down on the top panel as shown in Figure \ref{fig:box_usb_view}.
 \begin{figure}[ht!]
 	\centering
-	\includegraphics[width=0.70\textwidth]{img/box_usb_view.JPG}
-	\caption{Angled side view of the encasing with the UP Board connected to the top panel with the GPS and USB cable to the B200-Mini. The golden transformer and the battery are positioned directly under the UP Board on the bottom panel. The B200-Mini is connected to the bottom panel and is the closes board to the camera. \hl{Add arrows and labels - Max}}
+	\includegraphics[width=0.70\textwidth]{img/box_usb_view_labeled.JPG}
+	\caption{Angled side view of the encasing with the UP Board connected to the top panel with the GPS and USB cable to the B200-Mini. The golden transformer and the battery are positioned directly under the UP Board on the bottom panel. The B200-Mini is connected to the bottom panel and is the closest board to the camera.}
 	\label{fig:box_usb_view}
 \end{figure}\par
 The GPS is connected to the UP Board using an micro USB to USB adapter. Integration and operation of the GPS proved to be a challenge. The GPSD library that was used to interface with the GPS had permission issues that caused the GPS data to not be read by a C++ program. After the permissions were set correctly, the MASDR program was able to correctly read the GPS data.\par
@@ -42,14 +42,14 @@ The B-200 mini was attached to the bottom panel of the casing. It communicated t
 \begin{figure}[ht!]
 \begin{minipage}{.5\textwidth}
   \centering
-\includegraphics[width=0.9\textwidth]{img/working_mini.jpg}
-\caption{The functional B200-mini \hl{Add arrows and labels - Max}}
+\includegraphics[width=0.9\textwidth]{img/working_mini_labeled.jpg}
+\caption{The functional B200-mini.}
 \label{fig:working_mini}
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
 \centering
-\includegraphics[width=0.9\textwidth]{img/broken_mini.jpg}
-\caption{The nonfunctional B200-mini}
+\includegraphics[width=0.9\textwidth]{img/broken_mini_labeled.jpg}
+\caption{The nonfunctional B200-mini.}
 \label{fig:broken_mini}
 \end{minipage}
 \end{figure}
