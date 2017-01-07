@@ -60,7 +60,7 @@ The complete system mounted on the drone is shown in Figure \ref{fig:drone_and_b
 \begin{figure}[ht!]
 	\centering
 	\includegraphics[width=0.70\textwidth]{img/drone_and_box.jpg}
-	\caption{The complete system mounted on the drone. In flight testing was done with this setup. \hl{Add arrows and labels - Max}}
+	\caption{The complete system mounted on the drone. In flight testing was done with this setup.}
 	\label{fig:drone_and_box}
 \end{figure}
 \par
@@ -79,8 +79,8 @@ In order to monitor the signal strength of our received data, the RSSI localizat
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.70\textwidth]{img/rss_vals_test.png}
-	\caption{This graph shows how the RSSI of our received signal can dramatically change.  These sharp transitions in RSSI values are due to the transmitter not always continually transmitting. \hl{Add arrows and labels - Max}}
+	\includegraphics[width=0.70\textwidth]{img/rss_vals_test_labeled.png}
+	\caption{This graph shows how the RSSI of our received signal can dramatically change.  These sharp transitions in RSSI values are due to the transmitter not always continually transmitting.}
 	\label{fig:rss_values}
 \end{figure}
 In order to have an accurate measurement, RSSI reports that are under the noise floor must be filtered out. A detection threshold of -85 dBm was selected, as it is above the noise floor.  The output RSSI measurements only record noticeable signals.  
@@ -96,7 +96,7 @@ Based on some field testing, this equation has been fairly accurate.\par
 
 \begin{table}[ht]
 \centering
-\caption{As you can see by our observed RSSI values, our RSSI to distance calculation allows us to reasonably relate received signal strength to how far away a transmitter is located.}
+\caption{The RSSI to distance calculation reasonably relates received signal strength to how far away a transmitter is located.}
 \label{table:RSSI_Results}
 \begin{tabular}{|l|l|l|} \hline
   RSSI (dBm) & Observed Distance (Meters) & Theoretical Distance (Meters) \\ \hline
@@ -186,7 +186,7 @@ and $\matr{R}$. Plots of the resulting predictions are shown in Figure \ref{fig:
 \label{fig:kf_ypos}
 \end{minipage}
 \end{figure}\par
-\hl{Explain xpos, ypos plots - Max} As seen above, the resulting predictions that come from the Kalman Filter are
+Since the test scenario of the Kalman Filter is a constant-velocity model, the expected positions should increase in a linear manner. The resulting predictions that come from the Kalman Filter are
 decent, but not too much of an improvement. This is due to a number of factors.
 The first factor is the fact that there are no direct measurements of velocity.
 Because of this, the resulting velocity measurements already introduce some error.
@@ -220,7 +220,7 @@ This program receives a binary file source which is an array of the data to be s
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.9\textwidth]{img/rxspectrum.PNG}
-  \caption{An FFT with a center frequency of 905 MHz.  This waveform was created by using SDR\# on an RTL-SDR. \hl{Add arrows and labels - Max}}
+  \caption{An FFT with a center frequency of 905 MHz.  This waveform was created by using SDR\# on an RTL-SDR.}
   \label{fig:rxspectrum}
 \end{figure}
 
@@ -228,8 +228,8 @@ This signal is then received by the RTL-SDR.  However, significant handling of t
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.70\textwidth]{img/constellation.PNG}
-  \caption{A received constellation when the reciever is finished performing the timing offset and phase correction on the transmitted signal.  This constellation is taken when the signal strength was at -55 dBm which is the expected signal strength when the drone is receiving signals in the air. \hl{Add arrows and labels}}
+  \includegraphics[width=0.70\textwidth]{img/constellation_labeled.PNG}
+  \caption{A received constellation when the reciever is finished performing the timing offset and phase correction on the transmitted signal.  This constellation is taken when the signal strength was at -55 dBm which is the expected signal strength when the drone is receiving signals in the air.}
   \label{fig:constellation}
 \end{figure} \par
 
@@ -240,8 +240,8 @@ The platform on the 3DR Solo was tested in the two most applicable scenarios, th
 
 \begin{figure}[ht!]
 	\centering
-	\includegraphics[width=0.70\textwidth]{img/Test_Plan.png}
-	\caption{3x3 diagram of test flight plan. The red circle represents where the controller was placed, and the blue circle represents where the drone was started. \hl{Add legend to the picture - Max}}
+	\includegraphics[width=0.70\textwidth]{img/Test_Plan_legend.png}
+	\caption{3x3 diagram of test flight plan. The red circle represents where the controller was placed, and the blue circle represents where the drone was started.}
 	\label{fig:test_setup}
 \end{figure} \par
 
