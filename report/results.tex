@@ -200,7 +200,7 @@ The script used to display the measured signal strengths was designed for post-p
 \caption{Diagram showing right triangle used to calculate land-based distance from the calculated distance and a known altitude.}
 \label{fig:dist_pyth}
 \end{figure}
-The formatted strings are inserted into a template html file, primarily composed of a Javascript block that calls into the Google Maps API. Using the drawing tools in the API, rings are drawn on the map corresponding to the calculated distance. An example output screenshot of a generated map has been included in Figure \ref{fig:map_localize}. The actual output is a webpage with a Google Maps instance running in it, so the map is fully interactive, with the ability to zoom in and scroll around as well.
+The formatted strings are inserted into a template html file, primarily composed of a Javascript block that calls into the Google Maps API. Using the drawing tools in the API, rings are drawn on the map corresponding to the calculated distance. An example output screenshot of a generated map has been included in Figure \ref{fig:map_localize}. The actual output is a webpage with a Google Maps instance running in it, so the map is fully interactive, with the ability to zoom in and scroll around as well.\par
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.70\textwidth]{img/localization_map_visualization.png}
@@ -210,19 +210,12 @@ The formatted strings are inserted into a template html file, primarily composed
 
 \section{Transmit To Ground}
 
-In order to reduce the amount of processing done onboard the drone, a ground receiver was created.  It receives important information such as the location, power level, and frequency in which a signal was detected at.  This information is transmitted from the MASDR platform to a ground-based RTL-SDR.  
+In order to reduce the amount of processing done onboard the drone, a ground receiver was created.  It receives important information such as the location, power level, and frequency in which a signal was detected at.  This information is transmitted from the MASDR platform to a ground-based RTL-SDR.\par
 
-Differential binary phase shift keying or DBPSK modulation was used as the communication protocol for transmission to the ground receiver. This ensures a reduced bit error rate. A DBPSK receiver and transmitter was implemented using GNURadio. The receiver side of the system used the flowgraph shown in Figure \ref{fig:rxflow}.
+Differential binary phase shift keying or DBPSK modulation was used as the communication protocol for transmission to the ground receiver. This ensures a reduced bit error rate. A DBPSK receiver and transmitter was implemented using GNURadio. The receiver side of the system used the flowgraph shown on the next page. This flowgraph was created in GNU Radio to receive and demodulate the received DBPSK waveform. This is done by using the QT GUI development environment in GNU Radio.\par
+\includepdf{img/rxflow.pdf}
 
-\hl{Make flowgraph on own page, sideways - Max}
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=0.90\textwidth]{img/rxflow.PNG}
-  \caption{This flowgraph was created in GNU Radio to receive and demodulate the received DBPSK waveform. This is done by using the QT GUI development environment in GNU Radio}
-  \label{fig:rxflow}
-\end{figure}
-
-This program receives a binary file source which is an array of the data to be sent. This passes through a packet encoder, which encapsulates all of the data from the binary file into a packet with a preamble and an access code, ensuring that the receiver will sync correctly to decode the transmitted data.  After this, it goes through a constellation modulator that modulates the binary information into a corresponding analog waveform. It is then transmitted using the USRP with a central frequency of 905 MHz.  Before using the receiver, a spectrum monitoring tool for the RTL-SDR called SDR\# is used to confirm that the USRP is transmitting on this frequency.
+This program receives a binary file source which is an array of the data to be sent. This passes through a packet encoder, which encapsulates all of the data from the binary file into a packet with a preamble and an access code, ensuring that the receiver will sync correctly to decode the transmitted data.  After this, it goes through a constellation modulator that modulates the binary information into a corresponding analog waveform. It is then transmitted using the USRP with a central frequency of 905 MHz.  Before using the receiver, a spectrum monitoring tool for the RTL-SDR called SDR\# is used to confirm that the USRP is transmitting on this frequency.\par
 
 \begin{figure}[h]
   \centering
@@ -231,14 +224,14 @@ This program receives a binary file source which is an array of the data to be s
   \label{fig:rxspectrum}
 \end{figure}
 
-This signal is then received by the RTL-SDR.  However, significant handling of the signal must be taken care of before the correct information can be demodulated. A Frequency Translating FIR Filter was used as a bandpass filter, removing extra signals that might be around that band. After this, a series of three more functions were used. First, a polyphase clock sync is used to perform timing synchronization with the transmitter. This is done by using two filter banks that use a matched filter on a signal’s pulse shape. A root raised cosine filter is used for our pulse shape since our transmitter is using a root raised cosine filter. The synchronized signal is then sent through a CMA Equalizer which equalizes modulated baseband signals. Then, a Costas Loop is used in order to provide adequate phase correction so that the received signal's constellation is locked in phase for the entirety of the transmission.  The results after all of this signal processing are as expected with the received BPSK signal. 
+This signal is then received by the RTL-SDR.  However, significant handling of the signal must be taken care of before the correct information can be demodulated. A Frequency Translating FIR Filter was used as a bandpass filter, removing extra signals that might be around that band. After this, a series of three more functions were used. First, a polyphase clock sync is used to perform timing synchronization with the transmitter. This is done by using two filter banks that use a matched filter on a signal’s pulse shape. A root raised cosine filter is used for our pulse shape since our transmitter is using a root raised cosine filter. The synchronized signal is then sent through a CMA Equalizer which equalizes modulated baseband signals. Then, a Costas Loop is used in order to provide adequate phase correction so that the received signal's constellation is locked in phase for the entirety of the transmission.  The results after all of this signal processing are as expected with the received BPSK signal. \par
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.70\textwidth]{img/constellation.PNG}
   \caption{A received constellation when the reciever is finished performing the timing offset and phase correction on the transmitted signal.  This constellation is taken when the signal strength was at -55 dBm which is the expected signal strength when the drone is receiving signals in the air. \hl{Add arrows and labels}}
   \label{fig:constellation}
-\end{figure}
+\end{figure} \par
 
 This constellation is sent through a differential decoder and a packet decoder, to extract the payload out of the packetized binary information. This data is then uploaded to results file on the ground receiver’s main computer.
 
