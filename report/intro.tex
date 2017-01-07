@@ -2,8 +2,20 @@
 
 \section{Motivation}
 Wireless signal localization can be used in many areas, from surveillance to search and rescue\hl{Ref here - Max}. In the past, these efforts have been focused largely on visual inspection. Increasingly, research has turned to using wireless signal localization to provide non line-of-sight solutions \hl{Ref here - Max}. There are two major areas of research: the use of mass communication to inform people, and the use of new technologies to physically find people. This project focuses on the latter. There are new technologies emerging that are opening up new avenues for the location of people, namely low-cost, easy to use, highly maneuverable drones and cheap, powerful software defined radios (SDRs). \par
-Drones and SDRs have very similar advantages in their respective industries: high flexibility and maneuverability at low costs. The motivation for this project is to integrate these technologies together to further enhance the state of the art in search, especially in areas with low visibility. Enabling a search of wireless signals opens the opportunity to locate sources otherwise impossible to locate. One such scenario would be a hiker lost in the Sierra Nevada forest with a cell phone, but no cell signal. Such a hiker would be nearly impossible to find visibly from a helicopter over the forest, but a drone with an SDR would be able to listen to beacons from their cell phone and calculate an approximation of their location. \hl{Put a figure here showing how it works - Max}
-Another example scenario is the issue of locating the controller of a non-cooperative drone. Visually, this would be very difficult, but being able to sense the controlling signal and locate the controller would be possible through the use of an SDR.\hl{Diagram here - Max}\par
+Drones and SDRs have very similar advantages in their respective industries: high flexibility and maneuverability at low costs. The motivation for this project is to integrate these technologies together to further enhance the state of the art in search, especially in areas with low visibility. Enabling a search of wireless signals opens the opportunity to locate sources otherwise impossible to locate. One such scenario would be a hiker lost in the Sierra Nevada forest with a cell phone, but no cell signal. Such a hiker would be nearly impossible to find visibly from a helicopter over the forest, but a drone with an SDR would be able to listen to beacons from their cell phone and calculate an approximation of their location as is depicted in Figure \ref{fig:sar_drone_forest}. \par
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.70\textwidth]{img/sar_drone_forest}
+\caption{Search and Rescue Drone flying above forest canopy to locate lost hiker via cell phone beacon signals. Wireless cell phone beacons penetrate the canopy while visual inspection is blocked.}
+\label{fig:sar_drone_forest}
+\end{figure}
+Another example scenario is the issue of locating the controller of a non-cooperative drone. Visually, this would be very difficult, but being able to sense the controlling signal and locate the controller would be possible through the use of an SDR. A diagram of this scenario is included in Figure \ref{fig:locate_drone_crowd}. \par
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.70\textwidth]{img/locate_drone_controller}
+\caption{Drone Controller Localization. Someone in a crowd is controlling an uncooperative drone that shouldn't be flying. The signal interceptor drone uses the control signals to locate where in the crowd the individual controlling the drone is.}
+\label{fig:locate_drone_crowd}
+\end{figure}
 
 \section{Current State of the Art}
 The advent of small, highly maneuverable drones has allowed the expansion of search capabilities to a finer scale with the use of mounted cameras. Low cost drones are also beginning to replace helicopters for traditional search and rescue missions \cite{drone_replacement}. The increased maneuverability and decreased cost is driving the movement toward drones.\par
