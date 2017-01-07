@@ -1,6 +1,6 @@
 \chapter{Methodology}
 \section{Spectrum Sensing} \label{methods:processing}
-The main goal of this system is to be able to detect wireless signals. In order to do so, the following sensing methods were used. \hl{Tie together the separate elements - Max}\par
+The main goal of this system is to be able to detect wireless signals. This is done in with a combination of energy detection, for determining if there is any signal in the channel, and a matched filter in the frequency domain, to determine if there is a WiFi signal present. Each will be described in the following section.\par
 % Energy Detection
 The system detects transmissions based off of energy detection. This type of detection is done by measuring our received signal’s strength along a desired central frequency, and comparing it to an ideal threshold. In order to determine the energy of the received signal, the following equation was used:
 \[E = \int_{-\infty}^{\infty}| x(t) |^2dt\]
@@ -72,7 +72,7 @@ After identifying a signal, the next step is to locate the signal source. Out of
 \begin{figure}[ht!]
 	\centering
 	\includegraphics[width=0.80\textwidth]{img/drone_rss_triang}
-	\caption{Diagram of Triangulation with Drone Movement. In a traditional triangulation scheme, samples are taken at all three locations simultaneously. In the situation described here, since the Wi-Fi access point is unmoving, the drone is able to move between sampling points and take samples sequentially instead of simultaneously.}
+	\caption{Diagram of triangulation with drone movement. In a traditional triangulation scheme, samples are taken at all three locations simultaneously. In the situation described here, since the Wi-Fi access point is unmoving, the drone is able to move between sampling points and take samples sequentially instead of simultaneously.}
 	\label{fig:drone_triang}
 \end{figure}\par
 Occasionally while sampling, the drone will rotate continuously in a process described in Section \ref{impl:rotate}. This presents a complication to the processing of the signal: only one sample is recorded at a given angle. Since the samples must be processed in blocks, each block will represent samples from a range of angles. Since the heading measurement is not implemented in the current version of the system, this is of little concern, but for future use, the scenario has been analyzed. \par
@@ -81,9 +81,7 @@ The angles included in a block are determined by the amount the drone rotates be
 In a magnetometer-enabled version of the system, a block size of 131,072 should be chosen. The 3DR Solo rotates at around 2 seconds per rotation. This means that it takes roughly 0.0222 seconds to rotate 4 degrees. At a sample rate of 5 MSPS, this is 111,111 samples. In order to input the signal into the FFT, the block size has to be a power of 2. The nearest power of 2 is $2^{17}$, which is 131072. Each block consists of the second half of the previous block and the next half block of samples. The first block has no previous block, so is just the first 16384 samples. The processed measurement is associated with the direction in the middle of the angle sweep covered by the block. This method introduces a maximum of one degree of error, which is on the same order of magnitude as the error in the HMC5883L magnetometer, a common chip \cite{magnetometer_data}. \par 
 The shifting nature of wireless channels introduces a difficult to predict noise into the measurements taken. In order to mitigate this, the drone can rotate multiple times. The resulting received signal strength measurements can then be averaged with the readings from each rotation. This averaging reduces the chance that a random shift in the channel will negatively impact the direction readings. \par 
 %GPS
-The MASDR system uses GPS readings for location. The distance of the beacon from the drone at multiple points is then used to get an estimated location of the beacon. Within a GPS receiver, signal correction is often carried out. This results in a cleaner and usually more accurate measurement. In addition to this, the receiver that is used in this project polls much less frequently than the localization technique, at around 10 times a second. Since this is higher frequency than is needed, the readings are put through a Kalman Filter to increase the location accuracy. \hl{Add more details on this -Max}\par 
-%Kalman Filtering
-The GPS receiver that is used in this project provides very noisy results, providing at best 25 meter accuracy when tested in one location. A contributing factor to this is that the receiver used is both small and cheap. Consequently, the values that it reads are frequently very scattered, with a high variance. In order to mitigate this, a four-state Kalman Filter was designed and simulated in MATLAB. The Kalman Filter equations presented in the Chapter \ref{Background} are reproduced below \cite{kf_book}: \par
+The MASDR system uses GPS readings for location. The distance of the beacon from the drone at multiple points is then used to get an estimated location of the beacon. Within a GPS receiver, signal correction is often carried out. This results in a cleaner and usually more accurate measurement. However, the GPS receiver that is used in this project provides very noisy results, providing at best 25 meter accuracy when tested in one location. A contributing factor to this is that the receiver used is both small and cheap. Consequently, the values that it reads are frequently very scattered, with a high variance. In order to mitigate this, a four-state Kalman Filter was designed and simulated in MATLAB. The Kalman Filter equations presented in the Chapter \ref{Background} are reproduced below \cite{kf_book}: \par
 \subsubsection*{Predict:}
 \begin{align}
     \vec{x} &= \matr{F}\vec{x} + \matr{H}\vec{u} \label{eq:state_predict}\\ 
@@ -191,5 +189,5 @@ The next test was to move the SDR with a stationary transmitter within the line 
 %Testing summary
 These tests verified that the system is working correctly. Each test increases in complexity and exercised the system to observe its performance in different environments. The first test is simple to verify that the components are working correctly. The second test is done to measure the signal strength at different distances and angles relative to the antenna to be able to evaluate the range at which a transmitter can be detected. The final tests was to localize the signals and distinguish between multiple transmitters.
 
-\section{Summary}
+\section{Chapter Summary}
 \hl{Put Chapter summary here - Max}
