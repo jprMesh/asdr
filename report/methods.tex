@@ -10,14 +10,14 @@ In order to categorize WiFi signals at the 2.4GHz band, an OFDM detector was imp
 \begin{figure}[ht!]
 	\centering
 	\includegraphics[width=0.70\textwidth]{img/ofdm-subcarriers}
-	\caption{OFDM Subcarriers. \hl{Elaborate - Max}}
+	\caption{This photo gives an example of what OFDM subcarriers look like when displayed upon an FFT.  Each subcarrier is shown as its own respective pulse and the subbcarier frequency offset is denoted by \Delta f.}
 	\label{fig:ofdm_subcarriers}
 \end{figure}\par
 %(https://static1.squarespace.com/static/54860cc3e4b020d690f237ba/t/556cc531e4b0a02f64b72fed/1433191737073/ofdm-subcarriers?format=1000w)
 The multiple subcarriers are represented by the various waveform colors in Figure \ref{fig:ofdm_subcarriers}. The spacing of each frequency is denoted by $f$. This series of waveforms are transmitted from the OFDM transmitter over a fixed amount of time. The spacing and frequency behavior of the L-STF field has characteristics defined in Table \ref{table:spacing}: \par
 \begin{table}[ht!]
 	\centering
-	\caption{L-STF Characteristics \hl{Elaborate - Max}}	
+	\caption{This table gives an ourline on the L-STF Characteristics for an OFDM transmission. Due to our Wi-Fi signals only being in the 20, 40, and 80 MHz range, the OFDM match filter will use these values in order to perform spectrum sensing. The match filter can filter upon the subcarrier spacing of 312.5 kHz by noticing a change in the center frequency of a transmission.}	
 \begin{tabular}{|p{3.6cm}|p{4cm}|p{4cm}|p{4.5cm}|}
 	\hline
 	Channel Bandwidth\newline(MHz) & Subcarrier Frequency Spacing, $\Delta_F$ (kHz) &Fast Fourier Transform Period\newline($T_{FFT}=1/\Delta_F$)& L-STF duration \newline($T_{SHORT}=10*T_{FFT}/4$) \\
@@ -31,15 +31,8 @@ The multiple subcarriers are represented by the various waveform colors in Figur
 	\label{table:spacing}
 \end{table} \par 
 	
-Once a beacon transmission is detected using the above techniques, the L-SIG field must be decoded in order to determine the modulation, MCS rate, and length of the transmission.
-\begin{figure}[ht!]
-	\centering
-	\includegraphics[width=0.70\textwidth]{img/lsig_packet}
-	\caption{L-SIG Packet \hl{elaborate, add ref here - Max}}
-	\label{fig:lsig_packet}
-\end{figure}\par
- The data frame for the L-SIG field is detailed in Figure \ref{fig:lsig_packet}.
-\hl{This table isn't used at all (currently commented out). Do we still need it? If we do we need to talk about it - Max}
+Once a beacon transmission is detected using the above techniques, the L-SIG field must be decoded. The rate field gives us information such as the modulation, coding rate, and data rate by relating the rate to its respective binary value. This field is described in the table below.
+\hl{This table isn't used at all (currently commented out). Do we still need it? If we do we need to talk about it - Max No we do not, it was out of place I think i organized it fine now.}
 % \begin{table}[ht!]
 % 	\centering
 % 	\caption{Details about Various WiFi Transmission Techniques.}
@@ -60,7 +53,6 @@ Once a beacon transmission is detected using the above techniques, the L-SIG fie
 % 	\end{tabular}
 % 	\label{table:WiFi_table}
 % \end{table} \par
-The rate field gives us information such as the modulation, coding rate, and data rate by relating the rate to its respective binary value. This field is described in Table \ref{table:ofdm_rate_table} below.
 
 \begin{table}[ht!]
 	\centering
@@ -82,7 +74,7 @@ The rate field gives us information such as the modulation, coding rate, and dat
 	\label{table:ofdm_rate_table}
 \end{table} \par
 
-Using the rate information, the received packet's 802.11 frame can be further analyzed to find the broadcast SSID of our received transmission frame. The SSID field which starts at the $36^{th}$ byte of the beacon frame header is the only desired information here as it allows the identification of separate access points.
+By the rate information, the received packet's 802.11 frame can be further analyzed to find the broadcast SSID of our received transmission frame. The SSID field which starts at the $36^{th}$ byte of the beacon frame header is the only desired information here as it allows the identification of separate access points.
 \begin{figure}[ht!]
 	\centering
 	\includegraphics[width=0.70\textwidth]{img/beacon_frame}
