@@ -23,14 +23,15 @@ The third approach is based on using an autonomous navigation approach that was 
 The fourth approach is focused on shielding the drone’s control antenna from the spectrum sensing antenna. This configuration was created to ensure that the wireless control signals received on the drone and the wireless spectrum being detected would not interfere with each other, since they are on the same frequency. Therefore, a drone carrying 2 antenna configurations would be needed- one that would communicate with the ground, and the other that would perform spectrum sensing. The antennas would need to be isolated from each other in order to ensure the 2 antenna configuration works. This approach would help add resilience in the drone platform and would allow for flexibility on communication protocols from the ground to the drone. The primary disadvantage to this approach is the additional weight that the shielding would add to the design. More detailed design configurations on the fourth approach can be found in Appendix \ref{table:approach_four}. The table below compares and contrasts the four approaches.
 \begin{table}[ht]
 \centering
-\caption{Pros and cons of the four approaches. \hl{Fill table - Max}}
+\caption{Pros and cons of the four approaches.}
 \label{table:multi_pc}
-\begin{tabular}{l|l|l}
-  Approach Number & Pros & Cons \\ \hline
-  1 & & \\
-  2 & & \\
-  3 & & \\ 
-  4 & &
+\begin{tabular}{|l|l|l|}
+	\hline 
+  Approach & Pros & Cons \\ \hline
+  1 & No interference & Minimal payload capacity \\
+  2 & Great payload capacity \& No interference & Not a commercial drone \\
+  3 & Does not require communication signals & Flight path has to be predetermined \\ 
+  4 & N/A & Increased payload for sheilding \\ \hline
 \end{tabular}
 \end{table}
 
