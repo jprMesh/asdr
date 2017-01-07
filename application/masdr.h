@@ -29,7 +29,7 @@
 // Other includes
 #include "utils.h"
 
-#define G_DEBUG 1
+#define G_DEBUG 0
 #if G_DEBUG
     #define DEBUG_THRESH 0
     #define DEBUG_TX 0
