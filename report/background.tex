@@ -91,7 +91,7 @@ As the types of signals to be sensed are split into non-cooperative and cooperat
 The simplest method of non-cooperative sensing is energy detection. In this approach, the power spectral density (PSD) of the received signal is taken\cite{sensing_energy}. The PSD represents the measure of a signal’s intensity in the frequency domain computed with the fast fourier transform of a signal. This is then bandpass filtered to contain only the frequency bands being watched. These frequency bands are integrated, to determine how much energy is present in the band. If this passes a certain threshold, the frequency band is marked as occupied. A MATLAB example of energy detection is provided in Appendix \ref{app:energy_detection}, and a flow diagram of energy detection is shown in Figure \ref{fig:energy_detection}.
 \begin{figure}[ht]
 \centering
-\includegraphics[width=0.70\textwidth]{img/energy_detection.png}
+\includegraphics[width=0.90\textwidth]{img/energy_detection.png}
 \caption{Flow diagram of energy detection. The input signal is bandpass filtered, and then summed. The signal is considered as present if the sum passes a threshold value.}
 \label{fig:energy_detection}
 \end{figure}\par
@@ -105,7 +105,7 @@ Another approach to spectrum sensing is through the use of matched filters. Matc
 \end{align}
 \begin{figure}[ht]
 \centering
-\includegraphics[width=0.70\textwidth]{img/match_filter.png}
+\includegraphics[width=0.90\textwidth]{img/match_filter.png}
 \caption{Flow diagram of matched filter. The input signal is bandpass filtered. The resulting signal is then correlated with the expected signal. If the output of this correlation passes a threshold, the signal is considered as present.}
 \label{figure:matched_filter}
 \end{figure}\par
@@ -239,7 +239,7 @@ The equations used in a Kalman filter are shown below:
     \matr{P} &= \matr{(I-KH)P}
 \end{align} \par
 
-The first set of equations predicts the current state given the last state. Equation (\ref{eq:state_predict}) updates the state based on the current state and current input. The vector $\vec{x}$ is the state of the Kalman filter. This has the values being filtered. $\vec{u}$ is the value of the controls being used to alter the state. In our application, this is 0. $\matr{F}$ is the state transition matrix, which determines how the different states interact with each other.  $\matr{H}$ is the control matrix. Equation (\ref{eq_cov_predict}) updates the covariance matrix of the state, which is $\matr{P}$. $\matr{Q}$ is the covariance of the noise of the environment. \par
+The first set of equations predicts the current state given the last state. Equation (\ref{eq:state_predict}) updates the state based on the current state and current input. The vector $\vec{x}$ is the state of the Kalman filter. This has the values being filtered. $\vec{u}$ is the value of the controls being used to alter the state. In our application, this is 0. $\matr{F}$ is the state transition matrix, which determines how the different states interact with each other.  $\matr{H}$ is the control matrix. Equation (\ref{eq:cov_predict}) updates the covariance matrix of the state, which is $\matr{P}$. $\matr{Q}$ is the covariance of the noise of the environment. \par
 
 The second set of equations updates the Kalman filter to take into account the most recent measurement. $\vec{y}$, sometimes called the innovation, is the difference between the measurement received and the last state prediction. 
 $\matr{S}$ is an intermediate matrix, used so that the calculation of the Kalman gain $\matr{K}$ is not too complicated in one step. The calculated Kalman gains are then used to update the state and state covariance to take into account the updated model and input. \par
@@ -250,7 +250,7 @@ There are multiple different families of SDRs, two of which are RTL and Universa
 SDRs can be implemented on field programmable gate arrays (FPGA), digital signal processors (DSP), programmed System on Chips (SoC), general purpose processors (GPP), personal computers (PC), or other reprogrammable application specific integrated circuits (ASICs). The use of these reprogrammable technologies allows for the possibility of constant updates or dynamic radio systems without the need to add additional hardware. The primary goal of designing an SDR is to implement as much of the radio in the digital space, minimizing the use of analog components. The digital portion of an SDR performs the data compression, encoding, modulation, demodulation, decoding, and decompression in software. The only analog components are a digital to analog converter (DAC), an analog to digital converter (ADC), and a RF circuit. The RF circuitry on the transmitter consists of a smoothing filter to reduce the hard edges of the baseband signal that the DAC outputs as well as circuitry to upconvert the baseband signal. The RF circuitry on the receiver side consists of a downconverter to move the signal to the baseband as well as filters to remove noise from the signal. The DAC and ADC serve as the bridge between the analog and digital realms enabling the software defined signal to be converted to an analog one to transmit and receive, then converted back to digital on the receiving end shown below in Figure \ref{fig:sdr_flow_diagram}.
 \begin{figure}[ht]
 \centering
-\includegraphics[width=0.70\textwidth]{img/sdr_diagram.png}
+\includegraphics[width=\textwidth]{img/sdr_diagram.png}
 \caption{Flow diagram of an SDR with the distinction between the digital and analog components.}
 \label{fig:sdr_flow_diagram}
 \end{figure}\par
@@ -259,7 +259,7 @@ A software defined radio, such as an adaptive radio \cite{cog_radios}, has the c
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/sdr_diagram2.png}
-\caption{The relationship between SDR, adaptive radio, cognitive radio, and intelligent radio.}
+\caption{The relationship between SDR, adaptive radio, cognitive radio, and intelligent radio \cite{int_radio}.}
 \label{fig:sdr_relationship_diagram}
 \end{figure}\par
 There are three major groups of algorithms that intelligent radios are based on: machine learning, genetic algorithms, and fuzzy control \cite{amraoui2012intelligent}. Neural networks are a type of machine learning that use large group of nodes to solve problems similarly to how the human brain operates. When new information is acquired, it is incorporated into the algorithm to improve the output \cite{amini2011universal}. This technique is used to estimate the performances of WiFi networks and respond to changes in the network. Fuzzy logic is usually combined with neural networks that adapt to the environment during the operation of an intelligent radio. A fuzzy logic control system is used to find the solution to a problem given imperfect information \cite{amraoui2012intelligent}. There are three main components in a fuzzy logic controller: fuzzifier, fuzzy logic processor, and defuzzifier. The fuzzifier maps the inputs into fuzzy sets, the fuzzy logic processor determines a fuzzy output based on a set of rules, and the defuzzifier transforms the fuzzy output into a crisp output. One of the main advantages to fuzzy logic is its low complexity, which is extremely useful in real-time radio applications. Another example of an algorithm used in intelligent SDRs is the wireless system genetic algorithm (WSGA). This algorithm is a multi-objective genetic algorithm (MOGA) designed for the control of a radio by modeling the physical radio system as a biological organism and optimizing its performance through genetic and evolutionary processes \cite{rondeau2004cognitive}. Each aspect of the radio, including payload size, coding, encryption, and spreading, can be considered genes that can be modified through these processes. These genes are combined into a chromosome that is used to evolve the system. The algorithm analyzes the effectiveness of the chromosome through weighted fitness functions defined by performance evaluations of the current radio channel \cite{rondeau2004cognitive}.\par
