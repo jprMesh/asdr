@@ -9,7 +9,7 @@ The spectrum of radio frequencies used for wireless communications is managed by
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.70\textwidth]{img/the_radio_spectrum.jpg}
-\caption{United States Frequency Allocation Chart \cite{FCC_Info}}
+\caption{United States Frequency Allocation Chart \cite{FCC_Info}.}
 \label{fig:freq_chart}
 \end{figure}
 As seen from Figure \ref{fig:freq_chart}, the spectrum is divided into smaller chunks where only specified entities can utilize legally. The usage of each chunk is determined by whether the NTIA and FCC require a license to use the band or not. Only government licensed operators can communicate in the licensed bands, including AM broadcasting, FM broadcasting, and cellular communication. However, the NTIA and FCC also have allocated unlicensed bands that are open to any entity that wants to use them, provided that they still follow certain guidelines for usage. Communication technologies that use frequencies in unlicensed bands include bluetooth and WiFi. Microwaves also use frequencies in unlicensed bands some of which were allocated for general purpose use in 1947 in response to the rise in microwave cooking technology \cite{FCC1947}. These frequency bands, which includes frequencies around 2.4 GHz, were called the industrial, scientific, and medical (ISM) radio bands. The FCC chose these frequencies because microwaves are able to better transmit heat for various foods at that frequency band than at any any other.  Therefore, the FCC opened up the frequency ranges as unlicensed bands so that users could operate microwaves within their household hassle-free. 
@@ -47,13 +47,13 @@ For the protocols 802.11a, 802.11n and 802.11 ac, the 5 GHz frequency band is al
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/5_GHz_Channels.png}
-\caption{The 5GHz band allocates channels for higher bandwidth transmissions.  Wi-Fi channels at 5GHz cater to transmitting information at either 20, 40 or 80 MHz. Each wifi transmission on a specified channel will adapt to a higher or lower bandwidth setting based on the corresponding signal strength and interference between a transmitter and receiver.\cite{5ghzphoto}}
+\caption{The 5GHz band allocates channels for higher bandwidth transmissions.  Wi-Fi channels at 5GHz cater to transmitting information at either 20, 40 or 80 MHz. Each wifi transmission on a specified channel will adapt to a higher or lower bandwidth setting based on the corresponding signal strength and interference between a transmitter and receiver \cite{5ghzphoto}.}
 \label{fig:5GHz_channel}
 \end{figure}
-The detection of the OFDM PLCP preamble signifies a transmission, as well as which channel the information is being transmitted on. In addition to the preamble, you could also decode the information from the Data fields, however, all of that data is usually encrypted so that it prevents any unauthorized user from accessing it. \cite{wifi_book}
+The detection of the OFDM PLCP preamble signifies a transmission, as well as which channel the information is being transmitted on. In addition to the preamble, you could also decode the information from the Data fields, however, all of that data is usually encrypted so that it prevents any unauthorized user from accessing it \cite{wifi_book}. 
 
 \subsubsection{MAVLink}
-The Micro Aerial Vehicle Link (MAVLink) protocol is a free open source wireless communication protocol for controlling small unmanned aerial vehicles. This protocol first came about in 2009 by Lorenz Meier under the LGPL license. \cite{MAVLINK_Website}  It was designed to be a lightweight, header-only message marshaling library.  MAVLink was first most commonly used with autopiloting software, but is becoming the worldwide standard in drone communication. It consists of communication between a slave drone and a master ground controller.  MAVLink controllers most commonly transmit data on the 2.4 GHz band along-side 802.11 wireless communications. Therefore, an airborne receiver must be able to classify what type of signal it has received. Classifying a MAVLink transmission can be done by demodulating MAVLink's GFSK modulated data, and decoding its data frame.  
+The Micro Aerial Vehicle Link (MAVLink) protocol is a free open source wireless communication protocol for controlling small unmanned aerial vehicles. This protocol first came about in 2009 by Lorenz Meier under the LGPL license \cite{MAVLINK_Website}.  It was designed to be a lightweight, header-only message marshaling library.  MAVLink was first most commonly used with autopiloting software, but is becoming the worldwide standard in drone communication. It consists of communication between a slave drone and a master ground controller.  MAVLink controllers most commonly transmit data on the 2.4 GHz band along-side 802.11 wireless communications. Therefore, an airborne receiver must be able to classify what type of signal it has received. Classifying a MAVLink transmission can be done by demodulating MAVLink's GFSK modulated data, and decoding its data frame.  
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/mavlink-packet.png}
@@ -98,8 +98,7 @@ The simplest method of non-cooperative sensing is energy detection. In this appr
 
 This method of detection is the simplest, as it only uses the presence of the signal, ignoring key aspects of signals such as modulation method and pulse shaping. Because of this, it is the simplest detection method to implement. However, an assumption that is made while using energy detection is that the signals being searched for have significantly more power than the noise and interference of the channel. This does not always prove to be true. In addition to this, energy detection cannot be used to distinguish signals using the frequencies measured, as no pulse shape information is determined.\par
 %Matched filter
-Another approach to spectrum sensing is through the use of matched filters. Matched filters are designed to maximize the signal to noise ratio (SNR) given an input signal, which will be called $s_{in}$ \cite{sensing_energy}. To sense signals through matched filtering, prior knowledge of the reference signal ($s_{ref}$) to be detected must be known. $s_{in}$ will then be correlated with $s_{ref}$. This produces a value m, that will be compared to a threshold value. This process is described in Equation (\ref{eq:matched}) below and in Figure \ref{figure:matched_filter}
-. N represents the length of the reference signal, in samples. 
+Another approach to spectrum sensing is through the use of matched filters. Matched filters are designed to maximize the signal to noise ratio (SNR) given an input signal, which will be called $s_{in}$ \cite{sensing_energy}. To sense signals through matched filtering, prior knowledge of the reference signal ($s_{ref}$) to be detected must be known. $s_{in}$ will then be correlated with $s_{ref}$. This produces a value m, that will be compared to a threshold value. This process is described in Equation (\ref{eq:matched}) below and in Figure \ref{figure:matched_filter}. N represents the length of the reference signal, in samples. 
 \begin{align} \label{eq:matched}
     m &= \sum_{k = 0}^{N}s_{in}[t-k]s_{ref}[N-k] 
 \end{align}
@@ -111,7 +110,7 @@ Another approach to spectrum sensing is through the use of matched filters. Matc
 \end{figure}\par
 Matched filters rely on prior knowledge of the characteristics of signals to be detected, otherwise this method will not be accurate. The prior knowledge constraint limits the use of signal detection when unexpected signals are involved. Furthermore, matched filter detection is optimal with stationary Gaussian noise to hinder distortion. This will limit the real world applications for signal detection with matched filtering as most channels are time-varying and non-gaussian \cite{channel_fade}. A MATLAB example of a matched filter is provided in Appendix \ref{app:matched_filter}. \par
 %cyclostationary feature detection
-Cyclostationary Feature Detection (or CFD) is a method of spectrum sensing that depends on the fact that all communication schemes have some sort of signal repetition as a core aspect. A signal with this kind of repetition is called a Cyclostationary Process\cite{cyclostat_journal}. As a result of this property, when you correlate the signal with itself (or autocorrelation), there will be repeated peaks. The periodic nature of the signal also means that the autocorrelation will be periodic as well. This allows it to be expressed as a Fourier Series, called the Cyclic Autocorrelation Function (CAF) and denoted by $R_x^\alpha(\tau)$\cite{cyclostat_text}.\par 
+Cyclostationary Feature Detection (or CFD) is a method of spectrum sensing that depends on the fact that all communication schemes have some sort of signal repetition as a core aspect. A signal with this kind of repetition is called a Cyclostationary Process \cite{cyclostat_journal}. As a result of this property, when you correlate the signal with itself (or autocorrelation), there will be repeated peaks. The periodic nature of the signal also means that the autocorrelation will be periodic as well. This allows it to be expressed as a Fourier Series, called the Cyclic Autocorrelation Function (CAF) and denoted by $R_x^\alpha(\tau)$ \cite{cyclostat_text}.\par 
 
 \begin{align}\label{eq:scf}
     R_x^{\alpha(\tau)} &= lim(t->\infty) \frac{1}{T} \int_{-T/2}^{T/2} R_x(t,\tau)exp(-j2\pi\alpha(t) dt)
@@ -275,7 +274,7 @@ UHD (or USRP Hardware Driver) is a set of C++ libraries created by Ettus Researc
 It provides a thorough set of commands with which different aspects of the SDR can be used, including synchronization, transmission, and receiving.  GNU Radio, with its pre-built blocks, is built on top of UHD, using the UHD commands for lower level operation. By using the lower-level environment, there is less latency. Unlike GNU Radio, there are not very many pre-built blocks, instead focusing on having the programmer implement these details. In some cases, this is good. With many of the GNU Radio blocks, there are many sub-blocks built in, making it more difficult to understand its performance. With UHD, it is very clear what each block does, as it has to be programmed. However, this makes the development time of any system much higher. This is the main trade off between the two platforms.
 
 \section{Aerial Platforms}
-The inspiration behind this MQP was to discover how much information could be gathered from the wireless spectrum when observed from the air. Aerial platforms have been used in the past for surveying tasks such as geographical mapping. \cite{geomap_patent} These systems generally use a camera to capture visual images from above. To facilitate flying our sensory system, three main mobile methods of elevating the sensory unit were considered: kites, fixed-wing aircraft, and multicopters, each of which will be described in detail below.
+The inspiration behind this MQP was to discover how much information could be gathered from the wireless spectrum when observed from the air. Aerial platforms have been used in the past for surveying tasks such as geographical mapping \cite{geomap_patent}. These systems generally use a camera to capture visual images from above. To facilitate flying our sensory system, three main mobile methods of elevating the sensory unit were considered: kites, fixed-wing aircraft, and multicopters, each of which will be described in detail below.
 
 \subsection{Kites}
 A kite is a passive structure tethered to the ground that stays airborne by catching the wind \cite{kite_book}. There are many different styles of kite, including parafoil, rokkaku, delta, and sled, but they all rely on the same principle to fly \cite{kite_book} \cite{kite_iqp}. Kites have nearly unlimited flight time and high payload capacity when operated in favorable conditions, but in exchange they sacrifice control, reliability, and maneuverability.\par
@@ -284,7 +283,7 @@ The only control a user has over a kite in flight is changing its height by lett
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/delta-kite.jpg}
-\caption{A delta style kite. Delta style kites can be configured to fly at high angles, allowing them to be flown in laterally constrained locations. \cite{kite_img}}
+\caption{A delta style kite. Delta style kites can be configured to fly at high angles, allowing them to be flown in laterally constrained locations \cite{kite_img}.}
 \label{fig:delta_kite}
 \end{figure}\par
 Kites are, by necessity, constructed of very light materials and cannot support much extra weight in light wind situations. Again, the style of kite affects the carrying capacity: deltas can carry a moderate amount of weight, but need higher winds to stay aloft. Parafoil and rokkaku kites can carry more weight, with 10 lbs being on the low end.\par
@@ -307,7 +306,7 @@ A fixed-wing aircraft is a rigid structure with one or more rotors oriented forw
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/airfoil_lift.png}
-\caption{Airfoil lift generation. As air flows past the airfoil, it is forced downward, in return forcing the aircraft upward. \cite{wing_lift_diagram}}
+\caption{Airfoil lift generation. As air flows past the airfoil, it is forced downward, in return forcing the aircraft upward \cite{wing_lift_diagram}.}
 \label{fig:airfoil_lift}
 \end{figure}\par
 The flight time of most battery powered RC fixed-wing aircraft is around half an hour, assuming some aerial manuvering \cite{airplane_book}. In a surveying role, with the plane flying low circles, the flight time would likely increase slightly. There are also gasoline powered aircraft with small engines onboard to power the main propeller. Gasoline has a very high energy density, so it’s possible to fly for multiple hours with a gasoline powered aircraft.\par
@@ -316,7 +315,7 @@ Fixed-wing RC aircraft have been used in the past for similar tasks. In one exam
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/fixed-wing.jpg}
-\caption{A fixed-wing RC aircraft. This is a flying wing style craft with a rear propeller. Its flight would be greatly hindered by any protrusion of the mounting system. \cite{airplane_iqp}}
+\caption{A fixed-wing RC aircraft. This is a flying wing style craft with a rear propeller. Its flight would be greatly hindered by any protrusion of the mounting system \cite{airplane_iqp}.}
 \label{fig:fixed_wing}
 \end{figure}\par
 A fixed-wing aircraft is able to cover large distances flying laterally, but it is not able to stop mid-flight and hover in place \cite{airplane_book}. Its turning radius is often quite large, and it must not drop below a certain speed to remain airborne. While fixed-wing aircraft are mobile, they are not very agile. Most fixed-wing aircraft require a long flat runway to takeoff and land on, limiting the number of locations in which they could reasonably launch. In addition, fixed-wing aircraft are much larger and are commonly disassembled for transport.\par
@@ -344,7 +343,7 @@ A multicopter, sometimes also called a drone, is a flying device with two or mor
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{img/hexacopter.jpg}
-\caption{A multicopter with 6 rotors. The brushless DC motors allow for very high speeds and a high degree of control. \cite{multicopter_img}}
+\caption{A multicopter with 6 rotors. The brushless DC motors allow for very high speeds and a high degree of control \cite{multicopter_img}.}
 \label{fig:multicopter_hex}
 \end{figure}\par
 Multicopters use fixed-pitch propellers to correlate rotor speed with force produced. Lift can be controlled by uniformly increasing or decreasing rotor speed across all rotors. To effect a roll or pitch, one side's rotors are spun up and the other side's are spun down so that the net lift remains the same but the craft tilts to the side with less thrust. Multicopters also have the unique ability to yaw in place by spinning alternating rotors faster and slower. Since the rotors alternate in direction of rotation, spinning one set faster creates an imbalance of torque, which makes the whole platform rotate in place \cite{multicopter_dynamics_2}.\par
