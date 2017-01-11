@@ -3,7 +3,7 @@
 This chapter details the implementation of the MASDR platform. The description has been divided into software and hardware for clarity.
 
 \section{Software Implementation} \label{impl:rotate} \label{impl:tx_messages}
-The software for the MASDR system was written in C++ and can be found in Appendix \ref{app:masdr_code}. Documentation was done with doxygen, allowing for dynamic updates to the docs whenever changes were made. The final version of the documentation can be found in Appendix \ref{app:masdr_docs}. Additionally, some scripts were written to assist in other aspects of the project. \par
+The software for the MASDR system was written in C++ and can be found in Appendix \ref{app:masdr_code}. Documentation was done with doxygen, allowing for dynamic updates to the docs whenever changes were made.  Additionally, some scripts were written to assist in other aspects of the project. \par
 
 %C++ vs gnuradio
 During the design phase, there was discussion over whether to use GNU radio or C++ for the MASDR application. GNU radio would allow for more complex signal processing patterns to be constructed more easily in comparison to C++, but would increase the overhead on development and potentially at runtime as well. Using C++, the application would have to be coded entirely from scratch, interfacing with the USRP Hardware Driver (UHD) libraries, but would have much lower overhead. Based on the skills of the team members, as well as the desire for the application to be as low power and simple as possible, C++ was chosen for the application. \par
